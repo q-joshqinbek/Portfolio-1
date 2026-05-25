@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JQ Portfolio - Cyber Scan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --neon-green: #00ff66;
+            --neon-red: #ff003c;
+            --neon-blue: #00f2ff;
+            --dark-core: #020205;
+        }
+
+        * {
+            box-sizing: border-box;
+            /* Standart mishkani butunlay yashiramiz, faqat bizning kursor ko'rinadi */
+            cursor: none !important;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark-core);
+            color: var(--neon-green);
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ─── KIBERPANK MAXSUS KURSOR EFFEKTI ─── */
+        /* O'rtadagi kichik nuqta */
+        .cyber-cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--neon-blue);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10000;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        /* Tashqaridagi aylanuvchi doira */
+        .cyber-cursor-circle {
+            width: 34px;
+            height: 34px;
+            border: 1.5px solid rgba(0, 242, 255, 0.6);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            /* Silliq ergashish (lag effekti) uchun transition */
+            transition: transform 0.08s ease-out, width 0.2s, height 0.2s, border-color 0.2s;
+            box-shadow: 0 0 8px rgba(0, 242, 255, 0.2);
+        }
+
+        /* Tugma yoki havolaga borganda kursor o'zgarishi */
+        .cyber-cursor-hover-dot {
+            background-color: var(--neon-green) !important;
+            width: 4px;
+            height: 4px;
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+
+        .cyber-cursor-hover-circle {
+            border-color: var(--neon-green) !important;
+            width: 44px;
+            height: 44px;
+            border-style: dashed;
+            /* Element ustiga borganda aylana chiziqli bo'ladi */
+            animation: rotateRadar 4s infinite linear;
+            /* Va aylana boshlaydi */
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+        }
+
+        /* Scanline va Grid Kiberpank Effektlar */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 999;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        /* Top Bar Navigatsiya */
+        .top-cyber-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(0, 255, 102, 0.03);
+            border-bottom: 2px dashed var(--neon-green);
+            box-shadow: 0 0 15px rgba(0, 255, 66, 0.1);
+        }
+
+        .back-hub-btn {
+            color: #000;
+            background: var(--neon-green);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            padding: 8px 20px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px var(--neon-green);
+            transition: 0.3s;
+            clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%);
+        }
+
+        .back-hub-btn:hover {
+            background: transparent;
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            box-shadow: 0 0 25px var(--neon-green);
+            transform: translateX(5px);
+        }
+
+        .system-status-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px var(--neon-green);
+        }
+
+        /* Asosiy Terminal */
+        .terminal-container {
+            max-width: 1000px;
+            width: 90%;
+            margin: 40px auto;
+            background: rgba(2, 2, 5, 0.9);
+            border: 1px solid var(--neon-green);
+            box-shadow: 0 0 30px rgba(0, 255, 66, 0.15);
+            padding: 25px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .terminal-container::after {
+            content: "DYNAMIC_SCANNER_v3.5";
+            position: absolute;
+            bottom: -10px;
+            right: 20px;
+            background: var(--dark-core);
+            padding: 0 10px;
+            font-size: 0.8rem;
+            color: var(--neon-blue);
+        }
+
+        .scanner-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .scanner-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Kiber Diagnostika Grafikasi */
+        .radar-box {
+            border: 1px solid rgba(0, 255, 66, 0.3);
+            background: rgba(0, 255, 102, 0.02);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .radar-circle {
+            width: 180px;
+            height: 180px;
+            border: 2px solid var(--neon-green);
+            border-radius: 50%;
+            position: relative;
+            animation: pulseRadar 2s infinite linear;
+        }
+
+        .radar-line {
+            position: absolute;
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(0, 255, 102, 0), var(--neon-green));
+            top: 50%;
+            left: 50%;
+            transform-origin: left center;
+            animation: rotateRadar 4s infinite linear;
+        }
+
+        /* Ma'lumotlar paneli */
+        .log-display {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px inset rgba(0, 255, 66, 0.5);
+            padding: 15px;
+            height: 250px;
+            overflow-y: auto;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .log-line {
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+
+        .text-blue {
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        .text-red {
+            color: var(--neon-red);
+            text-shadow: 0 0 5px var(--neon-red);
+        }
+
+        /* Interaktiv tugma */
+        .action-btn {
+            background: transparent;
+            border: 2px solid var(--neon-blue);
+            color: var(--neon-blue);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 12px 30px;
+            margin-top: 25px;
+            cursor: pointer;
+            width: 100%;
+            letter-spacing: 2px;
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+            transition: 0.3s;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            background: var(--neon-blue);
+            color: #000;
+            box-shadow: 0 0 30px var(--neon-blue);
+        }
+
+        .action-btn:disabled {
+            border-color: #333;
+            color: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Animatsiyalar */
+        @keyframes rotateRadar {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulseRadar {
+            0% {
+                box-shadow: 0 0 10px rgba(0, 255, 66, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 25px rgba(0, 255, 66, 0.6);
+                border-color: var(--neon-blue);
+            }
+
+            100% {
+                box-shadow: 0 0 10px rgba(0, 255, 66, 0.2);
+            }
+        }
+
+        /* Progress Bar */
+        .progress-bar-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--neon-green);
+            height: 20px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--neon-green);
+            width: 0%;
+            box-shadow: 0 0 15px var(--neon-green);
+            transition: width 0.1s linear;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cyber-cursor-dot" id="cursorDot"></div>
+    <div class="cyber-cursor-circle" id="cursorCircle"></div>
+
+    <div class="top-cyber-bar">
+        <a href="index.html" class="back-hub-btn">◀ BACK TO HUB</a>
+        <div class="system-status-title">DIAGNOSTIC CORE</div>
+        <div id="clock" style="color: var(--neon-blue)">00:00:00</div>
+    </div>
+
+    <div class="terminal-container">
+        <h2
+            style="font-family: 'Orbitron'; margin-top:0; border-bottom: 1px solid rgba(0,255,66,0.3); padding-bottom:10px;">
+            > DYNAMIC CORE SCANNER_
+        </h2>
+        <p>Ushbu kiber modul foydalanuvchining joriy qurilmasi va brauzer xarakteristikasini real vaqt rejimida
+            skanerlaydi.</p>
+
+        <div class="scanner-section">
+            <div class="radar-box">
+                <div class="radar-circle">
+                    <div class="radar-line"></div>
+                </div>
+                <p style="margin-top: 20px; font-family:'Orbitron'; font-size:0.9rem;" id="status-text">SYSTEM: IDLE</p>
+            </div>
+
+            <div>
+                <h3 style="margin-top: 0; font-family:'Orbitron'; font-size:1rem;">> LIVE DATA LOG:</h3>
+                <div class="log-display" id="logConsole">
+                    <div class="log-line">[INFO] Tizim diagnostikaga tayyor...</div>
+                    <div class="log-line">[INFO] Qurilma xarakteristikalari yuklanishini kuting.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-bar-container">
+            <div class="progress-fill" id="pBar"></div>
+        </div>
+
+        <button class="action-btn" id="scanBtn" onclick="startCyberScan()">QURILMANI REAL VAQTDA SKANERLASH</button>
+    </div>
+
+    <script>
+        // --- HAQIQIY KURSOR SCRIPT QISMI ---
+        const cursorDot = document.getElementById('cursorDot');
+        const cursorCircle = document.getElementById('cursorCircle');
+
+        // Mishka harakatini ushlash
+        document.addEventListener('mousemove', (e) => {
+            // Nuqtani silliq siljitish (aynan mishka uchida turadi)
+            cursorDot.style.left = e.clientX + 'px';
+            cursorDot.style.top = e.clientY + 'px';
+
+            // Tashqi aylanani biroz orqada qolib silliq ergashadigan qilish
+            cursorCircle.style.left = e.clientX + 'px';
+            cursorCircle.style.top = e.clientY + 'px';
+        });
+
+        // Agar mishka tugmalar yoki havolalar (A, BUTTON) ustiga borsa, neon yashil va kattaroq bo'ladi
+        const hoverElements = document.querySelectorAll('a, button, .action-btn, .back-hub-btn');
+        hoverElements.forEach(elem => {
+            elem.addEventListener('mouseenter', () => {
+                cursorDot.classList.add('cyber-cursor-hover-dot');
+                cursorCircle.classList.add('cyber-cursor-hover-circle');
+            });
+            elem.addEventListener('mouseleave', () => {
+                cursorDot.classList.remove('cyber-cursor-hover-dot');
+                cursorCircle.classList.remove('cyber-cursor-hover-circle');
+            });
+        });
+
+
+        // Real vaqt soati
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toTimeString().split(' ')[0];
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Operatsion tizimni aniqlash
+        function getOS() {
+            const userAgent = navigator.userAgent;
+            if (userAgent.indexOf("Win") !== -1) return "Windows";
+            if (userAgent.indexOf("Mac") !== -1) return "macOS / iOS";
+            if (userAgent.indexOf("X11") !== -1) return "UNIX";
+            if (userAgent.indexOf("Linux") !== -1) return "Linux / Android";
+            return "Noma'lum OS";
+        }
+
+        // Brauzerni aniqlash
+        function getBrowser() {
+            const ua = navigator.userAgent;
+            if (ua.indexOf("Firefox") !== -1) return "Mozilla Firefox";
+            if (ua.indexOf("SamsungBrowser") !== -1) return "Samsung Internet";
+            if (ua.indexOf("Chrome") !== -1) return "Google Chrome";
+            if (ua.indexOf("Safari") !== -1) return "Apple Safari";
+            if (ua.indexOf("Edge") !== -1) return "Microsoft Edge";
+            return "Standart Kiber Brauzer";
+        }
+
+        function startCyberScan() {
+            const consoleBox = document.getElementById('logConsole');
+            const pFill = document.getElementById('pBar');
+            const statusTxt = document.getElementById('status-text');
+            const scanBtn = document.getElementById('scanBtn');
+
+            scanBtn.disabled = true;
+
+            consoleBox.innerHTML = "<div class='log-line text-blue'>[START] Chuqur kiber diagnostika boshlandi...</div>";
+            pFill.style.width = "0%";
+            statusTxt.innerText = "SYSTEM: SCANNING...";
+            statusTxt.style.color = "var(--neon-blue)";
+
+            const osType = getOS();
+            const browserType = getBrowser();
+            const screenRes = `${window.screen.width}x${window.screen.height}`;
+            const cpuCores = navigator.hardwareConcurrency || "Dinamik";
+            const deviceType = ('ontouchstart' in window || navigator.maxTouchPoints > 0) ? "Mobil/Planshet (Touch)" : "Kompyuter (PC / Laptop)";
+            const language = navigator.language || "uz-UZ";
+            const onlineStatus = navigator.onLine ? "ONLINE" : "OFFLINE";
+
+            const logs = [
+                { t: `[INFO] Qurilma me'morchiligi: ${deviceType}`, delay: 400, color: "" },
+                { t: `[OS] Operatsion tizim: ${osType}`, delay: 900, color: "text-blue" },
+                { t: `[BROWSER] Joriy dastur: ${browserType}`, delay: 1400, color: "" },
+                { t: `[SCREEN] Ekran o'lchami: ${screenRes} px`, delay: 1900, color: "" },
+                { t: `[CPU] Mantiqiy protsessor yadrolari: ${cpuCores} x CORE`, delay: 2400, color: "text-blue" },
+                { t: `[NET] Global tarmoq holati: ${onlineStatus}`, delay: 2900, color: "" },
+                { t: `[LANG] Tizim interfeys tili: ${language.toUpperCase()}`, delay: 3400, color: "" },
+                { t: "[PROCESS] Shifrlangan kiber xavfsizlik protokollari tekshirilmoqda...", delay: 4000, color: "" },
+                { t: "[SUCCESS] Skript xavfsiz. Sandbox muhiti barqaror holatda.", delay: 4600, color: "text-blue" },
+                { t: "[PROT] Maxfiylik protokoli: Qurilma ichki seriyali raqamlari brauzer filtri tomonidan yashirildi.", delay: 5200, color: "text-red" },
+                { t: `[COMPLETE] ${osType} platformasi to'liq tahlil qilindi. Tizim xavfsiz!`, delay: 5800, color: "text-blue" }
+            ];
+
+            let width = 0;
+            const totalDuration = 5800;
+            const intervalTime = 50;
+            const step = 100 / (totalDuration / intervalTime);
+
+            const progressInterval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(progressInterval);
+                } else {
+                    width += step;
+                    pFill.style.width = Math.min(width, 100) + "%";
+                }
+            }, intervalTime);
+
+            logs.forEach(item => {
+                setTimeout(() => {
+                    const line = document.createElement('div');
+                    line.className = `log-line ${item.color}`;
+                    line.innerText = item.t;
+                    consoleBox.appendChild(line);
+                    consoleBox.scrollTop = consoleBox.scrollHeight;
+
+                    if (item.t.includes("[COMPLETE]")) {
+                        statusTxt.innerText = "SYSTEM: SECURE";
+                        statusTxt.style.color = "var(--neon-green)";
+                        scanBtn.disabled = false;
+                    }
+                }, item.delay);
+            });
+        }
+    </script>
+</body>
+
+</html>

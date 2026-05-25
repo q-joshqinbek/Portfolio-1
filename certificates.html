@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JQ Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --n-blue: #00f2ff;
+      --n-pink: #ff00ea;
+      --bg: #050505;
+      --card-bg: #12121a;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- BACKGROUND MATRIX KODI --- */
+    #matrix {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      opacity: 0.15;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Navbar va Menuga qaytish neon tugmasi */
+    .site-header {
+      border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+    }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--n-blue);
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.4rem;
+      text-shadow: 0 0 10px var(--n-blue);
+    }
+
+    .back-menu-btn {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      color: var(--n-pink);
+      text-decoration: none;
+      padding: 8px 16px;
+      border: 1px solid var(--n-pink);
+      border-radius: 6px;
+      text-shadow: 0 0 5px var(--n-pink);
+      box-shadow: 0 0 10px rgba(255, 0, 234, 0.2), inset 0 0 5px rgba(255, 0, 234, 0.1);
+      transition: all 0.3s ease-in-out;
+      letter-spacing: 1px;
+    }
+
+    .back-menu-btn:hover {
+      color: #fff;
+      background: var(--n-pink);
+      box-shadow: 0 0 20px var(--n-pink), 0 0 40px var(--n-pink);
+      text-shadow: 0 0 8px #fff;
+      transform: translateX(-3px);
+    }
+
+    /* Sarlavha qismi */
+    .page-heading {
+      text-align: center;
+      margin: 40px 0;
+    }
+
+    .page-heading h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      color: var(--n-blue);
+      text-shadow: 0 0 15px var(--n-blue);
+      margin: 0;
+    }
+
+    .page-heading p {
+      color: #aaa;
+      font-size: 1.1rem;
+      margin-top: 10px;
+    }
+
+    /* --- NEON DRAG & DROP HUDUDI --- */
+    .cert-upload {
+      background: var(--card-bg);
+      border: 1px solid rgba(0, 242, 255, 0.15);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .cert-upload h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      color: #fff;
+      margin-top: 0;
+    }
+
+    .cert-upload p {
+      color: #bbb;
+      margin-bottom: 20px;
+    }
+
+    .drop-zone {
+      max-width: 500px;
+      margin: 0 auto;
+      min-height: 180px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(13, 13, 20, 0.6);
+      border: 2px dashed var(--n-blue);
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.05);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.drag-over {
+      border-color: var(--n-pink);
+      background: rgba(26, 11, 46, 0.4);
+      box-shadow: 0 0 20px rgba(255, 0, 234, 0.2), inset 0 0 10px rgba(255, 0, 234, 0.1);
+    }
+
+    .drop-zone-icon {
+      font-size: 2.5rem;
+      color: var(--n-blue);
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px var(--n-blue);
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    .drop-zone:hover .drop-zone-icon {
+      color: var(--n-pink);
+      text-shadow: 0 0 10px var(--n-pink);
+    }
+
+    .drop-zone-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      color: #fff;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .drop-zone-subtext {
+      font-size: 0.85rem;
+      color: #777;
+      margin-top: 5px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .hint {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 15px;
+    }
+
+    /* Sertifikatlar Grid qismi */
+    .certificate-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-bottom: 60px;
+    }
+
+    .certificate-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(0, 242, 255, 0.15);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      transition: 0.4s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .certificate-card:hover {
+      border-color: var(--n-pink);
+      box-shadow: 0 0 25px rgba(255, 0, 234, 0.25);
+      transform: translateY(-5px);
+    }
+
+    .cert-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 242, 255, 0.3);
+      background: #000;
+      transition: 0.3s;
+    }
+
+    .certificate-card:hover .cert-img {
+      border-color: var(--n-pink);
+      box-shadow: 0 0 15px rgba(255, 0, 234, 0.3);
+    }
+
+    /* Footer */
+    .site-footer {
+      text-align: center;
+      padding: 20px;
+      background: #000;
+      border-top: 1px solid rgba(255, 0, 234, 0.1);
+      color: #666;
+      font-size: 0.9rem;
+      margin-top: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="matrix"></canvas>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">Portfolio</a>
+      <nav class="nav-menu">
+        <a href="index.html" class="back-menu-btn">« MENUGA QAYTISH</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container page-content">
+    <section class="page-heading">
+      <h1>Sertifikatlar</h1>
+      <p>Mening professional yutuqlarim va sertifikatlarim jamlanmasi.</p>
+    </section>
+
+    <section class="cert-upload">
+      <h2>Sertifikat yuklash tizimi</h2>
+      <p>Yangi yutuqlaringizni rasm ko'rinishida quyidagi interaktiv tizimga kiriting.</p>
+
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-zone-icon">⚡</div>
+        <div class="drop-zone-text">FAYLNI SHU YERGA TASHLANG</div>
+        <div class="drop-zone-subtext">yoki yuklash uchun ustiga bosing</div>
+        <input id="certificateInput" type="file" accept="image/*" multiple style="display: none;">
+      </div>
+
+      <p class="hint">Tizim har qanday turdagi professional rasm formatlarini qo'llab-quvvatlaydi.</p>
+    </section>
+
+    <!-- ID qo'shildi: certGrid -->
+    <section class="certificate-grid" id="certGrid">
+      <article class="certificate-card">
+        <img src="rasmlar/Снимок экрана 2026-05-25 173157.png" alt="Sertifikat" class="cert-img">
+      </article>
+
+      <article class="certificate-card">
+        <img src="rasmlar/Снимок экрана 2026-05-25 173214.png" alt="Sertifikat" class="cert-img">
+      </article>
+
+      <article class="certificate-card">
+        <img src="rasmlar/Снимок экрана 2026-05-25 173231.png" alt="Sertifikat" class="cert-img">
+      </article>
+
+      <article class="certificate-card">
+        <img src="rasmlar/Снимок экрана 2026-05-25 173253.png" alt="Sertifikat" class="cert-img">
+      </article>
+
+      <article class="certificate-card">
+        <img src="rasmlar/Снимок экрана 2026-05-25 173307.png" alt="Sertifikat" class="cert-img">
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Menga Juda Zor Portfolio. Sertifikatlarni yuklab ko'rsatish sahifasi.</p>
+    </div>
+  </footer >
+
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('certificateInput');
+    const certGrid = document.getElementById('certGrid'); // Grid elementi tanlab olindi
+
+    // Drop zonaga bosilganda fayl tanlagichni ochish
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    // Drag effektlari
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => dropZone.classList.remove('drag-over'));
+    });
+
+    // Fayl tashlanganda ishlovchi funksiya
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (e.dataTransfer.files.length) {
+        handleFiles(e.dataTransfer.files);
+      }
+    });
+
+    // Fayl elon qilinganda (tugma orqali tanlanganda)
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) {
+        handleFiles(fileInput.files);
+      }
+    });
+
+    // Rasmlarni o'qib, ekranga (Grid ichiga) chiqaruvchi asosiy funksiya
+    function handleFiles(files) {
+      Array.from(files).forEach(file => {
+        // Faqat rasm formatidagi fayllarni tekshirish
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          
+          reader.onload = function(event) {
+            // Yangi <article> elementi (kartochka) yaratish
+            const article = document.createElement('article');
+            article.className = 'certificate-card';
+            
+            // Ichiga <img> joylash
+            const img = document.createElement('img');
+            img.src = event.target.result; // Rasmni base64 ko'rinishidagi manzili
+            img.alt = 'Yuklangan Sertifikat';
+            img.className = 'cert-img';
+            
+            article.appendChild(img);
+            
+            // Gridning eng boshiga yangi kartochkani qo'shish (oxiriga qo'shish uchun appendChild qilsa ham bo'ladi)
+            certGrid.insertBefore(article, certGrid.firstChild);
+          };
+          
+          reader.readAsDataURL(file); // Faylni o'qishni boshlash
+        } else {
+          alert("Iltimos, faqat rasm formatidagi fayllarni yuklang!");
+        }
+      });
+    }
+
+    /* --- MATRIX EFFEKTI (Rang Neon Moviyga o'zgartirildi) --- */
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const drops = Array(Math.floor(canvas.width / 16)).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(5, 5, 5, 0.15)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Rang umumiy sayt mavzusiga mos ravishda #00f2ff (neon moviy) qilindi
+      ctx.fillStyle = "#00f2ff"; 
+      ctx.font = "15px monospace";
+
+      drops.forEach((y, i) => {
+        const text = "01"[Math.floor(Math.random() * 2)];
+        ctx.fillText(text, i * 16, y * 16);
+
+        if (y * 16 > canvas.height && Math.random() > 0.975) {
+          
+          drops[i] = 0;
+        }
+        drops[i]++;
+      });
+    }
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    setInterval(drawMatrix, 40);
+  </script>
+</body>
+
+</html>
