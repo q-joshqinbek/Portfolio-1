@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khiva Heritage - Premium Ichan Qal'a Virtual Gid</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- BRENDING VA ASOSIY STILLAR --- */
+        :root {
+            --bg-color: #fcfbf7;
+            --text-color: #1a1a1a;
+            --accent-color: #e67e22;
+            --turquoise-color: #1abc9c;
+            --subtle-text: #7f8c8d;
+            --card-bg: #ffffff;
+            --gold-color: #f1c40f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            padding-bottom: 5rem;
+        }
+
+        /* --- SILLIQ KURSOR EFFEKTI --- */
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--turquoise-color);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        .cursor-circle {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(26, 188, 156, 0.3);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.08s ease-out, width 0.3s, height 0.3s, border 0.3s;
+        }
+
+        body.hovering .cursor-dot {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(26, 188, 156, 0.1);
+        }
+
+        body.hovering .cursor-circle {
+            width: 55px;
+            height: 55px;
+            border: 1px dashed var(--accent-color);
+            animation: rotateCircle 3s linear infinite;
+        }
+
+        @keyframes rotateCircle {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* --- HEADER & NAV --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 6%;
+            background: rgba(252, 251, 247, 0.95);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--turquoise-color);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            list-style: none;
+        }
+
+        nav ul li a {
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+            position: relative;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        nav ul li a:hover {
+            color: var(--accent-color);
+        }
+
+        .btn-fav-folder {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            position: relative;
+            color: var(--text-color);
+            transition: color 0.3s;
+        }
+
+        .btn-fav-folder:hover {
+            color: var(--turquoise-color);
+        }
+
+        .fav-count {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: var(--accent-color);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            text-align: center;
+            padding: 6rem 10% 3rem 10%;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero p {
+            color: var(--subtle-text);
+            font-size: 1.15rem;
+            max-width: 750px;
+            margin: 0 auto 3rem auto;
+            line-height: 1.8;
+        }
+
+        /* --- JONLI QIDIRUV --- */
+        .search-container {
+            max-width: 550px;
+            margin: 0 auto 4rem auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 20px 16px 55px;
+            font-size: 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 30px;
+            background: #fff;
+            outline: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--turquoise-color);
+            box-shadow: 0 10px 35px rgba(26, 188, 156, 0.15);
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 22px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--subtle-text);
+            font-size: 1.1rem;
+        }
+
+        /* --- MAIN LAYOUT --- */
+        .main-container {
+            padding: 0 6%;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .category-block {
+            margin-bottom: 5rem;
+        }
+
+        .category-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            border-bottom: 2px solid #f1f1f1;
+            padding-bottom: 0.8rem;
+        }
+
+        .category-title i {
+            color: var(--turquoise-color);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        /* LUXURY DISPLAY CARD */
+        .luxury-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            position: relative;
+        }
+
+        .luxury-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-img-box {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .card-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .luxury-card:hover .card-img-box img {
+            transform: scale(1.08);
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 1.2rem;
+            left: 1.2rem;
+            background-color: rgba(26, 188, 156, 0.95);
+            color: #fff;
+            padding: 0.4rem 1.2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            border-radius: 30px;
+            z-index: 2;
+            letter-spacing: 0.5px;
+        }
+
+        .card-info {
+            padding: 1.8rem;
+        }
+
+        .card-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            color: var(--subtle-text);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #f8f9fa;
+            padding-top: 1.2rem;
+        }
+
+        .meta-details {
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--turquoise-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .action-btn:hover {
+            color: var(--accent-color);
+        }
+
+        /* --- FAVORITE MODAL --- */
+        .fav-modal {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 420px;
+            height: 100vh;
+            background: #fff;
+            box-shadow: -15px 0 40px rgba(0, 0, 0, 0.08);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+            padding: 2.5rem;
+        }
+
+        .fav-modal.active {
+            right: 0;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            color: var(--subtle-text);
+        }
+
+        .modal-items-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .modal-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .item-details h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .item-details p {
+            font-size: 0.8rem;
+            color: var(--subtle-text);
+        }
+
+        .remove-item-btn {
+            background: none;
+            border: none;
+            color: #e74c3c;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 992px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .fav-modal {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-circle"></div>
+
+    <header>
+        <div class="logo">Khiva<span>Explore</span></div>
+        <nav>
+            <ul class="nav-links">
+                <!-- Sahifa boshiga qaytish uchun yangi havola -->
+                <li><a href="index.html">Bosh Sahifa</a></li>
+                <li><a href="#monuments">Obidalar</a></li>
+                <li><a href="#architecture">Me'morchilik</a></li>
+                <li><a href="#culture">Madaniyat & San'at</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <button class="btn-fav-folder" id="openFavBtn" title="Tashrif ro'yxati">
+                <i class="fa-solid fa-star"></i>
+                <span class="fav-count">0</span>
+            </button>
+            <button class="mobile-menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Ichan Qal'a Albomi</h1>
+        <p>Ko'hna shaharning eng go'zal me'moriy durdonalari va madaniy merosini o'zida jamlagan unikal vizual
+            ensiklopediya. Faqat tomosha qiling va o'rganing.</p>
+
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" class="search-input" id="searchInput"
+                placeholder="Obidalar yoki majmualarni qidiring...">
+        </div>
+    </section>
+
+    <main class="main-container">
+
+        <!-- OBIIDALAR BO'LIMI -->
+        <div class="category-block" id="monuments">
+            <h2 class="category-title"><i class="fa-solid fa-gopuram"></i> Tarixiy Obidalar</h2>
+            <div class="cards-grid">
+                <div class="luxury-card" data-name="kalta minor minora koshin ko'hna">
+                    <div class="card-img-box">
+                        <span class="card-badge">Me'morchilik</span>
+                        <img src="https://public.mishka.travel/images/mini/11742.jpg" alt="Kalta Minor">
+                    </div>
+                    <div class="card-info">
+                        <h3>Kalta Minor</h3>
+                        <p class="card-description">Xiva xonligining ulug'vor ramzi. To'liq feruza va lojuvard koshinlar
+                            bilan qoplangan ushbu minora chala qolgan bo'lsa-da, dunyoga mashhur.</p>
+                        <div class="card-meta">
+                            <span class="meta-details"><i class="fa-solid fa-eye"></i> 19-asr yodgorligi</span>
+                            <button class="action-btn"
+                                onclick="addToFav('Kalta Minor', '19-asr me\'morchiligi')">Esdalikda saqlash <i
+                                    class="fa-regular fa-star"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="luxury-card" data-name="islom xo'ja minora minorasi baland">
+                    <div class="card-img-box">
+                        <span class="card-badge">Eng baland</span>
+                        <img src="https://avatars.mds.yandex.net/i?id=c72bd6953ff8a4682c7f994f12cc57ae_l-5288062-images-thumbs&n=13"
+                            alt="Islom Xo'ja">
+                    </div>
+                    <div class="card-info">
+                        <h3>Islom Xo'ja Minorasi</h3>
+                        <p class="card-description">Balandligi 56.6 metr bo'lgan, tepasiga qarab torayib boruvchi go'zal
+                            minora. Shaharning istalgan nuqtasidan yaqqol ko'rinib turadi.</p>
+                        <div class="card-meta">
+                            <span class="meta-details"><i class="fa-solid fa-eye"></i> 1910-yil qurilgan</span>
+                            <button class="action-btn" onclick="addToFav('Islom Xo\'ja Minorasi', '1910-yil')">Esdalikda
+                                saqlash <i class="fa-regular fa-star"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="luxury-card" data-name="tosh hovli saroy xon qarorgoh haram">
+                    <div class="card-img-box">
+                        <span class="card-badge">Saroy kompleksi</span>
+                        <img src="https://avatars.mds.yandex.net/i?id=3d02491f446a4591a58f1413ca943420_l-5222489-images-thumbs&ref=rim&n=13&w=2000&h=1328"
+                            alt="Tosh Hovli">
+                    </div>
+                    <div class="card-info">
+                        <h3>Tosh Hovli Saroyi</h3>
+                        <p class="card-description">Alloqulixonning dabdabali qarorgohi. Devorlaridagi islimiy naqshlar,
+                            yog'och ustunlar o'ymakorlik san'atining eng oliy namunasidir.</p>
+                        <div class="card-meta">
+                            <span class="meta-details"><i class="fa-solid fa-eye"></i> Xon qarorgohi</span>
+                            <button class="action-btn" onclick="addToFav('Tosh Hovli Saroyi', 'Xon saroyi')">Esdalikda
+                                saqlash <i class="fa-regular fa-star"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ME'MORCHILIK BO'LIMI -->
+        <div class="category-block" id="architecture">
+            <h2 class="category-title"><i class="fa-solid fa-mosque"></i> Madrasa va Masjidlar</h2>
+            <div class="cards-grid">
+                <div class="luxury-card" data-name="juma masjid ustun yog'och naqsh">
+                    <div class="card-img-box">
+                        <span class="card-badge">Nodir</span>
+                        <img src="https://cdn1.tenchat.ru/static/vbc-gostinder/2023-05-10/compressed/cdf92231-168d-47f4-ad89-928c87bca422.jpeg?width=959&height=720&fmt=webp"
+                            alt="Juma Masjidi">
+                    </div>
+                    <div class="card-info">
+                        <h3>Juma Masjidi</h3>
+                        <p class="card-description">218 ta o'ziga xos naqshli yog'och ustunlarga ega bo'lgan noyob
+                            masjid. Unda bitta ham gumbaz yoki qabariq hovli yo'q.</p>
+                        <div class="card-meta">
+                            <span class="meta-details"><i class="fa-solid fa-eye"></i> 10-18 asrlar</span>
+                            <button class="action-btn"
+                                onclick="addToFav('Juma Masjidi', '218 ta yog\'och ustun')">Esdalikda saqlash <i
+                                    class="fa-regular fa-star"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="luxury-card" data-name="muhammad aminxon madrasasi eng katta">
+                    <div class="card-img-box">
+                        <span class="card-badge">Mahobatli</span>
+                        <img src="https://eurasia.travel/wp-content/uploads/2024/07/Muhammad-Amin-khan-Madrasah-5.jpg"
+                            alt="Muhammad Aminxon">
+                    </div>
+                    <div class="card-info">
+                        <h3>Muhammad Aminxon Madrasasi</h3>
+                        <p class="card-description">Ichan Qal'adagi eng yirik oliy diniy va dunyoviy ilm dargohi
+                            bo'lgan. Ikki qavatli hujralari bilan o'z davrining akademiyasi hisoblangan.</p>
+                        <div class="card-meta">
+                            <span class="meta-details"><i class="fa-solid fa-eye"></i> Eng katta madrasa</span>
+                            <button class="action-btn"
+                                onclick="addToFav('Muhammad Aminxon madrasasi', 'Yirik akademiya')">Esdalikda saqlash <i
+                                    class="fa-regular fa-star"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MADANIYAT BO'LIMI (Menudan to'g'ri o'tishi uchun qo'shildi) -->
+        <div class="category-block" id="culture">
+            <h2 class="category-title"><i class="fa-solid fa-palette"></i> Madaniyat & San'at</h2>
+            <div class="cards-grid">
+                <div class="luxury-card" data-name="lazgi raqs folklor xiva teatr">
+                    <div class="card-img-box">
+                        <span class="card-badge">Meros</span>
+                        <img src="https://avatars.mds.yandex.net/i?id=3d02491f446a4591a58f1413ca943420_l-5222489-images-thumbs&ref=rim&n=13&w=2000&h=1328"
+                            alt="Xiva Lazgisi">
+                    </div>
+                    <div class="card-info">
+                        <h3>Xorazm Lazgi Raqsi</h3>
+                        <p class="card-description">UNESCO nomoddiy madaniy merosi ro'yxatiga kiritilgan, olovli va
+                            jozibador qadimiy raqs san'ati.</p>
+                        <div class="card-meta">
+                            <span class="meta-details"><i class="fa-solid fa-music"></i> Jonli ijro & Folklor</span>
+                            <button class="action-btn" onclick="addToFav('Xorazm Lazgisi', 'Folklor merosi')">Esdalikda
+                                saqlash <i class="fa-regular fa-star"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="fav-modal" id="favModal">
+        <div class="modal-header">
+            <h2>Ko'rmoqchi bo'lganlarim</h2>
+            <button class="close-modal" id="closeFavBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-items-list" id="favItemsContainer"></div>
+    </div>
+
+    <script>
+        // Kursor Harakati
+        const dot = document.querySelector('.cursor-dot');
+        const circle = document.querySelector('.cursor-circle');
+
+        document.addEventListener('mousemove', (e) => {
+            dot.style.left = e.clientX + 'px';
+            dot.style.top = e.clientY + 'px';
+            circle.animate({ left: e.clientX + 'px', top: e.clientY + 'px' }, { duration: 500, fill: "forwards" });
+        });
+
+        function initHoverEffects() {
+            const hoverables = document.querySelectorAll('a, button, input, .luxury-card');
+            hoverables.forEach(item => {
+                item.removeEventListener('mouseenter', addHoverClass);
+                item.removeEventListener('mouseleave', removeHoverClass);
+                item.addEventListener('mouseenter', addHoverClass);
+                item.addEventListener('mouseleave', removeHoverClass);
+            });
+        }
+
+        function addHoverClass() { document.body.classList.add('hovering'); }
+        function removeHoverClass() { document.body.classList.remove('hovering'); }
+
+        initHoverEffects();
+
+        // Saralangan obidalar tizimi
+        let favList = [];
+        const favCountBadge = document.querySelector('.fav-count');
+        const favModal = document.getElementById('favModal');
+        const openFavBtn = document.getElementById('openFavBtn');
+        const closeFavBtn = document.getElementById('closeFavBtn');
+        const favItemsContainer = document.getElementById('favItemsContainer');
+
+        function updateFavUI() {
+            favCountBadge.textContent = favList.length;
+            favItemsContainer.innerHTML = '';
+
+            if (favList.length === 0) {
+                favItemsContainer.innerHTML = '<p style="color: #7f8c8d; text-align:center; margin-top:2rem;">Hozircha obidalar tanlanmadi.</p>';
+            } else {
+                favList.forEach((item, index) => {
+                    const itemHTML = `
+                        <div class="modal-item">
+                            <div class="item-details">
+                                <h4>${item.name}</h4>
+                                <p>${item.tag}</p>
+                            </div>
+                            <button class="remove-item-btn" onclick="removeFromFav(${index})">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    `;
+                    favItemsContainer.insertAdjacentHTML('beforeend', itemHTML);
+                });
+            }
+            initHoverEffects();
+        }
+
+        function addToFav(name, tag) {
+            if (favList.some(item => item.name === name)) {
+                alert("Bu obida ro'yxatingizda bor!");
+                return;
+            }
+            favList.push({ name, tag });
+            updateFavUI();
+        }
+
+        function removeFromFav(index) {
+            favList.splice(index, 1);
+            updateFavUI();
+        }
+
+        openFavBtn.addEventListener('click', () => favModal.classList.add('active'));
+        closeFavBtn.addEventListener('click', () => favModal.classList.remove('active'));
+
+        // Jonli Qidiruv Tizimi
+        const searchInput = document.getElementById('searchInput');
+        const cards = document.querySelectorAll('.luxury-card');
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            cards.forEach(card => {
+                const searchTags = card.getAttribute('data-name');
+                if (searchTags.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

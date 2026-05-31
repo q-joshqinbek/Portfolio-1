@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hunar.uz - Ishchi va Shogirdlar Markazi</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --text-color: #2c3e50;
+            --hunar-blue: #2980b9;
+            --hunar-orange: #d35400;
+            --hunar-teal: #16a085;
+            --subtle-text: #7f8c8d;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            padding-bottom: 5rem;
+        }
+
+        /* --- SILLIQ KURSOR EFFECTI --- */
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--hunar-orange);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        .cursor-circle {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(211, 84, 0, 0.3);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.08s ease-out, width 0.3s, height 0.3s, border 0.3s;
+        }
+
+        body.hovering .cursor-dot {
+            width: 45px;
+            height: 45px;
+            background-color: rgba(211, 84, 0, 0.1);
+        }
+
+        body.hovering .cursor-circle {
+            width: 60px;
+            height: 60px;
+            border: 1px dashed var(--hunar-blue);
+            animation: rotateGear 4s linear infinite;
+        }
+
+        @keyframes rotateGear {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* --- HEADER --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 6%;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(15px);
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .logo-hunar {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+        }
+
+        .logo-hunar span {
+            color: var(--hunar-orange);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            list-style: none;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: var(--hunar-orange);
+        }
+
+        /* --- HERO --- */
+        .hero-workshop {
+            text-align: center;
+            padding: 5rem 10% 3rem 10%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-workshop h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.8rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-workshop p {
+            color: var(--subtle-text);
+            font-size: 1.1rem;
+            max-width: 750px;
+            margin: 0 auto 3rem auto;
+            line-height: 1.8;
+        }
+
+        .search-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 25px 16px 60px;
+            font-size: 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 50px;
+            outline: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--subtle-text);
+        }
+
+        /* --- GRID CONTAINER --- */
+        .main-container {
+            padding: 0 6%;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .workshop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .hunar-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .hunar-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .img-banner {
+            position: relative;
+            height: 230px;
+            overflow: hidden;
+        }
+
+        .img-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: #fff;
+            padding: 0.4rem 1.2rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 30px;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .card-body h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .master-info {
+            font-size: 0.85rem;
+            color: var(--hunar-blue);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .card-body p {
+            color: var(--subtle-text);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .requirements-list {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            list-style: none;
+            font-size: 0.85rem;
+        }
+
+        .requirements-list li {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .requirements-list li i {
+            color: var(--hunar-teal);
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #f5f5f5;
+            padding-top: 1.2rem;
+        }
+
+        .salary-info {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #27ae60;
+        }
+
+        .btn-telegram {
+            background: #2ab200;
+            color: white;
+            text-decoration: none;
+            padding: 0.6rem 1.3rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn-telegram:hover {
+            background: #229602;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+
+            .hero-workshop h1 {
+                font-size: 2.4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-circle"></div>
+
+    <header>
+        <div class="logo-hunar">Hunar<span>.uz</span></div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Bosh sahifa</a></li>
+                <li><a href="#workshops">Bo'sh ish o'rinlari</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero-workshop">
+        <h1>Ishchi va Shogirdlar Markazi</h1>
+        <p>Tez fursatda halol mehnat qilib hunar o'rganadigan chaqqon yigitlarni jamoamizga taklif qilamiz!</p>
+
+        <div class="search-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="workshopSearch" class="search-input" placeholder="Moshina tuzatish, oyna ustasi...">
+        </div>
+    </section>
+
+    <main class="main-container" id="workshops">
+        <div class="workshop-grid">
+
+            <!-- CARD 1: MOSHINA TUZATISH -->
+            <div class="hunar-card" data-tags="moshina tuzatish avtousta usta mashina remont">
+                <div class="img-banner">
+                    <span class="status-badge" style="background: var(--hunar-blue);">Shoshiling</span>
+                    <img src="https://yuz.uz/file/news/345b47d8cfc2cc6c240cace4ea82f2d9.jpg"
+                        alt="Avtousta">
+                </div>
+                <div class="card-body">
+                    <div class="master-info"><i class="fa-solid fa-screwdriver-wrench"></i> Avtoservis Markazi</div>
+                    <h3>Moshina Tuzatish Ustaxonasi</h3>
+                    <p>Mashinalarni ta'mirlash, xodovoy va motor qismlarini o'rganish uchun chaqqon va harakatchan
+                        yigitlarni ishga va shogirdlikka taklif qilamiz.</p>
+                    <ul class="requirements-list">
+                        <li><i class="fa-solid fa-user-plus"></i> Yoshi: 12 yoshdan baland</li>
+                        <li><i class="fa-solid fa-bolt"></i> Chaqqon va harakatchan bo'lish</li>
+                        <li><i class="fa-solid fa-clock"></i> Ish vaqti kelishiladi</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="salary-info">Yaxshi daromad</span>
+                        <a href="https://t.me/JQ_live" target="_blank" class="btn-telegram">
+                            <i class="fa-brands fa-telegram"></i> Telegramda yozish
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 2: OYNA USTASI -->
+            <div class="hunar-card" data-tags="oyna shisha oyna ustasi akfa vitraj eshik">
+                <div class="img-banner">
+                    <span class="status-badge" style="background: var(--hunar-teal);">Zudlik bilan</span>
+                    <img src="https://avatars.mds.yandex.net/i?id=0c501104605f51daee9b1014f73bdf35e328881e-5481835-images-thumbs&n=13"
+                        alt="Oyna ustasi">
+                </div>
+                <div class="card-body">
+                    <div class="master-info"><i class="fa-solid fa-crop"></i> Shisha & Oyna Sexi</div>
+                    <h3>Oyna va Vitraj Kesish Ustasi</h3>
+                    <p>Har xil turdagi oynalarni o'lchash, kesish va tayyorlash sexiga yordamchi ishchilar kerak. Ish
+                        sirlari to'liq o'rgatiladi.</p>
+                    <ul class="requirements-list">
+                        <li><i class="fa-solid fa-user-plus"></i> Yoshi: 12 yoshdan baland</li>
+                        <li><i class="fa-solid fa-eye"></i> Ishga e'tiborli va aniqlik</li>
+                        <li><i class="fa-solid fa-utensils"></i> Issiq tushlik beriladi</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="salary-info">Haftalik haq to'lanadi</span>
+                        <a href="https://t.me/JQ_live" target="_blank" class="btn-telegram">
+                            <i class="fa-brands fa-telegram"></i> Telegramda yozish
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Kursor mantiqiy qismi
+        const dot = document.querySelector('.cursor-dot');
+        const circle = document.querySelector('.cursor-circle');
+
+        document.addEventListener('mousemove', (e) => {
+            dot.style.left = e.clientX + 'px';
+            dot.style.top = e.clientY + 'px';
+            circle.animate({
+                left: e.clientX + 'px',
+                top: e.clientY + 'px'
+            }, { duration: 400, fill: "forwards" });
+        });
+
+        document.querySelectorAll('a, button, input, .hunar-card').forEach(item => {
+            item.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+            item.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+
+        // Jonli qidiruv tizimi
+        const searchInput = document.getElementById('workshopSearch');
+        const cards = document.querySelectorAll('.hunar-card');
+
+        searchInput.addEventListener('input', (event) => {
+            const keyword = event.target.value.toLowerCase().trim();
+            cards.forEach(card => {
+                const tags = card.getAttribute('data-tags');
+                if (tags.includes(keyword)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -127,7 +127,7 @@
             background: rgba(255, 0, 234, 0.05);
         }
 
-        /* Burger Menu Button (Faqat telefonda chiqadi) */
+        /* Burger Menu Button */
         .burger-menu {
             display: none;
             flex-direction: column;
@@ -318,7 +318,7 @@
             color: var(--neon-pink);
         }
 
-        /* --- FEATURES GRID --- */
+        /* --- FEATURES GRID (2 TAdan joylashadigan qismi) --- */
         .features {
             padding: 60px 0;
         }
@@ -336,9 +336,10 @@
             text-shadow: none;
         }
 
+        /* 3 ta o'rniga 2 tadan bo'lib tushishi uchun repeat(2, 1fr) qilindi */
         .feature-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 25px;
         }
 
@@ -411,26 +412,18 @@
             color: var(--neon-blue);
         }
 
-        /* --- RESPONSIVE MEDIA QUERIES (Siz so'ragan kichik ekranlar uchun) --- */
-
+        /* --- RESPONSIVE MEDIA QUERIES --- */
         @media (max-width: 1024px) {
-            .feature-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
             .hero-text h1 {
                 font-size: 2.3rem;
             }
         }
 
         @media (max-width: 768px) {
-
-            /* Burger menyu tugmasini ko'rsatish */
             .burger-menu {
                 display: flex;
             }
 
-            /* Navigatsiya menyusini telefonga moslab yashirish */
             .nav-menu {
                 position: fixed;
                 top: 0;
@@ -452,7 +445,6 @@
                 border-left: 2px solid var(--neon-pink);
             }
 
-            /* Menyu ochilgandagi holat */
             .nav-menu.active {
                 right: 0;
             }
@@ -464,7 +456,6 @@
                 padding: 10px;
             }
 
-            /* Burger animation */
             .burger-menu.toggle span:nth-child(1) {
                 transform: rotate(-45deg) translate(-5px, 6px);
             }
@@ -477,7 +468,6 @@
                 transform: rotate(45deg) translate(-5px, -6px);
             }
 
-            /* Hero qismini telefonda ketma-ket qilish */
             .hero {
                 grid-template-columns: 1fr;
                 padding: 30px 0;
@@ -492,6 +482,7 @@
                 width: 100%;
             }
 
+            /* Telefon ekranida hamma narsa 1 qatorga tushadi */
             .feature-grid {
                 grid-template-columns: 1fr;
             }
@@ -546,13 +537,11 @@
                     <a href="projects.html">Loyihalar</a>
                     <a href="certificates.html">Sertifikatlar</a>
                     <a href="games.html">O'yinlar</a>
-                    <a href="kalkulyator.html">Kalkulyator</a>
+                    <a href="contact.html">Bog'lanish</a>
                 </nav>
 
-                <!-- Rejimni o'zgartirish tugmasi -->
                 <button class="theme-toggle" id="themeBtn">🌞 Light Mode</button>
 
-                <!-- Burger Menu (Telefonda chiqadigan tugma) -->
                 <button class="burger-menu" id="burgerBtn">
                     <span></span>
                     <span></span>
@@ -615,18 +604,6 @@
                     <p>Interaktiv kichik o'yinlar bilan qiziqarli tajriba.</p>
                     <a href="games.html">KIRISH_XIZMATI »</a>
                 </article>
-
-                <article class="feature-card">
-                    <h3>Kalkulyator</h3>
-                    <p>Oddiy va qulay ishlash uchun kalkulyator.</p>
-                    <a href="kalkulyator.html">KIRISH_XIZMATI »</a>
-                </article>
-
-                <article class="feature-card">
-                    <h3>Mening sahifam</h3>
-                    <p>Men haqimda batafsil ma'lumot, tajribam va ko'nikmalarim.</p>
-                    <a href="cook.uz.html">KIRISH_XIZMATI »</a>
-                </article>
             </div>
         </section>
     </main>
@@ -638,7 +615,6 @@
     </footer>
 
     <script>
-        // --- MATRIX FON SAMARASI ---
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
 
@@ -671,12 +647,11 @@
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            drops = Array(Math.floor(canvas.width / 16)).fill(1); // Ekran o'zgarganda xatolik bo'lmasligi uchun
+            drops = Array(Math.floor(canvas.width / 16)).fill(1);
         });
 
         setInterval(draw, 40);
 
-        // --- DARK / LIGHT MODE LOGIKASI ---
         const themeBtn = document.getElementById('themeBtn');
 
         themeBtn.addEventListener('click', () => {
@@ -690,7 +665,6 @@
             }
         });
 
-        // --- TELEFON UCHUN BURGER MENYU LOGIKASI ---
         const burgerBtn = document.getElementById('burgerBtn');
         const navMenu = document.getElementById('navMenu');
 
@@ -699,7 +673,6 @@
             burgerBtn.classList.toggle('toggle');
         });
 
-        // Menyu ochilganda tashqariga bosilsa yopilishi uchun
         document.addEventListener('click', (e) => {
             if (!burgerBtn.contains(e.target) && !navMenu.contains(e.target)) {
                 navMenu.classList.remove('active');

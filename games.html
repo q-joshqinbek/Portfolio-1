@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JQ Portfolio</title>
+  <title>JQ Portfolio - Ultimate Hub</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;600&display=swap"
     rel="stylesheet">
   <style>
@@ -140,11 +140,19 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      box-sizing: border-box;
     }
 
     .card:hover {
       border-color: var(--neon-pink);
       box-shadow: 0 0 20px var(--neon-pink);
+    }
+
+    /* KALKULYATOR KARTASI UCHUN MAXSUS ENI VA BO'YI O'LCHAMLARI */
+    .calc-card {
+      max-width: 340px;
+      margin: 0 auto;
+      width: 100%;
     }
 
     .game-header {
@@ -245,6 +253,75 @@
       color: #ccc;
     }
 
+    /* NEON KALKULYATOR INTEGRATSIYASI */
+    #calc-disp {
+      width: 100%;
+      box-sizing: border-box;
+      height: 65px;
+      background: #000;
+      border: 2px solid var(--neon-blue);
+      color: var(--neon-blue);
+      font-family: 'Orbitron';
+      text-align: right;
+      padding: 10px 15px;
+      font-size: 2rem;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: inset 0 0 10px rgba(0, 242, 255, 0.2);
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .c-btn {
+      height: 60px;
+      /* Tugmalar bo'yi biroz baland qilindi */
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(0, 242, 255, 0.4);
+      color: white;
+      font-family: 'Orbitron';
+      font-size: 1.3rem;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: 0.25s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .c-btn:hover {
+      background: var(--neon-blue);
+      color: #000;
+      box-shadow: 0 0 15px var(--neon-blue);
+      border-color: var(--neon-blue);
+    }
+
+    .c-btn.btn-equal {
+      background: var(--neon-pink);
+      border-color: var(--neon-pink);
+    }
+
+    .c-btn.btn-equal:hover {
+      background: #ff40f0;
+      color: white;
+      box-shadow: 0 0 15px var(--neon-pink);
+      border-color: #ff40f0;
+    }
+
+    .c-btn.btn-clear {
+      color: #ff3333;
+      border-color: rgba(255, 51, 51, 0.4);
+    }
+
+    .c-btn.btn-clear:hover {
+      background: #ff3333;
+      color: white;
+      box-shadow: 0 0 15px #ff3333;
+      border-color: #ff3333;
+    }
+
+    /* TIC-TAC-TOE STYLES */
     .ttt-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -408,6 +485,22 @@
         grid-template-columns: 1fr;
       }
     }
+
+    @media (max-width: 400px) {
+      .calc-grid {
+        gap: 8px;
+      }
+
+      .c-btn {
+        height: 55px;
+        font-size: 1.2rem;
+      }
+
+      #calc-disp {
+        font-size: 1.7rem;
+        height: 60px;
+      }
+    }
   </style>
 </head>
 
@@ -420,15 +513,13 @@
   </div>
 
   <header>
-    <h1>ULTIMATE GAMING HUB</h1>
-    <p>Interaktiv va qiziqarli neon kiberpank o'yinlar olami</p>
+    <h1>ULTIMATE GAMING & LOGIC HUB</h1>
+    <p>Interaktiv neon kiberpank o'yinlar va foydali asboblar olami</p>
   </header>
 
   <div class="dashboard">
 
-    <!-- TEPADA YONMA-YON TURADIGAN 3 TA ASOSIY O'YIN -->
     <div class="top-games-grid">
-      <!-- LUMBERJACK -->
       <div class="card">
         <div class="game-header">
           <h2>LumberJack</h2>
@@ -437,7 +528,6 @@
         <iframe src="https://tbot.xyz/lumber/"></iframe>
       </div>
 
-      <!-- 2048 CLASSIC -->
       <div class="card">
         <div class="game-header">
           <h2>2048 Classic</h2>
@@ -446,7 +536,6 @@
         <iframe src="https://2048.org/"></iframe>
       </div>
 
-      <!-- CHESS PUZZLE -->
       <div class="card">
         <div class="game-header">
           <h2>Chess Puzzle</h2>
@@ -458,10 +547,38 @@
 
     <hr style="border: 1px solid rgba(0, 242, 255, 0.2); width: 100%;">
 
-    <!-- PASTDA INTERAKTIV O'YINLAR -->
     <div class="bottom-games-column">
 
-      <!-- TIC-TAC-TOE -->
+      <div class="card calc-card">
+        <div class="game-header">
+          <h2>Neon Calculator</h2>
+        </div>
+
+        <input type="text" id="calc-disp" disabled placeholder="0">
+
+        <div class="calc-grid">
+          <button class="c-btn" onclick="cInp('7')">7</button>
+          <button class="c-btn" onclick="cInp('8')">8</button>
+          <button class="c-btn" onclick="cInp('9')">9</button>
+          <button class="c-btn" onclick="cInp('/')">/</button>
+
+          <button class="c-btn" onclick="cInp('4')">4</button>
+          <button class="c-btn" onclick="cInp('5')">5</button>
+          <button class="c-btn" onclick="cInp('6')">6</button>
+          <button class="c-btn" onclick="cInp('*')">*</button>
+
+          <button class="c-btn" onclick="cInp('1')">1</button>
+          <button class="c-btn" onclick="cInp('2')">2</button>
+          <button class="c-btn" onclick="cInp('3')">3</button>
+          <button class="c-btn" onclick="cInp('-')">-</button>
+
+          <button class="c-btn btn-clear" onclick="cClr()">C</button>
+          <button class="c-btn" onclick="cInp('0')">0</button>
+          <button class="c-btn btn-equal" onclick="cRes()">=</button>
+          <button class="c-btn" onclick="cInp('+')">+</button>
+        </div>
+      </div>
+
       <div class="card">
         <div class="game-header">
           <h2>Tic-Tac-Toe (X va O)</h2>
@@ -482,7 +599,6 @@
         <button id="tttReset" class="btn-main btn-secondary" style="width: 100%;">O'yinni yangilash</button>
       </div>
 
-      <!-- ANAGRAM MASTER -->
       <div class="card">
         <div class="game-header">
           <h2>Til O'rganish: Anagram Master</h2>
@@ -498,12 +614,12 @@
             style="color:var(--neon-blue)">0</span></div>
       </div>
 
-      <!-- ENGLISH ALPHABET -->
       <div class="card">
         <div class="game-header">
           <h2>English Alphabet (A-Z)</h2>
         </div>
-        <p style="text-align: center; margin: 0 0 10px 0;">Harflarni oxirigacha talaffuzi va misollar bilan o'rganing!</p>
+        <p style="text-align: center; margin: 0 0 10px 0;">Harflarni oxirigacha talaffuzi va misollar bilan o'rganing!
+        </p>
         <div class="lang-selector">
           <button id="btnEn" class="lang-btn active" onclick="setLanguage('en')">Englishcha</button>
           <button id="btnRu" class="lang-btn" onclick="setLanguage('ru')">Ruscha</button>
@@ -520,7 +636,6 @@
         </div>
       </div>
 
-      <!-- TAXMIN QILING -->
       <div class="card">
         <div class="game-header">
           <h2>Taxmin qiling (1-20)</h2>
@@ -534,18 +649,17 @@
         <button id="newGameButton" class="btn-main btn-secondary">Yangi o'yin</button>
       </div>
 
-      <!-- TEZ BOSISH -->
       <div class="card">
         <div class="game-header">
           <h2>Tez bosish (Reaction Time)</h2>
         </div>
-        <p>Boshlashni bosing, ekran <span style="color:#24cc4f; font-weight:bold;">YASHIL</span> bo'lganda unga tez bosing!</p>
+        <p>Boshlashni bosing, ekran <span style="color:#24cc4f; font-weight:bold;">YASHIL</span> bo'lganda unga tez
+          bosing!</p>
         <button id="startReactionButton" class="btn-main" style="margin-bottom: 10px;">Boshlash</button>
         <div id="reactionArea" class="reaction-area">Kutilmoqda...</div>
         <p id="reactionTime" class="game-msg" style="color: var(--neon-blue); margin-top: 10px;"></p>
       </div>
 
-      <!-- MEGA BOMB -->
       <div class="card">
         <div class="game-header">
           <h2>Mega Bomb</h2>
@@ -557,7 +671,6 @@
         <div id="bombArea" class="bomb-area"></div>
       </div>
 
-      <!-- TEZ YOZISH -->
       <div class="card">
         <div class="game-header">
           <h2>Tez yozish (Typing Speed)</h2>
@@ -609,6 +722,27 @@
     }
     setInterval(draw, 40);
     window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+    // CALCULATOR LOGIC
+    const calcDisplay = document.getElementById('calc-disp');
+    function cInp(v) { calcDisplay.value += v; }
+    function cClr() { calcDisplay.value = ""; }
+    function cRes() { try { calcDisplay.value = eval(calcDisplay.value) || "0"; } catch { calcDisplay.value = "Error"; } }
+
+    // Calculator Keyboard Input
+    window.addEventListener('keydown', function (event) {
+      const key = event.key;
+      if ('0123456789+-*/.'.includes(key)) {
+        cInp(key);
+      } else if (key === 'Enter' || key === '=') {
+        event.preventDefault();
+        cRes();
+      } else if (key === 'Escape') {
+        cClr();
+      } else if (key === 'Backspace') {
+        calcDisplay.value = calcDisplay.value.toString().slice(0, -1);
+      }
+    });
 
     // TIC-TAC-TOE
     const tttGrid = document.getElementById('tttGrid');
@@ -701,8 +835,8 @@
     });
     document.getElementById('newGameButton').addEventListener('click', () => { secretRandomNumber = Math.floor(Math.random() * 20) + 1; document.getElementById('guessMessage').textContent = "Yangi o'yin boshlandi! Son o'zgardi."; document.getElementById('guessInput').value = ""; });
 
-    // TEZ BOSISH (Reaction Time) - Anti Cheat Tizimi Bilan
-    let rStart, rTimeout, rState = "idle"; // idle, waiting, ready
+    // TEZ BOSISH (Reaction Time)
+    let rStart, rTimeout, rState = "idle";
     const rArea = document.getElementById('reactionArea');
     const rTimeText = document.getElementById('reactionTime');
 
@@ -711,10 +845,10 @@
       rState = "waiting";
       clearTimeout(rTimeout);
       rTimeout = setTimeout(() => {
-        if (rState === "waiting") { 
-          rArea.style.background = "#24cc4f"; rArea.textContent = "BOSING!!!"; 
-          rStart = new Date().getTime(); 
-          rState = "ready"; 
+        if (rState === "waiting") {
+          rArea.style.background = "#24cc4f"; rArea.textContent = "BOSING!!!";
+          rStart = new Date().getTime();
+          rState = "ready";
         }
       }, Math.random() * 3000 + 2000);
     });
@@ -742,10 +876,10 @@
       bArea.innerHTML = "";
       let tl = 15;
       bTimer = setInterval(() => {
-        tl--; 
-        if (tl <= 0) { 
-          clearInterval(bTimer); clearInterval(bSpawn); bActive = false; bArea.innerHTML = ""; 
-          document.getElementById('bombMessage').textContent = `Tugadi! Yakuniy Ball: ${bScore}`; 
+        tl--;
+        if (tl <= 0) {
+          clearInterval(bTimer); clearInterval(bSpawn); bActive = false; bArea.innerHTML = "";
+          document.getElementById('bombMessage').textContent = `Tugadi! Yakuniy Ball: ${bScore}`;
         }
       }, 1000);
       bSpawn = setInterval(() => {
@@ -772,20 +906,20 @@
       clearInterval(tInt);
       tInt = setInterval(() => {
         tTime--; document.getElementById('typingTimer').textContent = `Vaqt: ${tTime}s`;
-        if (tTime <= 0) { 
-          clearInterval(tInt); tInput.disabled = true; tBtn.disabled = true; 
+        if (tTime <= 0) {
+          clearInterval(tInt); tInput.disabled = true; tBtn.disabled = true;
           document.getElementById('typingWord').textContent = "Tamom!";
           document.getElementById('typingMessage').textContent = `Vaqt tugadi! Siz to'plagan jami ball: ${tScore}`;
         }
       }, 1000);
     });
 
-    function chk() { 
-      if (tInput.value.trim().toLowerCase() === cWord) { 
-        tScore += 5; document.getElementById('typingScore').textContent = `Ball: ${tScore}`; 
-        tInput.value = ""; cWord = wList[Math.floor(Math.random() * wList.length)]; 
-        document.getElementById('typingWord').textContent = cWord; 
-      } 
+    function chk() {
+      if (tInput.value.trim().toLowerCase() === cWord) {
+        tScore += 5; document.getElementById('typingScore').textContent = `Ball: ${tScore}`;
+        tInput.value = ""; cWord = wList[Math.floor(Math.random() * wList.length)];
+        document.getElementById('typingWord').textContent = cWord;
+      }
     }
     tBtn.addEventListener('click', chk);
     tInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') chk(); });
