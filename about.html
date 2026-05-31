@@ -7,6 +7,8 @@
     <title>JQ Portfolio - About</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;600&display=swap"
         rel="stylesheet">
+    <!-- Ikonkalar chiqishi uchun Font Awesome kutubxonasi -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --n-blue: #00f2ff;
@@ -78,6 +80,9 @@
             transition: all 0.3s ease-in-out;
             letter-spacing: 1px;
             white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .back-menu-btn:hover {
@@ -166,6 +171,56 @@
             margin-bottom: 20px;
         }
 
+        /* --- CV O'TISH BLOKI STULLARI --- */
+        .cv-link-box {
+            margin: 20px 0 25px 0;
+            padding: 20px;
+            border: 1px dashed rgba(0, 242, 255, 0.3);
+            border-radius: 12px;
+            background: rgba(0, 242, 255, 0.02);
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .cv-link-box:hover {
+            border-color: var(--n-blue);
+            background: rgba(0, 242, 255, 0.05);
+        }
+
+        .cv-link-box p {
+            margin: 0 0 12px 0 !important;
+            font-size: 0.8rem !important;
+            color: #888;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .cv-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: 1px solid var(--n-pink);
+            padding: 12px 24px;
+            border-radius: 8px;
+            background: rgba(255, 0, 234, 0.07);
+            text-shadow: 0 0 5px var(--n-pink);
+            box-shadow: 0 0 10px rgba(255, 0, 234, 0.2);
+            transition: 0.3s ease-in-out;
+        }
+
+        .cv-btn:hover {
+            background: var(--n-pink);
+            color: #fff;
+            box-shadow: 0 0 25px var(--n-pink);
+            text-shadow: 0 0 8px #fff;
+            transform: translateY(-2px);
+        }
+
         .about-profile p {
             line-height: 1.6;
             color: #ccc;
@@ -221,12 +276,20 @@
             margin-top: 25px;
             border-left: 3px solid var(--n-pink);
             word-break: break-all;
-            /* Telefon raqam va emaillar sig'ishi uchun */
         }
 
         .contact-info p {
-            margin: 8px 0;
+            margin: 12px 0;
             font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-info i {
+            color: var(--n-blue);
+            width: 18px;
+            text-align: center;
         }
 
         .about-card h3,
@@ -283,7 +346,6 @@
 
             .page-heading h1 {
                 font-size: 2rem;
-                /* Telefondagi katta sarlavha kichraytirildi */
             }
 
             .page-heading p {
@@ -294,19 +356,16 @@
             .about-card,
             .skill-card {
                 padding: 20px;
-                /* Ichki bo'shliq telefonga moslandi */
             }
 
             .about-profile p {
                 text-align: center;
-                /* Telefon ekranida matn o'rtaga tekislanadi */
             }
         }
 
         @media (max-width: 480px) {
             .header-inner {
                 flex-direction: row;
-                /* Elementlar yonma-yon qoladi, lekin shrift kichrayadi */
             }
 
             .logo {
@@ -340,7 +399,7 @@
         <div class="container header-inner">
             <a href="index.html" class="logo">Portfolio</a>
             <nav class="nav-menu">
-                <a href="index.html" class="back-menu-btn">« MENUGA QAYTISH</a>
+                <a href="index.html" class="back-menu-btn"><i class="fa-solid fa-angles-left"></i> MENUGA QAYTISH</a>
             </nav>
         </div>
     </header>
@@ -356,11 +415,20 @@
                 <img src="image.png" alt="Qurbonbayev Jo'shqinbek" class="profile-image">
                 <h2>Qurbonbayev Jo'shqinbek</h2>
                 <div class="age-tag">14 yoshdaman</div>
+
+                <!-- --- MUKAMMAL INTEGRATSIYA: CV SAHIFASIGA TUGMA ORQALI KIRISH --- -->
+                <div class="cv-link-box">
+                    <p>TO'LIQ REZUME VARIANTI</p>
+                    <a href="cv.html" class="cv-btn">
+                        <i class="fa-solid fa-id-card"></i> CV NI KO'RISH <i class="fa-solid fa-arrow-right-long"></i>
+                    </a>
+                </div>
+                <!-- -------------------------------------------------------- -->
+
                 <p>Men o'zimni dasturlash olamiga qiziqadigan yangi avlodiman. Kod yozish, interaktiv
                     algoritmlar yaratish va zamonaviy veb-texnologiyalarni o'rganish mening asosiy maqsadim.</p>
                 <p>Hozirda HTML va CSS yordamida chiroyli interfeyslar tuzyapman, hamda JavaScript tilining
-                    sir-asrorlarini
-                    mukammal o'rganishni boshlaganman.</p>
+                    sir-asrorlarini mukammal o'rganishni boshlaganman.</p>
 
                 <div class="progress-container">
                     <div class="progress-item">
@@ -400,10 +468,10 @@
                 </div>
 
                 <div class="contact-info">
-                    <p><strong>Telefon:</strong> +998 91 092 62 81</p>
-                    <p><strong>Email:</strong> qurbonbayevjoshqinbek@gmail.com</p>
-                    <p><strong>Instagram:</strong> @769_live_</p>
-                    <p><strong>Telegram:</strong> +998 91 092 62 81</p>
+                    <p><i class="fa-solid fa-phone"></i> <strong>Telefon:</strong> +998 91 092 62 81</p>
+                    <p><i class="fa-solid fa-envelope"></i> <strong>Email:</strong> qurbonbayevjoshqinbek@gmail.com</p>
+                    <p><i class="fa-brands fa-instagram"></i> <strong>Instagram:</strong> @769_live_</p>
+                    <p><i class="fa-brands fa-telegram"></i> <strong>Telegram:</strong> +998 91 092 62 81</p>
                 </div>
             </div>
 

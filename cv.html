@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV | JQ Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-blue: #00f2ff;
+            --neon-pink: #ff00ea;
+            --bg-dark: #050505;
+            --card-bg: rgba(18, 18, 26, 0.75);
+            --text-color: white;
+            --card-p-color: #aaa;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg-dark);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .cv-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.15);
+            padding: 40px;
+            position: relative;
+            clip-path: polygon(100% 0, 100% 95%, 95% 100%, 0 100%, 0 0);
+        }
+
+        /* Yuqori boshqaruv paneli (Tugmalar uchun) */
+        .cv-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--neon-pink);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid var(--neon-pink);
+            padding: 10px 20px;
+            transition: 0.3s;
+            background: rgba(255, 0, 234, 0.05);
+        }
+
+        .back-btn:hover {
+            background: var(--neon-pink);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-pink);
+            transform: translateX(-3px);
+        }
+
+        /* Yangi PDF yuklab olish tugmasi */
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--neon-blue);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid var(--neon-blue);
+            padding: 10px 20px;
+            background: rgba(0, 242, 255, 0.05);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .download-btn:hover {
+            background: var(--neon-blue);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        /* PDF tayyorlanmoqda xabarnomasi (Toast Notification) */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1a1a24;
+            color: #fff;
+            padding: 15px 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            border-left: 4px solid var(--neon-blue);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateY(150%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 9999;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+        }
+
+        .toast i {
+            color: var(--neon-blue);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* CV Kontenti */
+        .cv-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed rgba(0, 242, 255, 0.3);
+            padding-bottom: 30px;
+            margin-bottom: 30px;
+        }
+
+        .header-info h1 {
+            font-family: 'Orbitron', sans-serif;
+            margin: 0 0 5px 0;
+            font-size: 2.2rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .header-info p {
+            color: var(--neon-blue);
+            font-family: 'Orbitron', sans-serif;
+            margin: 0;
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            color: var(--card-p-color);
+        }
+
+        .contact-item i {
+            color: var(--neon-blue);
+            width: 16px;
+        }
+
+        .cv-main {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 40px;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            font-size: 1.3rem;
+            border-left: 3px solid var(--neon-pink);
+            padding-left: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: var(--card-p-color);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .timeline-item {
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 15px;
+            border-left: 1px solid rgba(255, 0, 234, 0.3);
+        }
+
+        .timeline-date {
+            font-size: 0.8rem;
+            color: var(--neon-pink);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 3px;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin: 0 0 2px 0;
+        }
+
+        .timeline-company {
+            font-size: 0.9rem;
+            color: var(--neon-blue);
+            margin-bottom: 8px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .skill-tag {
+            background: rgba(0, 242, 255, 0.05);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--card-p-color);
+        }
+
+        .lang-item {
+            margin-bottom: 12px;
+        }
+
+        .lang-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--neon-pink);
+        }
+
+        .cert-card {
+            background: rgba(5, 5, 5, 0.4);
+            border: 1px solid rgba(255, 0, 234, 0.2);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cert-card i {
+            font-size: 2rem;
+            color: var(--neon-blue);
+        }
+
+        .cert-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .cert-org {
+            font-size: 0.8rem;
+            color: var(--card-p-color);
+            margin: 3px 0 0 0;
+        }
+
+        /* --- PRINT STYLES (PDF yuklanayotganda ortiqcha narsalarni yashirish) --- */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+            }
+
+            .cv-container {
+                border: none !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                clip-path: none !important;
+            }
+
+            .cv-controls,
+            .toast {
+                display: none !important;
+                /* Tugmalar PDF ichiga tushmaydi */
+            }
+
+            h2 {
+                color: #000 !important;
+                border-left-color: #000 !important;
+            }
+
+            .header-info p,
+            .timeline-date,
+            .timeline-company {
+                color: #333 !important;
+            }
+
+            .skill-tag {
+                border: 1px solid #ccc !important;
+                color: #000 !important;
+            }
+
+            .progress {
+                background: #000 !important;
+            }
+
+            .contact-item,
+            .cert-org,
+            p {
+                color: #222 !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cv-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cv-main {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .cv-container {
+                clip-path: none;
+                padding: 20px;
+            }
+
+            .cv-controls {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+
+            .back-btn,
+            .download-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cv-container">
+        <!-- Boshqaruv paneli -->
+        <div class="cv-controls">
+            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> ORQAGA</a>
+            <button class="download-btn" id="pdfBtn"><i class="fa-solid fa-file-pdf"></i> PDF YUKLAB OLISH</button>
+        </div>
+
+        <!-- CV Kontenti -->
+        <header class="cv-header">
+            <div class="header-info">
+                <h1>JQ_live</h1>
+                <p>Frontend & Backend Web Developer</p>
+
+                <div class="contact-grid">
+                    <div class="contact-item"><i class="fa-solid fa-phone"></i> +998 (91) 092-62-81</div>
+                    <div class="contact-item"><i class="fa-solid fa-envelope"></i> jq_live@gmail.com</div>
+                    <div class="contact-item"><i class="fa-brands fa-telegram"></i> @JQ_live</div>
+                    <div class="contact-item"><i class="fa-solid fa-location-dot"></i> O'zbekiston</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="cv-main">
+            <div class="left-column">
+                <div class="section">
+                    <h2>Men Haqimda</h2>
+                    <p>Men zamonaviy, xavfsiz va yuqori samaradorlikka ega veb-saytlar hamda tizimlar yaratishga
+                        qiziquvchi dasturchiman. Har bir loyihaga ijodiy va professional yondashaman.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Tajriba va Faoliyat</h2>
+                    <div class="timeline-item">
+                        <div class="timeline-date">2025 - Hozirgacha</div>
+                        <div class="timeline-title">Mustaqil Web Developer</div>
+                        <div class="timeline-company">Portfolio Loyihalari</div>
+                        <p>HTML, CSS, Tailwind CSS hamda backend texnologiyalari yordamida shaxsiy kiber-platformalar
+                            yaratish.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="section">
+                    <h2>Ko'nikmalar</h2>
+                    <div class="skills-grid">
+                        <div class="skill-tag">HTML / CSS</div>
+                        <div class="skill-tag">Tailwind</div>
+                        <div class="skill-tag">JavaScript</div>
+                        <div class="skill-tag">Git / GitHub</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Til Bilish</h2>
+                    <div class="lang-item">
+                        <div class="lang-info"><span>O'zbek tili</span><span>Ona tili</span></div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rasmdagi pop-up bildirishnoma (Toast) -->
+    <div class="toast" id="downloadToast">
+        <i class="fa-solid fa-spinner"></i>
+        <span>PDF tayyorlanmoqda...</span>
+    </div>
+
+    <script>
+        const pdfBtn = document.getElementById('pdfBtn');
+        const toast = document.getElementById('downloadToast');
+
+        pdfBtn.addEventListener('click', () => {
+            // 1. Toast xabarnomasini ko'rsatish
+            toast.classList.add('show');
+
+            // 2. Biroz kutib (effekt berish uchun), printerni ochish
+            setTimeout(() => {
+                toast.classList.remove('show');
+                window.print(); // Brauzer orqali PDF saqlash oynasini ochadi
+            }, 1500); // 1.5 soniya ko'rinib turadi
+        });
+    </script>
+</body>
+
+</html>
