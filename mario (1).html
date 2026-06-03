@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Mario</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #1a0533;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: 'Press Start 2P', monospace;
+      overflow: hidden;
+    }
+
+    #ui {
+      display: flex;
+      gap: 40px;
+      color: #fff;
+      font-size: 11px;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px #000;
+      letter-spacing: 1px;
+    }
+
+    #ui span {
+      color: #ffdd00;
+    }
+
+    #gameContainer {
+      position: relative;
+      border: 4px solid #fff;
+      box-shadow: 0 0 40px #a020f0, 0 0 80px #5010a0;
+    }
+
+    canvas {
+      display: block;
+      image-rendering: pixelated;
+    }
+
+    #overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      gap: 20px;
+      z-index: 10;
+    }
+
+    #overlay h1 {
+      font-size: 28px;
+      color: #ff4444;
+      text-shadow: 3px 3px #000, 0 0 20px #ff0000;
+      animation: pulse 1s infinite alternate;
+    }
+
+    #overlay .sub {
+      font-size: 10px;
+      color: #ffdd00;
+      text-align: center;
+      line-height: 2;
+    }
+
+    #startBtn {
+      background: #ff4444;
+      border: 3px solid #fff;
+      color: #fff;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      padding: 12px 28px;
+      cursor: pointer;
+      box-shadow: 4px 4px #000;
+      transition: transform 0.1s;
+      margin-top: 10px;
+    }
+
+    #startBtn:hover {
+      transform: scale(1.05);
+      background: #ff6666;
+    }
+
+    #startBtn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px #000;
+    }
+
+    @keyframes pulse {
+      from {
+        text-shadow: 3px 3px #000, 0 0 10px #ff0000;
+      }
+
+      to {
+        text-shadow: 3px 3px #000, 0 0 30px #ff6600;
+      }
+    }
+
+    #controls {
+      color: #aaa;
+      font-size: 8px;
+      margin-top: 10px;
+      text-align: center;
+      line-height: 2.2;
+    }
+    .back-btn {
+      color: white;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="poco" style="margin-bottom: 100px; color: #fff important; text-decoration: none;  background: #00a8cc !important; padding: 10px 20px; border-radius: 8px; box-shadow: 0 0 20px #00a8cc;">
+    <a href="projects.html" class="back-btn" id="lblBack"><i class="fa-solid fa-arrow-left"></i> ORQAGA</a>
+  </div>
+
+  <div id="ui">
+    MARIO &nbsp; SCORE: <span id="scoreDisplay">0</span> &nbsp;&nbsp; LIVES: <span id="livesDisplay">3</span>
+    &nbsp;&nbsp; COINS: <span id="coinsDisplay">0</span>
+  </div>
+
+  <div id="gameContainer">
+    <canvas id="canvas" width="800" height="400"></canvas>
+    <div id="overlay">
+      <h1>🍄 SUPER MARIO</h1>
+      <div class="sub">
+        ← → yoki A/D — Yurish<br>
+        ↑ yoki W yoki SPACE — Sakrash<br>
+        Raqiblarni tepib o'ldiring!
+      </div>
+      <button id="startBtn" onclick="startGame()">▶ BOSHLASH</button>
+    </div>
+  </div>
+
+  <div id="controls">⬅➡ harakat &nbsp;|&nbsp; ⬆ / SPACE sakrash</div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    // Color palette
+    const C = {
+      sky: '#5c94fc',
+      skyBot: '#3d7de0',
+      ground: '#8B4513',
+      grass: '#228B22',
+      grassTop: '#32CD32',
+      brick: '#b05010',
+      brickEdge: '#803010',
+      q: '#e0a010',
+      coin: '#ffd700',
+      pipe: '#00aa00',
+      pipeD: '#007700',
+      mario: '#ff2200',
+      marioS: '#cc1100',
+      marioH: '#f4c878',
+      marioO: '#2244aa',
+      goomba: '#a06030',
+      goombaD: '#704020',
+      goombaE: '#ff2200',
+      cloud: '#ffffff',
+      cloudS: '#e0e0e0',
+    };
+
+    // Game state
+    let score = 0, lives = 3, coins = 0;
+    let gameRunning = false, gameOver = false;
+    let cameraX = 0;
+    let keys = {};
+    let frame = 0;
+
+    // Mario
+    let mario = {};
+
+    function resetMario() {
+      mario = {
+        x: 100, y: 250,
+        vx: 0, vy: 0,
+        w: 28, h: 32,
+        onGround: false,
+        facingRight: true,
+        dead: false,
+        deathTimer: 0,
+        invincible: 0,
+        walkFrame: 0,
+        walkTimer: 0,
+      };
+    }
+
+    // Platform/level data
+    let platforms = [];
+    let enemies = [];
+    let coinItems = [];
+    let pipes = [];
+    let clouds = [];
+    let particles = [];
+
+    function buildLevel() {
+      platforms = [];
+      enemies = [];
+      coinItems = [];
+      pipes = [];
+      clouds = [];
+
+      const GY = 340; // ground y
+
+      // Ground (long)
+      for (let x = -200; x < 3600; x += 32) {
+        if (x >= 800 && x < 960) continue; // gap
+        if (x >= 1600 && x < 1760) continue; // gap
+        platforms.push({ x, y: GY, w: 32, h: 60, type: 'ground' });
+      }
+
+      // Floating bricks
+      const brickRows = [
+        { x: 300, y: 240, count: 4 },
+        { x: 480, y: 200, count: 3 },
+        { x: 640, y: 240, count: 5 },
+        { x: 900, y: 220, count: 4 },
+        { x: 1100, y: 180, count: 5 },
+        { x: 1280, y: 240, count: 3 },
+        { x: 1500, y: 200, count: 6 },
+        { x: 1800, y: 240, count: 4 },
+        { x: 2000, y: 200, count: 5 },
+        { x: 2200, y: 220, count: 3 },
+        { x: 2400, y: 180, count: 6 },
+        { x: 2700, y: 240, count: 4 },
+        { x: 2900, y: 200, count: 5 },
+        { x: 3100, y: 220, count: 4 },
+        { x: 3300, y: 180, count: 5 },
+      ];
+      brickRows.forEach(r => {
+        for (let i = 0; i < r.count; i++) {
+          platforms.push({ x: r.x + i * 32, y: r.y, w: 32, h: 32, type: 'brick' });
+        }
+      });
+
+      // ? blocks (coins inside)
+      const qBlocks = [
+        { x: 350, y: 240 }, { x: 510, y: 200 }, { x: 950, y: 220 },
+        { x: 1150, y: 180 }, { x: 1530, y: 200 }, { x: 1850, y: 240 },
+        { x: 2050, y: 200 }, { x: 2450, y: 180 }, { x: 2750, y: 240 },
+        { x: 2950, y: 200 }, { x: 3150, y: 220 }, { x: 3350, y: 180 },
+      ];
+      qBlocks.forEach(b => {
+        platforms.push({ x: b.x, y: b.y, w: 32, h: 32, type: 'qblock', hit: false });
+      });
+
+      // Pipes
+      [200, 550, 1050, 1400, 1900, 2300, 2650, 3000, 3400].forEach((px, i) => {
+        const ph = 48 + (i % 3) * 16;
+        pipes.push({ x: px, y: GY - ph + 0, w: 48, h: ph + 60 });
+      });
+
+      // Enemies (goombas)
+      [350, 550, 750, 1050, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3450].forEach((ex, i) => {
+        enemies.push({
+          x: ex, y: GY - 28,
+          vx: (i % 2 === 0 ? -0.7 : 0.7),
+          w: 28, h: 28,
+          alive: true,
+          squished: false,
+          squishTimer: 0,
+          walkFrame: 0,
+        });
+      });
+
+      // Coins floating
+      for (let x = 200; x < 3500; x += 160) {
+        const yv = [GY - 80, GY - 160, GY - 120];
+        coinItems.push({ x, y: yv[Math.floor(Math.random() * 3)], collected: false, bobTimer: Math.random() * Math.PI * 2 });
+      }
+
+      // Clouds
+      for (let x = 100; x < 3600; x += 350) {
+        clouds.push({ x, y: 40 + Math.random() * 60, w: 80 + Math.random() * 60 });
+      }
+    }
+
+    // Collision helpers
+    function rectOverlap(a, b) {
+      return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+    }
+
+    function startGame() {
+      document.getElementById('overlay').style.display = 'none';
+      score = 0; lives = 3; coins = 0;
+      gameOver = false; gameRunning = true;
+      cameraX = 0;
+      resetMario();
+      buildLevel();
+      particles = [];
+      requestAnimationFrame(loop);
+    }
+
+    function spawnParticles(x, y, color, count = 6) {
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 / count) * i + Math.random() * 0.5;
+        particles.push({
+          x, y,
+          vx: Math.cos(angle) * 3,
+          vy: Math.sin(angle) * 3 - 2,
+          life: 30,
+          maxLife: 30,
+          color,
+          r: 4 + Math.random() * 4,
+        });
+      }
+    }
+
+    function update() {
+      frame++;
+
+      // Mario movement
+      if (!mario.dead) {
+        const speed = 3.2;
+        const accel = 0.4;
+        const friction = 0.8;
+
+        if (keys['ArrowLeft'] || keys['a'] || keys['A']) {
+          mario.vx -= accel;
+          mario.facingRight = false;
+        } else if (keys['ArrowRight'] || keys['d'] || keys['D']) {
+          mario.vx += accel;
+          mario.facingRight = true;
+        } else {
+          mario.vx *= friction;
+        }
+
+        mario.vx = Math.max(-speed, Math.min(speed, mario.vx));
+
+        const canJump = keys['ArrowUp'] || keys['w'] || keys['W'] || keys[' '];
+        if (canJump && mario.onGround) {
+          mario.vy = -12;
+          mario.onGround = false;
+        }
+
+        mario.vy += 0.55; // gravity
+        mario.vy = Math.min(mario.vy, 14);
+
+        mario.x += mario.vx;
+        mario.y += mario.vy;
+
+        // Walk animation
+        if (mario.onGround && Math.abs(mario.vx) > 0.3) {
+          mario.walkTimer++;
+          if (mario.walkTimer > 6) { mario.walkFrame = (mario.walkFrame + 1) % 3; mario.walkTimer = 0; }
+        }
+
+        mario.onGround = false;
+
+        // Platform collisions
+        for (const p of platforms) {
+          if (!rectOverlap(mario, p)) continue;
+          const overlapX = Math.min(mario.x + mario.w, p.x + p.w) - Math.max(mario.x, p.x);
+          const overlapY = Math.min(mario.y + mario.h, p.y + p.h) - Math.max(mario.y, p.y);
+
+          if (overlapX < overlapY) {
+            if (mario.x < p.x) mario.x -= overlapX; else mario.x += overlapX;
+            mario.vx = 0;
+          } else {
+            if (mario.y < p.y) {
+              mario.y = p.y - mario.h;
+              mario.vy = 0;
+              mario.onGround = true;
+            } else {
+              mario.y = p.y + p.h;
+              mario.vy = Math.max(mario.vy, 0);
+              // Hit block from below
+              if (p.type === 'qblock' && !p.hit) {
+                p.hit = true;
+                p.bounceTimer = 8;
+                spawnParticles(p.x + 16, p.y, C.coin, 5);
+                coins++;
+                score += 100;
+                updateUI();
+              } else if (p.type === 'brick') {
+                spawnParticles(p.x + 16, p.y, C.brick, 6);
+                platforms.splice(platforms.indexOf(p), 1);
+                score += 50;
+                updateUI();
+              }
+            }
+          }
+        }
+
+        // Pipe collisions
+        for (const p of pipes) {
+          if (!rectOverlap(mario, p)) continue;
+          const overlapX = Math.min(mario.x + mario.w, p.x + p.w) - Math.max(mario.x, p.x);
+          const overlapY = Math.min(mario.y + mario.h, p.y + p.h) - Math.max(mario.y, p.y);
+          if (overlapX < overlapY) {
+            if (mario.x < p.x) mario.x -= overlapX; else mario.x += overlapX;
+            mario.vx = 0;
+          } else if (mario.y < p.y) {
+            mario.y = p.y - mario.h;
+            mario.vy = 0;
+            mario.onGround = true;
+          }
+        }
+
+        // Coin collection
+        coinItems.forEach(c => {
+          if (!c.collected && Math.abs(mario.x + 14 - c.x) < 20 && Math.abs(mario.y + 16 - c.y) < 20) {
+            c.collected = true;
+            coins++;
+            score += 200;
+            spawnParticles(c.x, c.y, C.coin, 5);
+            updateUI();
+          }
+          c.bobTimer += 0.05;
+        });
+
+        // Enemy collisions
+        if (mario.invincible > 0) {
+          mario.invincible--;
+        } else {
+          enemies.forEach(e => {
+            if (!e.alive || !rectOverlap(mario, e)) return;
+            const mBottom = mario.y + mario.h;
+            const eTop = e.y;
+            if (mario.vy > 0 && mBottom < eTop + 12) {
+              // Stomp!
+              e.alive = false;
+              e.squished = true;
+              e.squishTimer = 30;
+              mario.vy = -8;
+              score += 300;
+              spawnParticles(e.x + 14, e.y, C.goomba, 5);
+              updateUI();
+            } else {
+              // Got hit
+              killMario();
+            }
+          });
+        }
+
+        // Fall death
+        if (mario.y > H + 100) killMario();
+
+        // Win condition
+        if (mario.x > 3500) {
+          score += 5000;
+          updateUI();
+          showOverlay('🏆 TABRIKLAYMIZ!', 'Siz g\'olib bo\'ldingiz!\nBall: ' + score, 'QAYTA O\'YNASH');
+          gameRunning = false;
+        }
+
+        // Camera
+        cameraX = Math.max(0, mario.x - 250);
+
+      } else {
+        // Dead animation
+        mario.deathTimer++;
+        if (mario.deathTimer < 20) mario.vy = -12;
+        mario.vy += 0.6;
+        mario.y += mario.vy;
+        if (mario.deathTimer > 80) {
+          lives--;
+          updateUI();
+          if (lives <= 0) {
+            showOverlay('💀 GAME OVER', 'Ball: ' + score, 'QAYTA BOSHLASH');
+            gameRunning = false;
+          } else {
+            resetMario();
+            cameraX = 0;
+          }
+        }
+      }
+
+      // Enemy movement
+      enemies.forEach(e => {
+        if (!e.alive) return;
+        e.x += e.vx;
+        // Bounce off platforms / edges
+        let onGround = false;
+        for (const p of platforms) {
+          if (e.x + e.w > p.x && e.x < p.x + p.w && Math.abs((e.y + e.h) - p.y) < 4) {
+            onGround = true; break;
+          }
+        }
+        // Reverse at gaps or edges
+        const nextX = e.x + e.vx * 10;
+        let hasFloor = false;
+        for (const p of platforms) {
+          if (nextX + e.w > p.x && nextX < p.x + p.w && p.y >= e.y + e.h - 4 && p.y <= e.y + e.h + 8) {
+            hasFloor = true; break;
+          }
+        }
+        if (!hasFloor && onGround) e.vx *= -1;
+        if (e.x < 0 || e.x > 3600) e.vx *= -1;
+        e.walkFrame = Math.floor(frame / 10) % 2;
+      });
+
+      // Particles
+      particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.2; p.life--; });
+      particles = particles.filter(p => p.life > 0);
+
+      // Block bounce
+      platforms.forEach(p => { if (p.bounceTimer > 0) p.bounceTimer--; });
+    }
+
+    function killMario() {
+      if (mario.invincible > 0 || mario.dead) return;
+      mario.dead = true;
+      mario.deathTimer = 0;
+      mario.vy = -12;
+    }
+
+    function updateUI() {
+      document.getElementById('scoreDisplay').textContent = score;
+      document.getElementById('livesDisplay').textContent = lives;
+      document.getElementById('coinsDisplay').textContent = coins;
+    }
+
+    function showOverlay(title, text, btnText) {
+      const ov = document.getElementById('overlay');
+      ov.innerHTML = `
+    <h1>${title}</h1>
+    <div class="sub">${text.replace(/\n/g, '<br>')}</div>
+    <button id="startBtn" onclick="startGame()">${btnText}</button>
+  `;
+      ov.style.display = 'flex';
+    }
+
+    // DRAW
+    function drawCloud(x, y, w) {
+      ctx.fillStyle = C.cloud;
+      const cx = x - cameraX;
+      ctx.beginPath();
+      ctx.arc(cx + w * 0.25, y + 10, w * 0.22, 0, Math.PI * 2);
+      ctx.arc(cx + w * 0.5, y, w * 0.28, 0, Math.PI * 2);
+      ctx.arc(cx + w * 0.75, y + 10, w * 0.22, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = C.cloudS;
+      ctx.beginPath();
+      ctx.arc(cx + w * 0.5, y + 4, w * 0.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawPlatform(p) {
+      const px = p.x - cameraX;
+      if (px > W + 50 || px + p.w < -50) return;
+      const bounce = p.bounceTimer > 0 ? -Math.sin(p.bounceTimer / 8 * Math.PI) * 4 : 0;
+      const dy = p.y + bounce;
+
+      if (p.type === 'ground') {
+        ctx.fillStyle = '#8B4513';
+        ctx.fillRect(px, dy, p.w, p.h);
+        ctx.fillStyle = '#228B22';
+        ctx.fillRect(px, dy, p.w, 10);
+        ctx.fillStyle = '#32CD32';
+        ctx.fillRect(px + 2, dy + 2, p.w - 4, 4);
+        ctx.strokeStyle = '#006600';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(px, dy, p.w, 10);
+      } else if (p.type === 'brick') {
+        ctx.fillStyle = C.brick;
+        ctx.fillRect(px, dy, p.w, p.h);
+        ctx.fillStyle = C.brickEdge;
+        ctx.fillRect(px, dy, p.w, 3);
+        ctx.fillRect(px, dy, 3, p.h);
+        ctx.fillRect(px + p.w - 3, dy, 3, p.h);
+        ctx.fillRect(px, dy + p.h - 3, p.w, 3);
+        ctx.strokeStyle = '#601800';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(px + 2, dy + 2, p.w - 4, p.h / 2 - 3);
+        ctx.strokeRect(px + p.w / 2, dy + p.h / 2, p.w / 2 - 2, p.h / 2 - 2);
+        ctx.strokeRect(px + 2, dy + p.h / 2, p.w / 2 - 2, p.h / 2 - 2);
+      } else if (p.type === 'qblock') {
+        if (p.hit) {
+          ctx.fillStyle = '#808080';
+        } else {
+          ctx.fillStyle = C.q;
+        }
+        ctx.fillRect(px, dy, p.w, p.h);
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.fillRect(px + 2, dy + 2, p.w - 4, 6);
+        if (!p.hit) {
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 18px monospace';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('?', px + p.w / 2, dy + p.h / 2 + 1);
+        }
+        ctx.strokeStyle = p.hit ? '#555' : '#a07000';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(px + 1, dy + 1, p.w - 2, p.h - 2);
+      }
+    }
+
+    function drawPipe(p) {
+      const px = p.x - cameraX;
+      if (px > W + 60 || px + p.w < -60) return;
+      // Pipe body
+      ctx.fillStyle = C.pipe;
+      ctx.fillRect(px + 4, p.y + 18, p.w - 8, p.h);
+      // Highlights
+      ctx.fillStyle = C.pipeD;
+      ctx.fillRect(px + 4, p.y + 18, 8, p.h);
+      ctx.fillStyle = 'rgba(255,255,255,0.15)';
+      ctx.fillRect(px + 8, p.y + 18, 4, p.h);
+      // Pipe top cap
+      ctx.fillStyle = C.pipe;
+      ctx.fillRect(px, p.y, p.w, 18);
+      ctx.fillStyle = C.pipeD;
+      ctx.fillRect(px, p.y, 8, 18);
+      ctx.fillStyle = 'rgba(255,255,255,0.15)';
+      ctx.fillRect(px + 8, p.y + 2, 5, 14);
+      ctx.strokeStyle = '#004400';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(px, p.y, p.w, 18);
+      ctx.strokeRect(px + 4, p.y + 18, p.w - 8, p.h - 18);
+    }
+
+    function drawMario() {
+      const mx = mario.x - cameraX;
+      const my = mario.y;
+      if (mario.invincible > 0 && frame % 4 < 2) return;
+
+      const flip = !mario.facingRight;
+      ctx.save();
+      if (flip) { ctx.translate(mx + mario.w, 0); ctx.scale(-1, 1); }
+      const ox = flip ? 0 : mx;
+      const oy = my;
+      const w = mario.w, h = mario.h;
+
+      if (mario.dead) {
+        // Dead mario spinning
+        ctx.fillStyle = C.mario;
+        ctx.fillRect(ox + 6, oy, w - 12, 8);
+        ctx.fillStyle = C.marioH;
+        ctx.fillRect(ox + 4, oy + 8, w - 8, 10);
+        ctx.fillStyle = C.mario;
+        ctx.fillRect(ox + 2, oy + 18, w - 4, 10);
+        ctx.restore();
+        return;
+      }
+
+      // Hat
+      ctx.fillStyle = C.mario;
+      ctx.fillRect(ox + 4, oy, w - 8, 6);
+      ctx.fillRect(ox + 2, oy + 4, w - 4, 4);
+
+      // Face
+      ctx.fillStyle = C.marioH;
+      ctx.fillRect(ox + 4, oy + 8, w - 8, 8);
+      // Eyes
+      ctx.fillStyle = '#000';
+      ctx.fillRect(ox + 8, oy + 10, 4, 4);
+      // Mustache
+      ctx.fillRect(ox + 6, oy + 15, w - 12, 2);
+
+      // Body
+      ctx.fillStyle = C.marioO;
+      ctx.fillRect(ox + 2, oy + 16, w - 4, 10);
+      // Overalls
+      ctx.fillStyle = C.mario;
+      ctx.fillRect(ox + 4, oy + 18, 8, 8);
+      ctx.fillRect(ox + w - 12, oy + 18, 8, 8);
+
+      // Legs / walk animation
+      const wf = mario.walkFrame;
+      ctx.fillStyle = C.mario;
+      if (!mario.onGround) {
+        ctx.fillRect(ox + 4, oy + 26, 8, 6);
+        ctx.fillRect(ox + w - 12, oy + 26, 8, 6);
+      } else if (Math.abs(mario.vx) > 0.3) {
+        if (wf === 0) {
+          ctx.fillRect(ox + 2, oy + 26, 8, 8);
+          ctx.fillRect(ox + w - 8, oy + 26, 6, 6);
+        } else if (wf === 1) {
+          ctx.fillRect(ox + 4, oy + 26, 8, 8);
+          ctx.fillRect(ox + w - 12, oy + 26, 8, 8);
+        } else {
+          ctx.fillRect(ox + 6, oy + 26, 6, 6);
+          ctx.fillRect(ox + w - 10, oy + 26, 8, 8);
+        }
+      } else {
+        ctx.fillRect(ox + 4, oy + 26, 8, 6);
+        ctx.fillRect(ox + w - 12, oy + 26, 8, 6);
+      }
+
+      ctx.restore();
+    }
+
+    function drawGoomba(e) {
+      const ex = e.x - cameraX;
+      if (ex > W + 40 || ex + e.w < -40) return;
+      const w = e.w, h = e.squished ? 10 : e.h;
+      const ey = e.squished ? e.y + e.h - h : e.y;
+
+      if (e.squished) {
+        ctx.fillStyle = C.goomba;
+        ctx.fillRect(ex, ey, w, h);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(ex + 4, ey + 2, 6, 3);
+        ctx.fillRect(ex + w - 10, ey + 2, 6, 3);
+        return;
+      }
+
+      ctx.fillStyle = C.goomba;
+      ctx.beginPath();
+      ctx.ellipse(ex + w / 2, ey + h * 0.55, w / 2, h * 0.45, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Head bump
+      ctx.fillStyle = C.goombaD;
+      ctx.beginPath();
+      ctx.ellipse(ex + w / 2, ey + h * 0.3, w * 0.45, h * 0.32, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Eyes
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(ex + 5, ey + h * 0.2, 7, 7);
+      ctx.fillRect(ex + w - 12, ey + h * 0.2, 7, 7);
+      ctx.fillStyle = '#000';
+      const eyeOff = e.walkFrame === 0 ? 1 : -1;
+      ctx.fillRect(ex + 7 + eyeOff, ey + h * 0.22, 4, 4);
+      ctx.fillRect(ex + w - 10 + eyeOff, ey + h * 0.22, 4, 4);
+
+      // Angry brows
+      ctx.fillStyle = C.goombaE;
+      ctx.fillRect(ex + 4, ey + h * 0.15, 8, 3);
+      ctx.fillRect(ex + w - 12, ey + h * 0.15, 8, 3);
+
+      // Feet
+      ctx.fillStyle = C.goombaD;
+      const ft = e.walkFrame;
+      ctx.fillRect(ex + (ft === 0 ? 0 : 4), ey + h - 8, 10, 8);
+      ctx.fillRect(ex + w - (ft === 0 ? 10 : 14), ey + h - 8, 10, 8);
+    }
+
+    function drawCoin(c) {
+      if (c.collected) return;
+      const cx = c.x - cameraX;
+      if (cx > W + 20 || cx < -20) return;
+      const bob = Math.sin(c.bobTimer + frame * 0.05) * 4;
+      ctx.fillStyle = C.coin;
+      ctx.beginPath();
+      ctx.ellipse(cx, c.y + bob, 8, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#fff8';
+      ctx.beginPath();
+      ctx.ellipse(cx - 2, c.y + bob - 2, 3, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#cc8800';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.ellipse(cx, c.y + bob, 8, 10, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    function draw() {
+      // Sky gradient
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0, '#5c94fc');
+      grad.addColorStop(1, '#3d7de0');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // Clouds
+      clouds.forEach(c => drawCloud(c.x, c.y, c.w));
+
+      // Coins
+      coinItems.forEach(c => drawCoin(c));
+
+      // Platforms
+      platforms.forEach(p => drawPlatform(p));
+
+      // Pipes
+      pipes.forEach(p => drawPipe(p));
+
+      // Enemies
+      enemies.forEach(e => {
+        if (e.alive || e.squished) drawGoomba(e);
+      });
+
+      // Particles
+      particles.forEach(p => {
+        ctx.globalAlpha = p.life / p.maxLife;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x - cameraX, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+
+      // Mario
+      drawMario();
+
+      // Vignette
+      const vig = ctx.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, H * 0.9);
+      vig.addColorStop(0, 'rgba(0,0,0,0)');
+      vig.addColorStop(1, 'rgba(0,0,20,0.35)');
+      ctx.fillStyle = vig;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    function loop() {
+      if (!gameRunning) return;
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    // Key handling
+    document.addEventListener('keydown', e => {
+      keys[e.key] = true;
+      if ([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) e.preventDefault();
+    });
+    document.addEventListener('keyup', e => { keys[e.key] = false; });
+  </script>
+</body>
+
+</html>
