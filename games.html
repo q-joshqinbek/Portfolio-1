@@ -23,12 +23,16 @@
       overflow-x: hidden;
     }
 
-    #matrix {
+    /* HOVERLI CANVA FON STYLI */
+    #bg-canvas {
       position: fixed;
       top: 0;
       left: 0;
       z-index: -1;
-      opacity: 0.2;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      /* Sahifadagi tugmalarni bosishga xalaqit bermaydi */
     }
 
     .nav-container {
@@ -148,7 +152,6 @@
       box-shadow: 0 0 20px var(--neon-pink);
     }
 
-    /* KALKULYATOR KARTASI UCHUN MAXSUS ENI VA BO'YI O'LCHAMLARI */
     .calc-card {
       max-width: 340px;
       margin: 0 auto;
@@ -253,7 +256,6 @@
       color: #ccc;
     }
 
-    /* NEON KALKULYATOR INTEGRATSIYASI */
     #calc-disp {
       width: 100%;
       box-sizing: border-box;
@@ -278,7 +280,6 @@
 
     .c-btn {
       height: 60px;
-      /* Tugmalar bo'yi biroz baland qilindi */
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(0, 242, 255, 0.4);
       color: white;
@@ -321,7 +322,6 @@
       border-color: #ff3333;
     }
 
-    /* TIC-TAC-TOE STYLES */
     .ttt-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -506,7 +506,7 @@
 
 <body>
 
-  <canvas id="matrix"></canvas>
+  <canvas id="bg-canvas"></canvas>
 
   <div class="nav-container">
     <a href="index.html" class="crazy-menu-btn">◀ Menuga qaytish</a>
@@ -706,22 +706,129 @@
       } else { document.exitFullscreen(); }
     }
 
-    // MATRIX DIGITAL RAIN (Neon Blue Theme)
-    const canvas = document.getElementById('matrix');
+    // INTERAKTIV NEON PARTICLE FON LOGIKASI (Sichqoncha harakatiga sezgir)
+    const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    const drops = Array(Math.floor(canvas.width / 16)).fill(1);
-    function draw() {
-      ctx.fillStyle = "rgba(5, 5, 5, 0.15)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#00f2ff"; ctx.font = "15px monospace";
-      drops.forEach((y, i) => {
-        ctx.fillText("01"[Math.floor(Math.random() * 2)], i * 16, y * 16);
-        if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-      });
+
+    let particlesArray = [];
+    const colors = ['#00f2ff', '#ff00ea', '#00ff66', '#ffffff'];
+
+    const mouse = {
+      x: null,
+      y: null,
+      radius: 80 // Sichqoncha atrofidagi ta'sir radiusi
     }
-    setInterval(draw, 40);
-    window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+    // Sahifa o'lchami o'zgarganda canva'ni moslash
+    window.addEventListener('resize', function () {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Sichqoncha harakatini kuzatish
+    window.addEventListener('mousemove', function (event) {
+      mouse.x = event.clientX;
+      mouse.y = event.clientY;
+
+      // Sichqoncha harakatlanganda yangi zarrachalar yaratish
+      for (let i = 0; i < 2; i++) {
+        particlesArray.push(new Particle());
+      }
+    });
+
+    // Sichqoncha ekrandan chiqib ketganda koordinatalarni o'chirish
+    window.addEventListener('mouseout', function () {
+      mouse.x = null;
+      mouse.y = null;
+    });
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    class Particle {
+      constructor() {
+        this.x = mouse.x || Math.random() * canvas.width;
+        this.y = mouse.y || Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 2 - 1;
+        this.speedY = Math.random() * 2 - 1;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        if (this.size > 0.1) this.size -= 0.03; // Sekin-asta kichrayib yo'qolishi uchun
+      }
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = this.color; // Neon effekt berish
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Fonni har doim avtomatik zarrachalar bilan ham to'ldirib turish
+    function initParticles() {
+      if (particlesArray.length < 50) {
+        mouse.x = Math.random() * canvas.width;
+        mouse.y = Math.random() * canvas.height;
+        particlesArray.push(new Particle());
+        mouse.x = null; mouse.y = null;
+      }
+    }
+
+    function animate() {
+      ctx.fillStyle = "rgba(5, 5, 5, 0.15)"; // Effekt ortidan chiroyli iz qolishi uchun
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      initParticles();
+      handleParticles();
+
+      // Effekti yanada kuchaytirish uchun yaqin zarrachalarni tutashtirish
+      ctx.shadowBlur = 0; // Chiziqlar uchun neonni biroz pasaytirish (FPS tushmasligi uchun)
+      connectParticles();
+
+      requestAnimationFrame(animate);
+    }
+
+    function handleParticles() {
+      for (let i = 0; i < particlesArray.length; i++) {
+        particlesArray[i].update();
+        particlesArray[i].draw();
+
+        if (particlesArray[i].size <= 0.3) {
+          particlesArray.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+    // Zarrachalarni o'zaro chiziqlar bilan bog'lash (Chiroyli to'r effekti)
+    function connectParticles() {
+      let opacityValue = 1;
+      for (let a = 0; a < particlesArray.length; a++) {
+        for (let b = a; b < particlesArray.length; b++) {
+          let dx = particlesArray[a].x - particlesArray[b].x;
+          let dy = particlesArray[a].y - particlesArray[b].y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 70) {
+            opacityValue = 1 - (distance / 70);
+            ctx.strokeStyle = `rgba(0, 242, 255, ${opacityValue * 0.25})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+            ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    animate();
 
     // CALCULATOR LOGIC
     const calcDisplay = document.getElementById('calc-disp');
@@ -729,7 +836,6 @@
     function cClr() { calcDisplay.value = ""; }
     function cRes() { try { calcDisplay.value = eval(calcDisplay.value) || "0"; } catch { calcDisplay.value = "Error"; } }
 
-    // Calculator Keyboard Input
     window.addEventListener('keydown', function (event) {
       const key = event.key;
       if ('0123456789+-*/.'.includes(key)) {
@@ -783,7 +889,11 @@
     tttGrid.addEventListener('click', handleCellClick);
 
     // ANAGRAM
-    const words = [{ s: "GRANOE", r: "orange" }, { s: "APLEP", r: "apple" }, { s: "ANABNA", r: "banana" }, { s: "MANGO", r: "mango" }];
+    const words = [
+      { s: "GRANOE", r: "orange" }, { s: "APLEP", r: "apple" },
+      { s: "ANABNA", r: "banana" }, { s: "MANGO", r: "mango" },
+      { s: "YRECHR", r: "cherry" }, { s: "MELONWATE", r: "watermelon" }
+    ];
     let cur = 0, score = 0;
     function checkAnagram() {
       const val = document.getElementById('guess-input').value.toLowerCase().trim();
@@ -804,7 +914,29 @@
       { letter: "A", prEn: "[ ey ]", prRu: "[ эй ]", exEn: "Apple (Olma)", exRu: "Apple (Яблоко)" },
       { letter: "B", prEn: "[ bee ]", prRu: "[ би ]", exEn: "Boy (Bola)", exRu: "Boy (Мальчик)" },
       { letter: "C", prEn: "[ see ]", prRu: "[ си ]", exEn: "Cat (Mushuk)", exRu: "Cat (Кошка)" },
-      { letter: "D", prEn: "[ dee ]", prRu: "[ ди ]", exEn: "Dog (Kuchuk)", exRu: "Dog (Собака)" }
+      { letter: "D", prEn: "[ dee ]", prRu: "[ ди ]", exEn: "Dog (Kuchuk)", exRu: "Dog (Собака)" },
+      { letter: "E", prEn: "[ ee ]", prRu: "[ и ]", exEn: "Elephant (Fil)", exRu: "Elephant (Слон)" },
+      { letter: "F", prEn: "[ ef ]", prRu: "[ эф ]", exEn: "Fish (Baliq)", exRu: "Fish (Рыба)" },
+      { letter: "G", prEn: "[ jee ]", prRu: "[ джи ]", exEn: "Girl (Qiz bola)", exRu: "Girl (Девочка)" },
+      { letter: "H", prEn: "[ aych ]", prRu: "[ эйч ]", exEn: "House (Uy)", exRu: "House (Дом)" },
+      { letter: "I", prEn: "[ ay ]", prRu: "[ ай ]", exEn: "Ice cream (Muzqaymoq)", exRu: "Ice cream (Мороженое)" },
+      { letter: "J", prEn: "[ jey ]", prRu: "[ джей ]", exEn: "Jacket (Kurtka)", exRu: "Jacket (Куртка)" },
+      { letter: "K", prEn: "[ key ]", prRu: "[ кей ]", exEn: "Key (Kalit)", exRu: "Key (Ключ)" },
+      { letter: "L", prEn: "[ el ]", prRu: "[ эл ]", exEn: "Lion (Sher)", exRu: "Lion (Лев)" },
+      { letter: "M", prEn: "[ em ]", prRu: "[ эм ]", exEn: "Moon (Oy)", exRu: "Moon (Луна)" },
+      { letter: "N", prEn: "[ en ]", prRu: "[ эн ]", exEn: "Nest (Uya)", exRu: "Nest (Гнездо)" },
+      { letter: "O", prEn: "[ oh ]", prRu: "[ оу ]", exEn: "Orange (Apelsin)", exRu: "Orange (Апельсин)" },
+      { letter: "P", prEn: "[ pee ]", prRu: "[ пи ]", exEn: "Pen (Ruchka)", exRu: "Pen (Ручка)" },
+      { letter: "Q", prEn: "[ kyoo ]", prRu: "[ кью ]", exEn: "Queen (Qirolicha)", exRu: "Queen (Королева)" },
+      { letter: "R", prEn: "[ ar ]", prRu: "[ ар ]", exEn: "Robot (Robot)", exRu: "Robot (Робот)" },
+      { letter: "S", prEn: "[ es ]", prRu: "[ эс ]", exEn: "Sun (Quyosh)", exRu: "Sun (Солнце)" },
+      { letter: "T", prEn: "[ tee ]", prRu: "[ ти ]", exEn: "Tree (Daraxt)", exRu: "Tree (Дерево)" },
+      { letter: "U", prEn: "[ yoo ]", prRu: "[ ю ]", exEn: "Umbrella (Soyabon)", exRu: "Umbrella (Зонт)" },
+      { letter: "V", prEn: "[ vee ]", prRu: "[ ви ]", exEn: "Van (Furgon)", exRu: "Van (Фургон)" },
+      { letter: "W", prEn: "[ dabul-yoo ]", prRu: "[ дабл-ю ]", exEn: "Water (Suv)", exRu: "Water (Вода)" },
+      { letter: "X", prEn: "[ eks ]", prRu: "[ экс ]", exEn: "X-ray (Rentgen)", exRu: "X-ray (Рентген)" },
+      { letter: "Y", prEn: "[ way ]", prRu: "[ уай ]", exEn: "Yo-yo (Yo-yo o'yinchoq)", exRu: "Yo-yo (Йо-йо)" },
+      { letter: "Z", prEn: "[ zed ]", prRu: "[ зед ]", exEn: "Zebra (Zebra)", exRu: "Zebra (Зебра)" }
     ];
     let currentAlphaIndex = 0, currentLanguage = 'en';
     function updateAlphabetCard() {

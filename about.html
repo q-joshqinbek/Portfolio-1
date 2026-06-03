@@ -7,14 +7,13 @@
     <title>JQ Portfolio - About</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;600&display=swap"
         rel="stylesheet">
-    <!-- Ikonkalar chiqishi uchun Font Awesome kutubxonasi -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --n-blue: #00f2ff;
             --n-pink: #ff00ea;
-            --bg: #050505;
-            --card-bg: #12121a;
+            --bg: #05050d;
+            --card-bg: rgba(18, 18, 26, 0.45); /* Glassmorphic effekt uchun shaffofroq qildim */
         }
 
         body {
@@ -25,15 +24,18 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
-        /* --- BACKGROUND MATRIX EFFECT --- */
-        #matrix {
+        /* --- INTERACTIVE NEON BACKGROUND --- */
+        #interactive-bg {
             position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -1;
-            opacity: 0.15;
+            pointer-events: none; /* Saytdagi tugmalarni bosishga xalaqit bermaydi */
         }
 
         .container {
@@ -47,8 +49,12 @@
         /* Navbar va Menuga qaytish */
         .site-header {
             border-bottom: 1px solid rgba(0, 242, 255, 0.2);
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(5, 5, 13, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header-inner {
@@ -88,7 +94,7 @@
         .back-menu-btn:hover {
             color: #fff;
             background: var(--n-pink);
-            box-shadow: 0 0 20px var(--n-pink), 0 0 40px var(--n-pink);
+            box-shadow: 0 0 20px var(--n-pink);
             text-shadow: 0 0 8px #fff;
         }
 
@@ -130,10 +136,12 @@
         .about-card,
         .skill-card {
             background: var(--card-bg);
-            border: 1px solid rgba(0, 242, 255, 0.15);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-radius: 16px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
             transition: 0.4s ease;
         }
 
@@ -171,7 +179,7 @@
             margin-bottom: 20px;
         }
 
-        /* --- CV O'TISH BLOKI STULLARI --- */
+        /* CV O'tish Bloki */
         .cv-link-box {
             margin: 20px 0 25px 0;
             padding: 20px;
@@ -260,13 +268,8 @@
         }
 
         @keyframes fillUp {
-            from {
-                width: 0;
-            }
-
-            to {
-                width: var(--target-width);
-            }
+            from { width: 0; }
+            to { width: var(--target-width); }
         }
 
         .contact-info {
@@ -325,64 +328,22 @@
             line-height: 1.5;
         }
 
-        /* --- MOBIL QURILMALAR UCHUN MOSLASHUVCHANLIK --- */
+        /* Responsive */
         @media (max-width: 768px) {
-            .header-inner {
-                padding: 10px 15px;
-            }
-
-            .logo {
-                font-size: 1.1rem;
-            }
-
-            .back-menu-btn {
-                font-size: 0.75rem;
-                padding: 6px 12px;
-            }
-
-            .page-heading {
-                margin: 25px 0;
-            }
-
-            .page-heading h1 {
-                font-size: 2rem;
-            }
-
-            .page-heading p {
-                font-size: 0.95rem;
-            }
-
-            .about-profile,
-            .about-card,
-            .skill-card {
-                padding: 20px;
-            }
-
-            .about-profile p {
-                text-align: center;
-            }
+            .header-inner { padding: 10px 15px; }
+            .logo { font-size: 1.1rem; }
+            .back-menu-btn { font-size: 0.75rem; padding: 6px 12px; }
+            .page-heading { margin: 25px 0; }
+            .page-heading h1 { font-size: 2rem; }
+            .page-heading p { font-size: 0.95rem; }
+            .about-profile, .about-card, .skill-card { padding: 20px; }
+            .about-profile p { text-align: center; }
         }
 
-        @media (max-width: 480px) {
-            .header-inner {
-                flex-direction: row;
-            }
-
-            .logo {
-                font-size: 1rem;
-            }
-
-            .back-menu-btn {
-                font-size: 0.7rem;
-                padding: 5px 10px;
-            }
-        }
-
-        /* Footer */
         .site-footer {
             text-align: center;
             padding: 20px;
-            background: #000;
+            background: #020205;
             border-top: 1px solid rgba(255, 0, 234, 0.1);
             color: #666;
             font-size: 0.9rem;
@@ -393,7 +354,7 @@
 
 <body>
 
-    <canvas id="matrix"></canvas>
+    <canvas id="interactive-bg"></canvas>
 
     <header class="site-header">
         <div class="container header-inner">
@@ -416,14 +377,12 @@
                 <h2>Qurbonbayev Jo'shqinbek</h2>
                 <div class="age-tag">14 yoshdaman</div>
 
-                <!-- --- MUKAMMAL INTEGRATSIYA: CV SAHIFASIGA TUGMA ORQALI KIRISH --- -->
                 <div class="cv-link-box">
                     <p>TO'LIQ REZUME VARIANTI</p>
                     <a href="cv.html" class="cv-btn">
                         <i class="fa-solid fa-id-card"></i> CV NI KO'RISH <i class="fa-solid fa-arrow-right-long"></i>
                     </a>
                 </div>
-                <!-- -------------------------------------------------------- -->
 
                 <p>Men o'zimni dasturlash olamiga qiziqadigan yangi avlodiman. Kod yozish, interaktiv
                     algoritmlar yaratish va zamonaviy veb-texnologiyalarni o'rganish mening asosiy maqsadim.</p>
@@ -509,43 +468,113 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
-
-    <!-- --- MATRIX ANIMATION SCRIPT --- -->
     <script>
-        const canvas = document.getElementById('matrix');
+        const canvas = document.getElementById('interactive-bg');
         const ctx = canvas.getContext('2d');
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        let drops = Array(Math.floor(canvas.width / 16)).fill(1);
+        let particlesArray = [];
+        const numberOfParticles = 75; // Zarralar miqdori
 
-        function drawMatrix() {
-            ctx.fillStyle = "rgba(5, 5, 5, 0.15)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = "#0f0";
-            ctx.font = "15px monospace";
-
-            drops.forEach((y, i) => {
-                const text = "01"[Math.floor(Math.random() * 2)];
-                ctx.fillText(text, i * 16, y * 16);
-
-                if (y * 16 > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            });
+        const mouse = {
+            x: null,
+            y: null,
+            radius: 130 // Mishka atrofidagi ta'sir doirasi
         }
 
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            drops = Array(Math.floor(canvas.width / 16)).fill(1);
+        window.addEventListener('mousemove', function(event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
         });
 
-        setInterval(drawMatrix, 40);
+        window.addEventListener('mouseout', function() {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.8 - 0.4;
+                this.speedY = Math.random() * 0.8 - 0.4;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+
+                // Mishkaga bo'lgan reaksiya
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < mouse.radius) {
+                    if (mouse.x > this.x && this.x > 10) this.x -= 1.5;
+                    if (mouse.x < this.x && this.x < canvas.width - 10) this.x += 1.5;
+                    if (mouse.y > this.y && this.y > 10) this.y -= 1.5;
+                    if (mouse.y < this.y && this.y < canvas.height - 10) this.y += 1.5;
+                }
+            }
+            draw() {
+                ctx.fillStyle = '#00f2ff'; // Neon ko'k nuqtalar
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        // Chiziqlar bilan tarmoq hosil qilish
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let dx = particlesArray[a].x - particlesArray[b].x;
+                    let dy = particlesArray[a].y - particlesArray[b].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 110) {
+                        opacityValue = 1 - (distance / 110);
+                        ctx.strokeStyle = `rgba(255, 0, 234, ${opacityValue * 0.35})`; // Neon pushti chiziqlar
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            connect();
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+
+        init();
+        animate();
     </script>
 </body>
 

@@ -12,15 +12,27 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #0f172a;
-            /* To'q ko'k / qora fon */
+            background-color: #050b14; /* Bir oz to'qroq qilindi, neon yaxshi ko'rinishi uchun */
+        }
+        
+        /* HOVERLI CANVA FON STYLI */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none; /* Tugmalarni bosishga xalaqit bermaydi */
         }
     </style>
 </head>
 
-<body class="text-slate-200 min-h-screen flex flex-col justify-between">
+<body class="text-slate-200 min-h-screen flex flex-col justify-between relative">
 
-    <div class="max-w-6xl w-full mx-auto px-6 pt-8">
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="max-w-6xl w-full mx-auto px-6 pt-8 relative z-10">
         <a href="index.html"
             class="inline-flex items-center gap-3 text-sm font-semibold text-sky-400 bg-slate-900/60 border border-sky-500/30 rounded-xl px-5 py-3 transition-all duration-300 hover:border-sky-400 hover:text-white hover:bg-sky-500/10 hover:shadow-[0_0_20px_rgba(14,165,233,0.3)] group backdrop-blur-sm">
             <div
@@ -31,7 +43,7 @@
         </a>
     </div>
 
-    <main class="max-w-4xl w-full mx-auto px-6 py-12 flex-grow flex flex-col justify-center">
+    <main class="max-w-4xl w-full mx-auto px-6 py-12 flex-grow flex flex-col justify-center relative z-10">
         <div class="text-center mb-10">
             <h1 class="text-3xl md:text-4xl font-bold text-white mb-3">Men bilan bog'laning</h1>
             <p class="text-slate-400 max-w-md mx-auto text-sm md:text-base">Savollaringiz, takliflaringiz yoki
@@ -44,9 +56,9 @@
                 <h2 class="text-xl font-semibold text-white mb-4">To'g'ridan-to'g'ri aloqa</h2>
 
                 <a href="https://t.me/JQ_live" target="_blank"
-                    class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl border border-slate-700/50 hover:border-sky-500/50 hover:bg-slate-800 transition-all group">
+                    class="flex items-center gap-4 p-4 bg-slate-800/40 rounded-xl border border-slate-700/50 hover:border-sky-500/50 hover:bg-slate-800/80 transition-all group backdrop-blur-sm">
                     <div
-                        class="w-12 h-12 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-400 text-xl group-hover:bg-sky-500 group-hover:text-white transition-all justify-center">
+                        class="w-12 h-12 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-400 text-xl group-hover:bg-sky-500 group-hover:text-white transition-all">
                         <i class="fa-brands fa-telegram"></i>
                     </div>
                     <div>
@@ -56,9 +68,9 @@
                 </a>
 
                 <a href="https://instagram.com/769_live_" target="_blank"
-                    class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl border border-slate-700/50 hover:border-pink-500/50 hover:bg-slate-800 transition-all group">
+                    class="flex items-center gap-4 p-4 bg-slate-800/40 rounded-xl border border-slate-700/50 hover:border-pink-500/50 hover:bg-slate-800/80 transition-all group backdrop-blur-sm">
                     <div
-                        class="w-12 h-12 rounded-lg bg-pink-500/10 flex items-center justify-center text-pink-400 text-xl group-hover:bg-pink-500 group-hover:text-white transition-all justify-center">
+                        class="w-12 h-12 rounded-lg bg-pink-500/10 flex items-center justify-center text-pink-400 text-xl group-hover:bg-pink-500 group-hover:text-white transition-all">
                         <i class="fa-brands fa-instagram"></i>
                     </div>
                     <div>
@@ -68,9 +80,9 @@
                 </a>
 
                 <a href="tel:+998910926281"
-                    class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl border border-slate-700/50 hover:border-emerald-500/50 hover:bg-slate-800 transition-all group">
+                    class="flex items-center gap-4 p-4 bg-slate-800/40 rounded-xl border border-slate-700/50 hover:border-emerald-500/50 hover:bg-slate-800/80 transition-all group backdrop-blur-sm">
                     <div
-                        class="w-12 h-12 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-xl group-hover:bg-emerald-500 group-hover:text-white transition-all justify-center">
+                        class="w-12 h-12 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-xl group-hover:bg-emerald-500 group-hover:text-white transition-all">
                         <i class="fa-solid fa-phone"></i>
                     </div>
                     <div>
@@ -81,7 +93,7 @@
             </div>
 
             <div
-                class="md:col-span-7 bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
+                class="md:col-span-7 bg-slate-800/30 border border-slate-700/60 rounded-2xl p-6 md:p-8 backdrop-blur-md">
                 <form id="contactForm" class="space-y-5">
                     <div>
                         <label for="name"
@@ -109,7 +121,7 @@
                     </div>
 
                     <button type="submit"
-                        class="w-full bg-sky-600 hover:bg-sky-500 text-white font-medium text-sm py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-sky-600/20">
+                        class="w-full bg-sky-600 hover:bg-sky-500 text-white font-medium text-sm py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-sky-600/20 hover:shadow-[0_0_20px_rgba(14,165,233,0.4)]">
                         <i class="fa-solid fa-paper-plane text-xs"></i> Xabarni yuborish
                     </button>
                 </form>
@@ -119,13 +131,130 @@
         </div>
     </main>
 
-    <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
+    <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500 relative z-10">
         <div class="max-w-6xl mx-auto px-6">
             &copy; 2026 JQ Portfolio. Barcha huquqlar himoyalangan.
         </div>
     </footer>
 
     <script>
+        // HOVER/MOUSE-MOVE NEON PARTICLE EFFECT
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let particlesArray = [];
+        const colors = ['#00f2ff', '#ff00ea', '#38bdf8', '#ffffff'];
+
+        const mouse = {
+            x: null,
+            y: null
+        }
+
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        window.addEventListener('mousemove', function(event) {
+            mouse.x = event.clientX;
+            mouse.y = event.clientY;
+            
+            // Harakatlanganda 2 tadan zarracha qo'shish
+            for (let i = 0; i < 2; i++) {
+                particlesArray.push(new Particle());
+            }
+        });
+
+        window.addEventListener('mouseout', function() {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor() {
+                this.x = mouse.x || Math.random() * canvas.width;
+                this.y = mouse.y || Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 1.5 - 0.75;
+                this.speedY = Math.random() * 1.5 - 0.75;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.1) this.size -= 0.02;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Avtomatik zarrachalar bilan to'ldirib turish
+        function initParticles() {
+            if (particlesArray.length < 40) {
+                mouse.x = Math.random() * canvas.width;
+                mouse.y = Math.random() * canvas.height;
+                particlesArray.push(new Particle());
+                mouse.x = null; mouse.y = null;
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = "rgba(5, 11, 20, 0.12)"; // To'q ko'k tusli iz qoldirish
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            initParticles();
+            handleParticles();
+            ctx.shadowBlur = 0;
+            connectParticles();
+            
+            requestAnimationFrame(animate);
+        }
+
+        function handleParticles() {
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                
+                if (particlesArray[i].size <= 0.3) {
+                    particlesArray.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        // Zarrachalarni o'zaro ingichka chiziqlar bilan bog'lash (To'r effekti)
+        function connectParticles() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let dx = particlesArray[a].x - particlesArray[b].x;
+                    let dy = particlesArray[a].y - particlesArray[b].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 80) {
+                        opacityValue = 1 - (distance / 80);
+                        ctx.strokeStyle = `rgba(56, 189, 248, ${opacityValue * 0.2})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        animate();
+
         // Forma yuborish simulyatsiyasi
         document.getElementById('contactForm').addEventListener('submit', function (e) {
             e.preventDefault();

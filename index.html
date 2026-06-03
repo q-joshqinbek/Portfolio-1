@@ -11,20 +11,20 @@
         :root {
             --neon-blue: #00f2ff;
             --neon-pink: #ff00ea;
-            --bg-dark: #050505;
-            --card-bg: rgba(18, 18, 26, 0.75);
+            --bg-dark: #05050d;
+            --card-bg: rgba(10, 11, 24, 0.4);
             --text-color: white;
-            --nav-bg: rgba(0, 0, 0, 0.9);
+            --nav-bg: rgba(5, 5, 15, 0.7);
             --nav-link-color: #ccc;
-            --card-p-color: #aaa;
+            --card-p-color: #dfdfdf;
         }
 
-        /* Oq rejim (Light Mode) uchun stillar */
+        /* Oq rejim (Light Mode) */
         body.light-mode {
             --bg-dark: #ffffff;
-            --card-bg: rgba(240, 240, 245, 0.85);
+            --card-bg: rgba(240, 240, 245, 0.8);
             --text-color: #111111;
-            --nav-bg: rgba(255, 255, 255, 0.95);
+            --nav-bg: rgba(255, 255, 255, 0.9);
             --nav-link-color: #333333;
             --card-p-color: #555555;
         }
@@ -41,19 +41,22 @@
             transition: background 0.3s ease, color 0.3s ease;
         }
 
-        #matrix {
+        /* --- INTERACTIVE CANVAS BACKGROUND --- */
+        #interactive-bg {
             position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -1;
-            opacity: 0.25;
-            transition: opacity 0.3s ease;
+            pointer-events: none;
+            /* Sahifadagi tugmalarni bosishga xalaqit bermasligi uchun */
+            transition: opacity 0.5s;
         }
 
-        /* Oq rejimda matritsa fonini yashirish */
-        body.light-mode #matrix {
-            opacity: 0;
-            pointer-events: none;
+        body.light-mode #interactive-bg {
+            opacity: 0.15;
+            /* Oq rejimda effekt ko'zni charchatmasligi uchun biroz xiralashadi */
         }
 
         .container {
@@ -66,9 +69,9 @@
         /* --- HEADER & NAVIGATION --- */
         .site-header {
             background: var(--nav-bg);
-            border-bottom: 2px solid var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
-            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -127,7 +130,7 @@
             background: rgba(255, 0, 234, 0.05);
         }
 
-        /* Burger Menu Button */
+        /* Burger Menu */
         .burger-menu {
             display: none;
             flex-direction: column;
@@ -147,7 +150,7 @@
             transition: 0.3s ease;
         }
 
-        /* Theme Toggle Button */
+        /* Theme Toggle */
         .theme-toggle {
             background: transparent;
             border: 2px solid var(--neon-blue);
@@ -157,7 +160,6 @@
             font-size: 0.8rem;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
             transition: all 0.3s ease;
             clip-path: polygon(85% 0, 100% 40%, 100% 100%, 0 100%, 0 0);
         }
@@ -171,13 +173,11 @@
         body.light-mode .theme-toggle {
             border-color: var(--neon-pink);
             color: var(--neon-pink);
-            box-shadow: 0 0 10px rgba(255, 0, 234, 0.2);
         }
 
         body.light-mode .theme-toggle:hover {
             background: var(--neon-pink);
             color: #fff;
-            box-shadow: 0 0 15px var(--neon-pink);
         }
 
         /* --- HERO SECTION --- */
@@ -186,7 +186,7 @@
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 40px;
             align-items: center;
-            padding: 60px 0;
+            padding: 80px 0;
         }
 
         .hero-text span {
@@ -206,11 +206,6 @@
             color: var(--text-color);
             margin: 0 0 20px 0;
             line-height: 1.2;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-        }
-
-        body.light-mode .hero-text h1 {
-            text-shadow: none;
         }
 
         .hero-text p {
@@ -236,7 +231,7 @@
             background: var(--neon-blue);
             padding: 14px 28px;
             border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
             transition: 0.3s ease;
             clip-path: polygon(90% 0, 100% 35%, 100% 100%, 0 100%, 0 0);
             text-align: center;
@@ -261,7 +256,7 @@
             background: transparent;
             color: var(--neon-pink);
             border-color: var(--neon-pink);
-            box-shadow: 0 0 15px rgba(255, 0, 234, 0.2);
+            box-shadow: 0 0 15px rgba(255, 0, 234, 0.15);
         }
 
         .button-secondary:hover {
@@ -274,34 +269,40 @@
             color: #fff;
         }
 
-        /* Hero Karta */
+        /* Modern Glassmorphism Card */
         .hero-card {
             background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--neon-blue);
-            box-shadow: 0 0 25px rgba(0, 242, 255, 0.15);
-            padding: 30px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 242, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            padding: 35px;
             position: relative;
             clip-path: polygon(100% 0, 100% 85%, 85% 100%, 0 100%, 0 0);
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        .hero-card:hover {
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 25px rgba(255, 0, 234, 0.2);
         }
 
         .hero-card::before {
-            content: 'STATUS: ACTIVE';
+            content: 'LIVE INTERACTIVE BACKGROUND';
             position: absolute;
-            top: 10px;
+            top: 12px;
             right: 15px;
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--neon-blue);
-            opacity: 0.7;
+            opacity: 0.8;
         }
 
         .hero-card h2 {
             font-family: 'Orbitron', sans-serif;
             color: var(--neon-blue);
             margin-top: 0;
-            text-shadow: 0 0 10px var(--neon-blue);
+            font-size: 1.5rem;
         }
 
         .hero-card ul {
@@ -310,15 +311,15 @@
         }
 
         .hero-card li {
-            margin-bottom: 10px;
-            color: var(--nav-link-color);
+            margin-bottom: 12px;
+            color: var(--text-color);
         }
 
         .hero-card li::marker {
             color: var(--neon-pink);
         }
 
-        /* --- FEATURES GRID (2 TAdan joylashadigan qismi) --- */
+        /* --- FEATURES GRID --- */
         .features {
             padding: 60px 0;
         }
@@ -329,14 +330,8 @@
             font-size: 2.2rem;
             color: var(--text-color);
             margin-bottom: 40px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
 
-        body.light-mode .features h2 {
-            text-shadow: none;
-        }
-
-        /* 3 ta o'rniga 2 tadan bo'lib tushishi uchun repeat(2, 1fr) qilindi */
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -345,24 +340,24 @@
 
         .feature-card {
             background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(0, 242, 255, 0.2);
-            padding: 25px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 30px;
             transition: 0.3s all ease;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            position: relative;
         }
 
         body.light-mode .feature-card {
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
 
         .feature-card:hover {
             border-color: var(--neon-pink);
-            box-shadow: 0 0 20px rgba(255, 0, 234, 0.25);
+            box-shadow: 0 0 25px rgba(255, 0, 234, 0.25);
             transform: translateY(-5px);
         }
 
@@ -371,24 +366,13 @@
             color: var(--neon-blue);
             margin-top: 0;
             font-size: 1.3rem;
-            transition: 0.3s;
-        }
-
-        .feature-card:hover h3 {
-            color: var(--text-color);
-            text-shadow: 0 0 10px var(--neon-blue);
-        }
-
-        body.light-mode .feature-card:hover h3 {
-            text-shadow: none;
-            color: var(--neon-pink);
         }
 
         .feature-card p {
             color: var(--card-p-color);
             font-size: 0.95rem;
-            line-height: 1.5;
-            margin: 10px 0 20px 0;
+            line-height: 1.6;
+            margin: 10px 0 25px 0;
         }
 
         .feature-card a {
@@ -398,27 +382,15 @@
             font-weight: bold;
             font-size: 0.85rem;
             letter-spacing: 1px;
-            display: inline-block;
-            transition: 0.3s;
+            transition: 0.2s;
         }
 
         .feature-card a:hover {
-            color: var(--text-color);
-            text-shadow: 0 0 8px var(--neon-pink);
-        }
-
-        body.light-mode .feature-card a:hover {
-            text-shadow: none;
             color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
         }
 
-        /* --- RESPONSIVE MEDIA QUERIES --- */
-        @media (max-width: 1024px) {
-            .hero-text h1 {
-                font-size: 2.3rem;
-            }
-        }
-
+        /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
             .burger-menu {
                 display: flex;
@@ -430,14 +402,13 @@
                 right: -100%;
                 width: 70%;
                 height: 100vh;
-                background: rgba(5, 5, 5, 0.98);
+                background: rgba(5, 5, 15, 0.96);
                 border-left: 2px solid var(--neon-blue);
                 flex-direction: column;
                 justify-content: center;
-                gap: 20px;
+                gap: 25px;
                 padding: 20px;
                 transition: 0.4s ease;
-                box-shadow: -10px 0 30px rgba(0, 242, 255, 0.2);
             }
 
             body.light-mode .nav-menu {
@@ -453,7 +424,6 @@
                 font-size: 1.1rem;
                 width: 100%;
                 text-align: center;
-                padding: 10px;
             }
 
             .burger-menu.toggle span:nth-child(1) {
@@ -470,62 +440,36 @@
 
             .hero {
                 grid-template-columns: 1fr;
-                padding: 30px 0;
-                gap: 30px;
+                padding: 40px 0;
             }
 
-            .hero-text h1 {
-                font-size: 2rem;
-            }
-
-            .hero-buttons .button {
-                width: 100%;
-            }
-
-            /* Telefon ekranida hamma narsa 1 qatorga tushadi */
             .feature-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        @media (max-width: 480px) {
-            .logo {
-                font-size: 1.1rem;
-            }
-
-            .hero-text h1 {
-                font-size: 1.7rem;
-            }
-
-            .theme-toggle {
-                padding: 5px 10px;
-                font-size: 0.75rem;
-            }
-        }
-
         /* --- FOOTER --- */
         .site-footer {
-            background: rgba(0, 0, 0, 0.9);
-            border-top: 1px solid rgba(0, 242, 255, 0.2);
-            padding: 20px 0;
+            background: rgba(5, 5, 15, 0.85);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 25px 0;
             text-align: center;
-            color: #666;
+            color: #777;
             font-size: 0.9rem;
             margin-top: auto;
-            transition: background 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
         body.light-mode .site-footer {
             background: #f5f5f7;
             color: #888;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 
 <body>
 
-    <canvas id="matrix"></canvas>
+    <canvas id="interactive-bg"></canvas>
 
     <header class="site-header">
         <div class="container header-inner">
@@ -540,7 +484,6 @@
                     <a href="contact.html">Bog'lanish</a>
                 </nav>
 
-                <button class="theme-toggle" id="themeBtn">🌞 Light Mode</button>
 
                 <button class="burger-menu" id="burgerBtn">
                     <span></span>
@@ -554,11 +497,10 @@
     <main>
         <section class="hero container">
             <div class="hero-text">
-                <span>[ ONLINE TERMINAL ACCESS ]</span>
+                <span>[ INTERACTIVE EXPERIENCE ]</span>
                 <h1>Yaxshi dizayn, aniq ma'lumot, kuchli taassurot</h1>
-                <p>Men kreativ va professional portfel yarataman. Hamma sahifalar alohida, o'yinlar va kiber-funksiyalar
-                    mavjud.
-                    5 ta professional sertifikatni ko'rsatish uchun maxsus sahifa tayyorlandi.</p>
+                <p>Men kreativ va professional portfel yarataman. Sichqonchani ekran bo'ylab yurgizib ko'ring va orqa
+                    fon jonlanishini his qiling. Hamma bo'limlar qulay interfeysda jamlangan.</p>
                 <div class="hero-buttons">
                     <a class="button" href="about.html">Men haqimda</a>
                     <a class="button button-secondary" href="projects.html">Loyihalar</a>
@@ -570,9 +512,9 @@
                     <h2>Eng yaxshi xizmat</h2>
                     <p>Portfel, loyiha, sertifikatlar, hammasi uchun alohida xavfsiz platformalar.</p>
                     <ul>
-                        <li>Kreativ Kiber Dizayn</li>
+                        <li>Interaktiv Chiroyli Effekt</li>
                         <li>Neonli Qulay Navigatsiya</li>
-                        <li>Interaktiv O'yinlar</li>
+                        <li>Yuqori Kreativlik</li>
                     </ul>
                 </div>
             </div>
@@ -610,64 +552,132 @@
 
     <footer class="site-footer">
         <div class="container">
-            <p>© 2026 Menga Juda Zor Portfolio. Barchasi alohida sahifa bilan tayyor.</p>
+            <p>© 2026 Menga Juda Zor Portfolio. Interaktiv dizayn.</p>
         </div>
     </footer>
 
     <script>
-        const canvas = document.getElementById('matrix');
+        // --- CANVAS INTERACTIVE BACKGROUND LOGIC ---
+        const canvas = document.getElementById('interactive-bg');
         const ctx = canvas.getContext('2d');
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        let drops = Array(Math.floor(canvas.width / 16)).fill(1);
+        let particlesArray = [];
+        const numberOfParticles = 80; // Zarralar soni
 
-        function draw() {
-            if (document.body.classList.contains('light-mode')) {
-                return;
-            }
-            ctx.fillStyle = "rgba(5, 5, 5, 0.15)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = "#0f0";
-            ctx.font = "15px monospace";
-
-            drops.forEach((y, i) => {
-                const text = "01"[Math.floor(Math.random() * 2)];
-                ctx.fillText(text, i * 16, y * 16);
-
-                if (y * 16 > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            });
+        // Sichqoncha koordinatalarini kuzatish
+        const mouse = {
+            x: null,
+            y: null,
+            radius: 150 // Sichqoncha atrofidagi ta'sir radiusi
         }
 
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            drops = Array(Math.floor(canvas.width / 16)).fill(1);
+        window.addEventListener('mousemove', function (event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
         });
 
-        setInterval(draw, 40);
+        // Sichqoncha ekrandan chiqib ketganda effektni yo'qotish
+        window.addEventListener('mouseout', function () {
+            mouse.x = null;
+            mouse.y = null;
+        });
 
+        // Har bir zarra (Particle) obyekti
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Ekran chetiga tekkanda qaytish
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+
+                // Sichqoncha hover bo'lganda zarralarni tortish/reaksiya
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < mouse.radius) {
+                    if (mouse.x > this.x && this.x > 10) this.x -= 2;
+                    if (mouse.x < this.x && this.x < canvas.width - 10) this.x += 2;
+                    if (mouse.y > this.y && this.y > 10) this.y -= 2;
+                    if (mouse.y < this.y && this.y < canvas.height - 10) this.y += 2;
+                }
+            }
+            draw() {
+                ctx.fillStyle = '#00f2ff';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        // Chiziqlarni chizish (Hover / Aloqa effekti)
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let dx = particlesArray[a].x - particlesArray[b].x;
+                    let dy = particlesArray[a].y - particlesArray[b].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 110) {
+                        opacityValue = 1 - (distance / 110);
+                        ctx.strokeStyle = `rgba(255, 0, 234, ${opacityValue * 0.4})`; // Neon pushti chiziqlar
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            connect();
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', function () {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+
+        init();
+        animate();
+
+        // --- THEME & BURGER BUTTONS LOGIC ---
         const themeBtn = document.getElementById('themeBtn');
-
         themeBtn.addEventListener('click', () => {
             document.body.classList.toggle('light-mode');
-
-            if (document.body.classList.contains('light-mode')) {
-                themeBtn.textContent = '🌙 Dark Mode';
-            } else {
-                themeBtn.textContent = '🌞 Light Mode';
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
+            themeBtn.textContent = document.body.classList.contains('light-mode') ? '🌙 Dark Mode' : '🌞 Light Mode';
         });
 
         const burgerBtn = document.getElementById('burgerBtn');
         const navMenu = document.getElementById('navMenu');
-
         burgerBtn.addEventListener('click', () => {
             navMenu.classList.toggle('active');
             burgerBtn.classList.toggle('toggle');

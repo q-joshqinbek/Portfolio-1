@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bukhara Stars - Premium Interactive Observatory</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- BRENDING VA PREMIUM STILLAR --- */
+        :root {
+            --space-bg: #030712;
+            --gold-bright: #f59e0b;
+            --gold-glow: rgba(245, 158, 11, 0.3);
+            --text-light: #f3f4f6;
+            --subtle-blue: #94a3b8;
+            --card-navy: rgba(15, 23, 42, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--space-bg);
+            color: var(--text-light);
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(white, rgba(255, 255, 255, .2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255, 255, 255, .15) 1px, transparent 30px),
+                radial-gradient(white, rgba(255, 255, 255, .1) 2px, transparent 40px);
+            background-size: 550px 550px, 350px 350px, 250px 250px;
+            background-position: 0 0, 40px 60px, 130px 270px;
+            padding-bottom: 5rem;
+        }
+
+        /* --- SILLIQ KURSOR EFFEKTI --- */
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--gold-bright);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+        }
+
+        .cursor-circle {
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out, border-color 0.3s;
+        }
+
+        body.hovering .cursor-circle {
+            border-color: var(--gold-bright);
+            box-shadow: 0 0 15px var(--gold-glow);
+            transform: translate(-50%, -50%) scale(1.4);
+        }
+
+        /* --- HEADER & NAV --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 6%;
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.1);
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+
+        .logo span {
+            color: var(--gold-bright);
+            text-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        nav ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: var(--gold-bright);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            text-align: center;
+            padding: 6rem 10% 4rem 10%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+
+        .hero p {
+            color: var(--subtle-blue);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* --- INTERAKTIV YULDUZLAR XARITASI (MAP) --- */
+        .constellation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 6%;
+            position: relative;
+        }
+
+        .sky-map {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(245, 158, 11, 0.15);
+            border-radius: 20px;
+            height: 450px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8);
+            margin-bottom: 4rem;
+        }
+
+        /* Yulduzlar (Tugmalar) */
+        .star-point {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 15px 5px #fff;
+            animation: pulseStar 2s infinite alternate;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        .star-point:hover,
+        .star-point.active {
+            background: var(--gold-bright);
+            box-shadow: 0 0 25px 8px var(--gold-bright);
+            transform: translate(-50%, -50%) scale(1.3);
+        }
+
+        .star-label {
+            position: absolute;
+            font-family: 'Cinzel', serif;
+            color: var(--subtle-blue);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            transform: translate(-50%, 25px);
+            transition: color 0.3s;
+        }
+
+        .star-point:hover .star-label,
+        .star-point.active .star-label {
+            color: var(--gold-bright);
+        }
+
+        @keyframes pulseStar {
+            0% {
+                opacity: 0.6;
+            }
+
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 20px 6px rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        /* --- DINAMIK TELESKOP PANEL (KONTENT CO'RINISHI) --- */
+        .observatory-panel {
+            background: var(--card-navy);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 3rem;
+            backdrop-filter: blur(8px);
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .telescope-view {
+            flex: 1;
+            display: none;
+            animation: spaceIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .telescope-view.active {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .scholar-img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 2px solid var(--gold-bright);
+            padding: 5px;
+            object-fit: cover;
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        .scholar-info h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .scholar-info .title {
+            color: var(--gold-bright);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .scholar-info p {
+            color: var(--subtle-blue);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        @keyframes spaceIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .telescope-view.active {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-circle"></div>
+
+    <header>
+        <div class="logo">Bukhara<span>Stars</span></div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Bosh Sahifa</a></li>
+                <li><a href="Khiva.html">Khiva</a></li>
+                <li><a href="cook.uz.html">Cook.uz</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Sharq Yulduzlari Akademiyasi</h1>
+        <p>Buxorolik buyuk mutafakkirlarning koinot sirlari va ilm-fan rivojiga qo'shgan ulkan hissasini interaktiv
+            teleskop orqali kashf eting. Yulduzlar ustiga bosing.</p>
+    </section>
+
+    <main class="constellation-container">
+
+        <!-- INTERAKTIV OSMON XARITASI -->
+        <div class="sky-map">
+            <!-- 1-Yulduz -->
+            <div class="star-point active" style="top: 30%; left: 25%;" data-target="ibnsino">
+                <div class="star-label">Ibn Sino</div>
+            </div>
+            <!-- 2-Yulduz -->
+            <div class="star-point" style="top: 65%; left: 50%;" data-target="xorazmiy">
+                <div class="star-label">Al-Xorazmiy</div>
+            </div>
+            <!-- 3-Yulduz -->
+            <div class="star-point" style="top: 25%; left: 75%;" data-target="fargoni">
+                <div class="star-label">Al-Farg'oniy</div>
+            </div>
+        </div>
+
+        <!-- TELESKOP KO'RINISHI (KONTENT PANEL) -->
+        <div class="observatory-panel">
+
+            <!-- Ibn Sino Kontenti -->
+            <div id="ibnsino" class="telescope-view active">
+                <img src="https://i.ytimg.com/vi/z7nt3SPESBU/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGH8gQygTMA8=&amp;rs=AOn4CLDKl0OloKfodeeE9m2BX6tQQ69pDQ"
+                    class="scholar-img" alt="Ibn Sino">
+                <div class="scholar-info">
+                    <h3>Abu Ali Ibn Sino</h3>
+                    <div class="title">Tibbiyot va Astronomiya Sultoni</div>
+                    <p>G'arbda Avitsenna nomi bilan tanilgan buyuk hakim. U nafaqat tibbiyot, balki astronomiya sohasida
+                        ham tadqiqotlar olib borgan, yulduzlarning koordinatalarini aniqlash uchun maxsus asboblar
+                        yaratgan.</p>
+                </div>
+            </div>
+
+            <!-- Al-Xorazmiy Kontenti -->
+            <div id="xorazmiy" class="telescope-view">
+                <img src="https://avatars.mds.yandex.net/i?id=32fbb8ddcbb68427c636bfecbf50a543_l-5275663-images-thumbs&n=13 class="scholar-img" alt="Al-Xorazmiy">
+                <div class="scholar-info">
+                    <h3>Muhammad Al-Xorazmiy</h3>
+                    <div class="title">Algebra va Algoritm Asoschisi</div>
+                    <p>Uning matematik hisob-kitoblari asosida koinot jismlarining harakati va sayyoralarning joylashuvi
+                        aniq hisoblangan. "Zij" asari bilan o'rta asrlarda astronomiya faniga poydevor qo'ygan.</p>
+                </div>
+            </div>
+
+            <!-- Al-Farg'oniy Kontenti -->
+            <div id="fargoni" class="telescope-view">
+                <img src="https://avatars.mds.yandex.net/i?id=1d206a3760ee5da7a012a0d9480a6bb8_l-8287363-images-thumbs&ref=rim&n=13&w=1024&h=768"
+                    class="scholar-img" alt="Al-Farg'oniy">
+                <div class="scholar-info">
+                    <h3>Ahmad Al-Farg'oniy</h3>
+                    <div class="title">Astrolyabiya va Koinot Muhandisi</div>
+                    <p>G'arbda Alfraganus nomi bilan mashhur. Quyosh va sayyoralar o'lchamlarini hisoblab chiqqan, osmon
+                        jismlarini kuzatuvchi o'nlab astronomik uskunalar va unikal xaritalar muallifi.</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Silliq custom kursor harakati
+            const dot = $('.cursor-dot');
+            const circle = $('.cursor-circle');
+
+            $(document).on('mousemove', function (e) {
+                dot.css({ left: e.clientX + 'px', top: e.clientY + 'px' });
+                circle.animate({ left: e.clientX + 'px', top: e.clientY + 'px' }, { duration: 400, fill: "forwards" });
+            });
+
+            // Hover effektlarini ulash (Kursor kattalashishi)
+            function applyHover() {
+                $('a, .star-point').hover(
+                    function () { $('body').addClass('hovering'); },
+                    function () { $('body').removeClass('hovering'); }
+                );
+            }
+            applyHover();
+
+            // INTERAKTIV JQUERY CHANGER (Yulduz bosilganda kontent almashishi)
+            $('.star-point').on('click', function () {
+                // Aktiv yulduz klassini yangilash
+                $('.star-point').removeClass('active');
+                $(this).addClass('active');
+
+                // Kontentni o'zgartirish
+                let targetID = $(this).data('target');
+
+                $('.telescope-view').removeClass('active');
+                $('#' + targetID).addClass('active');
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -10,12 +10,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --neon-blue: #00f2ff;
-            --neon-pink: #ff00ea;
-            --bg-dark: #050505;
-            --card-bg: rgba(18, 18, 26, 0.75);
-            --text-color: white;
-            --card-p-color: #aaa;
+            --neon-blue: #00a8cc;
+            --neon-pink: #d92027;
+            --bg-dark: #f8fafc;
+            /* Toza, och fon */
+            --card-bg: #ffffff;
+            /* Oq karta foni */
+            --text-color: #1e293b;
+            /* To'q kulrang matn */
+            --card-p-color: #475569;
+            /* Paragraph matnlari */
+            --border-color: #e2e8f0;
         }
 
         body {
@@ -32,15 +37,14 @@
             max-width: 1000px;
             margin: 0 auto;
             background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--neon-blue);
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.15);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             padding: 40px;
             position: relative;
-            clip-path: polygon(100% 0, 100% 95%, 95% 100%, 0 100%, 0 0);
+            border-radius: 8px;
         }
 
-        /* Yuqori boshqaruv paneli (Tugmalar uchun) */
+        /* Yuqori boshqaruv paneli */
         .cv-controls {
             display: flex;
             justify-content: space-between;
@@ -48,68 +52,75 @@
             margin-bottom: 30px;
         }
 
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
         .back-btn {
             display: inline-flex;
             align-items: center;
             gap: 10px;
             text-decoration: none;
-            color: var(--neon-pink);
+            color: #64748b;
             font-family: 'Orbitron', sans-serif;
             font-size: 0.85rem;
             font-weight: bold;
-            border: 1px solid var(--neon-pink);
+            border: 1px solid #cbd5e1;
             padding: 10px 20px;
             transition: 0.3s;
-            background: rgba(255, 0, 234, 0.05);
+            background: #fff;
+            border-radius: 4px;
         }
 
         .back-btn:hover {
-            background: var(--neon-pink);
-            color: #000;
-            box-shadow: 0 0 15px var(--neon-pink);
+            background: #f1f5f9;
+            color: #334155;
             transform: translateX(-3px);
         }
 
-        /* Yangi PDF yuklab olish tugmasi */
+        /* PDF yuklab olish tugmasi */
         .download-btn {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            color: var(--neon-blue);
+            gap: 8px;
+            color: #fff;
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: bold;
-            border: 1px solid var(--neon-blue);
-            padding: 10px 20px;
-            background: rgba(0, 242, 255, 0.05);
+            border: none;
+            padding: 10px 15px;
+            background: var(--neon-blue);
             cursor: pointer;
             transition: 0.3s;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 168, 204, 0.2);
         }
 
         .download-btn:hover {
-            background: var(--neon-blue);
-            color: #000;
-            box-shadow: 0 0 15px var(--neon-blue);
+            background: #008cb0;
+            box-shadow: 0 6px 15px rgba(0, 168, 204, 0.3);
         }
 
-        /* PDF tayyorlanmoqda xabarnomasi (Toast Notification) */
+        /* PDF tayyorlanmoqda xabarnomasi */
         .toast {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: #1a1a24;
+            background: #1e293b;
             color: #fff;
             padding: 15px 25px;
             font-family: 'Orbitron', sans-serif;
             font-size: 0.9rem;
             border-left: 4px solid var(--neon-blue);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
             display: flex;
             align-items: center;
             gap: 12px;
             transform: translateY(150%);
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 9999;
+            border-radius: 4px;
         }
 
         .toast.show {
@@ -132,7 +143,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px dashed rgba(0, 242, 255, 0.3);
+            border-bottom: 2px solid #f1f5f9;
             padding-bottom: 30px;
             margin-bottom: 30px;
         }
@@ -141,7 +152,7 @@
             font-family: 'Orbitron', sans-serif;
             margin: 0 0 5px 0;
             font-size: 2.2rem;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            color: #0f172a;
         }
 
         .header-info p {
@@ -149,7 +160,8 @@
             font-family: 'Orbitron', sans-serif;
             margin: 0;
             font-size: 1rem;
-            letter-spacing: 1px;
+            vertical-align: middle;
+            font-weight: 600;
         }
 
         .contact-grid {
@@ -180,9 +192,9 @@
 
         h2 {
             font-family: 'Orbitron', sans-serif;
-            color: var(--neon-blue);
-            font-size: 1.3rem;
-            border-left: 3px solid var(--neon-pink);
+            color: #0f172a;
+            font-size: 1.25rem;
+            border-left: 4px solid var(--neon-blue);
             padding-left: 10px;
             margin-top: 0;
             margin-bottom: 20px;
@@ -202,7 +214,7 @@
             margin-bottom: 20px;
             position: relative;
             padding-left: 15px;
-            border-left: 1px solid rgba(255, 0, 234, 0.3);
+            border-left: 2px solid #e2e8f0;
         }
 
         .timeline-date {
@@ -210,18 +222,21 @@
             color: var(--neon-pink);
             font-family: 'Orbitron', sans-serif;
             margin-bottom: 3px;
+            font-weight: 600;
         }
 
         .timeline-title {
             font-weight: 600;
             font-size: 1.05rem;
             margin: 0 0 2px 0;
+            color: #1e293b;
         }
 
         .timeline-company {
             font-size: 0.9rem;
             color: var(--neon-blue);
             margin-bottom: 8px;
+            font-weight: 500;
         }
 
         .skills-grid {
@@ -231,65 +246,44 @@
         }
 
         .skill-tag {
-            background: rgba(0, 242, 255, 0.05);
-            border: 1px solid rgba(0, 242, 255, 0.2);
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
             padding: 8px 12px;
             font-size: 0.85rem;
             text-align: center;
             font-family: 'Orbitron', sans-serif;
-            color: var(--card-p-color);
+            color: #334155;
+            border-radius: 4px;
+            font-weight: 500;
         }
 
         .lang-item {
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
 
         .lang-info {
             display: flex;
             justify-content: space-between;
             font-size: 0.85rem;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #334155;
         }
 
         .progress-bar {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
             overflow: hidden;
         }
 
         .progress {
             height: 100%;
-            background: var(--neon-pink);
+            background: var(--neon-blue);
+            border-radius: 4px;
         }
 
-        .cert-card {
-            background: rgba(5, 5, 5, 0.4);
-            border: 1px solid rgba(255, 0, 234, 0.2);
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .cert-card i {
-            font-size: 2rem;
-            color: var(--neon-blue);
-        }
-
-        .cert-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .cert-org {
-            font-size: 0.8rem;
-            color: var(--card-p-color);
-            margin: 3px 0 0 0;
-        }
-
-        /* --- PRINT STYLES (PDF yuklanayotganda ortiqcha narsalarni yashirish) --- */
+        /* --- PRINT STYLES (PDF uchun mukammal sozlamalar) --- */
         @media print {
             body {
                 background: white !important;
@@ -302,39 +296,33 @@
                 box-shadow: none !important;
                 background: transparent !important;
                 padding: 0 !important;
-                clip-path: none !important;
             }
 
             .cv-controls,
             .toast {
                 display: none !important;
-                /* Tugmalar PDF ichiga tushmaydi */
+                /* PDF ichida boshqaruv tugmalari chiqmaydi */
             }
 
             h2 {
                 color: #000 !important;
-                border-left-color: #000 !important;
+                border-left-color: #00a8cc !important;
             }
 
-            .header-info p,
-            .timeline-date,
-            .timeline-company {
-                color: #333 !important;
-            }
-
-            .skill-tag {
-                border: 1px solid #ccc !important;
+            .header-info h1 {
                 color: #000 !important;
             }
 
             .progress {
-                background: #000 !important;
+                background: #00a8cc !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
 
-            .contact-item,
-            .cert-org,
-            p {
-                color: #222 !important;
+            .skill-tag {
+                background: #f1f5f9 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
         }
 
@@ -355,7 +343,6 @@
             }
 
             .cv-container {
-                clip-path: none;
                 padding: 20px;
             }
 
@@ -363,6 +350,11 @@
                 flex-direction: column;
                 gap: 15px;
                 align-items: stretch;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                gap: 8px;
             }
 
             .back-btn,
@@ -376,23 +368,25 @@
 <body>
 
     <div class="cv-container">
-        <!-- Boshqaruv paneli -->
         <div class="cv-controls">
-            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> ORQAGA</a>
-            <button class="download-btn" id="pdfBtn"><i class="fa-solid fa-file-pdf"></i> PDF YUKLAB OLISH</button>
+            <a href="index.html" class="back-btn" id="lblBack"><i class="fa-solid fa-arrow-left"></i> ORQAGA</a>
+            <div class="btn-group">
+                <button class="download-btn" onclick="generatePDF('uz')"><i class="fa-solid fa-file-pdf"></i> UZ PDF</button>
+                <button class="download-btn" onclick="generatePDF('ru')"><i class="fa-solid fa-file-pdf"></i> RU PDF</button>
+                <button class="download-btn" onclick="generatePDF('en')"><i class="fa-solid fa-file-pdf"></i> EN PDF</button>
+            </div>
         </div>
 
-        <!-- CV Kontenti -->
         <header class="cv-header">
             <div class="header-info">
-                <h1>JQ_live</h1>
+                <h1 id="lblProfileName">Qurbonbayev Jo'shqinbek</h1>
                 <p>Frontend & Backend Web Developer</p>
 
                 <div class="contact-grid">
                     <div class="contact-item"><i class="fa-solid fa-phone"></i> +998 (91) 092-62-81</div>
                     <div class="contact-item"><i class="fa-solid fa-envelope"></i> jq_live@gmail.com</div>
                     <div class="contact-item"><i class="fa-brands fa-telegram"></i> @JQ_live</div>
-                    <div class="contact-item"><i class="fa-solid fa-location-dot"></i> O'zbekiston</div>
+                    <div class="contact-item"><i class="fa-solid fa-location-dot"></i> <span id="lblLocation">O'zbekiston</span></div>
                 </div>
             </div>
         </header>
@@ -400,26 +394,24 @@
         <div class="cv-main">
             <div class="left-column">
                 <div class="section">
-                    <h2>Men Haqimda</h2>
-                    <p>Men zamonaviy, xavfsiz va yuqori samaradorlikka ega veb-saytlar hamda tizimlar yaratishga
-                        qiziquvchi dasturchiman. Har bir loyihaga ijodiy va professional yondashaman.</p>
+                    <h2 id="lblAboutTitle">Men Haqimda</h2>
+                    <p id="lblAboutDesc">Men zamonaviy, xavfsiz va yuqori samaradorlikka ega veb-saytlar hamda tizimlar yaratishga qiziquvchi dasturchiman. Har bir loyihaga ijodiy va professional yondashaman.</p>
                 </div>
 
                 <div class="section">
-                    <h2>Tajriba va Faoliyat</h2>
+                    <h2 id="lblExpTitle">Tajriba va Faoliyat</h2>
                     <div class="timeline-item">
-                        <div class="timeline-date">2025 - Hozirgacha</div>
-                        <div class="timeline-title">Mustaqil Web Developer</div>
-                        <div class="timeline-company">Portfolio Loyihalari</div>
-                        <p>HTML, CSS, Tailwind CSS hamda backend texnologiyalari yordamida shaxsiy kiber-platformalar
-                            yaratish.</p>
+                        <div class="timeline-date" id="lblExpDate">2025 - Hozirgacha</div>
+                        <div class="timeline-title" id="lblExpJob">Mustaqil Web Developer</div>
+                        <div class="timeline-company" id="lblExpCompany">Portfolio Loyihalari</div>
+                        <p id="lblExpDesc">HTML, CSS, Tailwind CSS hamda backend texnologiyalari yordamida shaxsiy platformalar va veb-saytlar yaratish.</p>
                     </div>
                 </div>
             </div>
 
             <div class="right-column">
                 <div class="section">
-                    <h2>Ko'nikmalar</h2>
+                    <h2 id="lblSkillsTitle">Ko'nikmalar</h2>
                     <div class="skills-grid">
                         <div class="skill-tag">HTML / CSS</div>
                         <div class="skill-tag">Tailwind</div>
@@ -429,38 +421,143 @@
                 </div>
 
                 <div class="section">
-                    <h2>Til Bilish</h2>
+                    <h2 id="lblLangTitle">Til Bilish</h2>
+
                     <div class="lang-item">
-                        <div class="lang-info"><span>O'zbek tili</span><span>Ona tili</span></div>
+                        <div class="lang-info"><span id="lblLang1">O'zbek tili</span><span id="lblLang1Lvl">Ona tili (100%)</span></div>
                         <div class="progress-bar">
                             <div class="progress" style="width: 100%;"></div>
                         </div>
                     </div>
+
+                    <div class="lang-item">
+                        <div class="lang-info"><span id="lblLang2">Rus tili</span><span id="lblLang2Lvl">O'rta (70%)</span></div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 70%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="lang-item">
+                        <div class="lang-info"><span id="lblLang3">Ingliz tili</span><span id="lblLang3Lvl">Texnik (60%)</span></div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 60%;"></div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Rasmdagi pop-up bildirishnoma (Toast) -->
     <div class="toast" id="downloadToast">
         <i class="fa-solid fa-spinner"></i>
-        <span>PDF tayyorlanmoqda...</span>
+        <span id="lblToastText">PDF tayyorlanmoqda...</span>
     </div>
 
     <script>
-        const pdfBtn = document.getElementById('pdfBtn');
         const toast = document.getElementById('downloadToast');
+        const toastText = document.getElementById('lblToastText');
 
-        pdfBtn.addEventListener('click', () => {
-            // 1. Toast xabarnomasini ko'rsatish
+        // 3 ta til uchun matnlar bazasi
+        const translations = {
+            uz: {
+                back: '<i class="fa-solid fa-arrow-left"></i> ORQAGA',
+                name: "Qurbonbayev Jo'shqinbek",
+                location: "O'zbekiston",
+                aboutTitle: "Men Haqimda",
+                aboutDesc: "Men zamonaviy, xavfsiz va yuqori samaradorlikka ega veb-saytlar hamda tizimlar yaratishga qiziquvchi dasturchiman. Har bir loyihaga ijodiy va professional yondashaman.",
+                expTitle: "Tajriba va Faoliyat",
+                expDate: "2025 - Hozirgacha",
+                expJob: "Mustaqil Web Developer",
+                expCompany: "Portfolio Loyihalari",
+                expDesc: "HTML, CSS, Tailwind CSS hamda backend texnologiyalari yordamida shaxsiy platformalar va veb-saytlar yaratish.",
+                skillsTitle: "Ko'nikmalar",
+                langTitle: "Til Bilish",
+                lang1: "O'zbek tili", lang1Lvl: "Ona tili (100%)",
+                lang2: "Rus tili", lang2Lvl: "O'rta (70%)",
+                lang3: "Ingliz tili", lang3Lvl: "Texnik (60%)",
+                toast: "PDF tayyorlanmoqda..."
+            },
+            ru: {
+                back: '<i class="fa-solid fa-arrow-left"></i> НАЗАД',
+                name: "Курбонбаев Жошкинбек",
+                location: "Узбекистан",
+                aboutTitle: "О себе",
+                aboutDesc: "Я веб-разработчик, увлеченный созданием современных, безопасных и высокопроизводительных веб-сайтов и систем. К каждому проекту подхожу творчески и профессионально.",
+                expTitle: "Опыт и деятельность",
+                expDate: "2025 - По наст. время",
+                expJob: "Независимый Web Developer",
+                expCompany: "Портфолио проекты",
+                expDesc: "Создание персональных платформ и веб-сайтов с использованием HTML, CSS, Tailwind CSS и серверных технологий.",
+                skillsTitle: "Навыки",
+                langTitle: "Знание языков",
+                lang1: "Узбекский язык", lang1Lvl: "Родной (100%)",
+                lang2: "Русский язык", lang2Lvl: "Средний (70%)",
+                lang3: "Английский язык", lang3Lvl: "Технический (60%)",
+                toast: "PDF подготовка..."
+            },
+            en: {
+                back: '<i class="fa-solid fa-arrow-left"></i> BACK',
+                name: "Qurbonbayev Joshqinbek",
+                location: "Uzbekistan",
+                aboutTitle: "About Me",
+                aboutDesc: "I am a web developer interested in creating modern, secure, and high-performance websites and systems. I approach each project with creativity and professionalism.",
+                expTitle: "Experience & Activity",
+                expDate: "2025 - Present",
+                expJob: "Independent Web Developer",
+                expCompany: "Portfolio Projects",
+                expDesc: "Creating personal platforms and websites using HTML, CSS, Tailwind CSS, and backend technologies.",
+                skillsTitle: "Skills",
+                langTitle: "Languages",
+                lang1: "Uzbek", lang1Lvl: "Native (100%)",
+                lang2: "Russian", lang2Lvl: "Intermediate (70%)",
+                lang3: "English", lang3Lvl: "Technical (60%)",
+                toast: "Preparing PDF..."
+            }
+        };
+
+        function changeLanguage(lang) {
+            const data = translations[lang];
+            
+            document.getElementById('lblBack').innerHTML = data.back;
+            document.getElementById('lblProfileName').innerText = data.name;
+            document.getElementById('lblLocation').innerText = data.location;
+            document.getElementById('lblAboutTitle').innerText = data.aboutTitle;
+            document.getElementById('lblAboutDesc').innerText = data.aboutDesc;
+            document.getElementById('lblExpTitle').innerText = data.expTitle;
+            document.getElementById('lblExpDate').innerText = data.expDate;
+            document.getElementById('lblExpJob').innerText = data.expJob;
+            document.getElementById('lblExpCompany').innerText = data.expCompany;
+            document.getElementById('lblExpDesc').innerText = data.expDesc;
+            document.getElementById('lblSkillsTitle').innerText = data.skillsTitle;
+            document.getElementById('lblLangTitle').innerText = data.langTitle;
+            document.getElementById('lblLang1').innerText = data.lang1;
+            document.getElementById('lblLang1Lvl').innerText = data.lang1Lvl;
+            document.getElementById('lblLang2').innerText = data.lang2;
+            document.getElementById('lblLang2Lvl').innerText = data.lang2Lvl;
+            document.getElementById('lblLang3').innerText = data.lang3;
+            document.getElementById('lblLang3Lvl').innerText = data.lang3Lvl;
+            toastText.innerText = data.toast;
+        }
+
+        function generatePDF(lang) {
+            // 1. Matnlarni tanlangan tilga o'zgartirish
+            changeLanguage(lang);
+
+            // 2. Toast bildirishnomasini chiqarish
             toast.classList.add('show');
 
-            // 2. Biroz kutib (effekt berish uchun), printerni ochish
+            // 3. Effekt uchun biroz kutib, printerni ochish
             setTimeout(() => {
                 toast.classList.remove('show');
-                window.print(); // Brauzer orqali PDF saqlash oynasini ochadi
-            }, 1500); // 1.5 soniya ko'rinib turadi
-        });
+                window.print(); // PDF ko'rinishida saqlash oynasini ochadi
+                
+                // 4. Chop etish oynasi yopilgach, CV ni avtomatik ravishda yana o'zbek tiliga qaytarib qo'yadi
+                setTimeout(() => {
+                    changeLanguage('uz');
+                }, 1000);
+            }, 1200);
+        }
     </script>
 </body>
 

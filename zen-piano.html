@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenPiano Professional - Complete Keyboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: #f8fafc;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- PREMIUM BOSH SAHIFAGA QAYTISH TUGMASI --- */
+        .back-to-hub {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-to-hub i {
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        /* Hover effektlari */
+        .back-to-hub:hover {
+            color: #ffffff;
+            background: #1e293b;
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateX(5px);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
+        }
+
+        .back-to-hub:hover i {
+            transform: translateX(-5px);
+        }
+
+        header {
+            text-align: center;
+            padding: 2.5rem 1rem;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* --- PIANINO KORPUSI --- */
+        .piano-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            padding: 2rem;
+        }
+
+        .piano-frame {
+            background: linear-gradient(to bottom, #1e293b, #0f172a);
+            padding: 20px 20px 0 20px;
+            border-radius: 12px 12px 4px 4px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 
+                        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+            display: flex;
+            position: relative;
+            border-bottom: 8px solid #020617;
+        }
+
+        /* --- WHITE KEYS --- */
+        .white-key {
+            width: 65px;
+            height: 240px;
+            background: linear-gradient(to bottom, #ffffff 0%, #f1f5f9 85%, #e2e8f0 100%);
+            border: 1px solid #cbd5e1;
+            border-radius: 0 0 6px 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 1rem;
+            z-index: 1;
+            transition: all 0.05s ease;
+            box-shadow: inset 0 -5px 0 #cbd5e1, 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .white-key span.note {
+            font-weight: 700;
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .white-key span.hint {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 0.2rem;
+            font-weight: 600;
+        }
+
+        .white-key.active {
+            background: linear-gradient(to bottom, #f1f5f9 0%, #cbd5e1 100%);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -2px 0 #94a3b8;
+            transform: translateY(2px);
+            height: 238px;
+        }
+
+        /* --- BLACK KEYS --- */
+        .black-key {
+            width: 36px;
+            height: 150px;
+            background: linear-gradient(to bottom, #334155 0%, #0f172a 80%, #000000 100%);
+            border-radius: 0 0 4px 4px;
+            position: absolute;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 0.8rem;
+            box-shadow: 0 8px 10px rgba(0,0,0,0.4), inset 0 -3px 0 #000;
+            transition: all 0.05s ease;
+        }
+
+        .black-key span.note {
+            color: #94a3b8;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .black-key span.hint {
+            font-size: 0.65rem;
+            color: #64748b;
+            margin-top: 0.1rem;
+        }
+
+        .black-key.active {
+            background: linear-gradient(to bottom, #0f172a 0%, #000000 100%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            transform: translateY(2px);
+            height: 148px;
+        }
+
+        /* JOLAYSHUV */
+        .black-key[data-key="W"] { left: 47px; }  
+        .black-key[data-key="E"] { left: 112px; } 
+        .black-key[data-key="T"] { left: 242px; } 
+        .black-key[data-key="Y"] { left: 307px; } 
+        .black-key[data-key="U"] { left: 372px; } 
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: #475569;
+            font-size: 0.8rem;
+            border-top: 1px solid #1e293b;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html" class="back-to-hub">
+        <i class="fa-solid fa-arrow-left-long"></i> Bosh sahifa
+    </a>
+
+    <header>
+        <h1>ZenPiano Professional</h1>
+        <p>Oq tugmalar: A, S, D, F, G, H, J, K | Qora tugmalar: W, E, T, Y, U</p>
+    </header>
+
+    <div class="piano-container">
+        <div class="piano-frame">
+            
+            <div class="white-key" data-key="A" data-freq="261.63">
+                <span class="note">Do</span><span class="hint">A</span>
+            </div>
+            
+            <div class="black-key" data-key="W" data-freq="277.18">
+                <span class="note">Do#</span><span class="hint">W</span>
+            </div>
+
+            <div class="white-key" data-key="S" data-freq="293.66">
+                <span class="note">Re</span><span class="hint">S</span>
+            </div>
+
+            <div class="black-key" data-key="E" data-freq="311.13">
+                <span class="note">Re#</span><span class="hint">E</span>
+            </div>
+
+            <div class="white-key" data-key="D" data-freq="329.63">
+                <span class="note">Mi</span><span class="hint">D</span>
+            </div>
+
+            <div class="white-key" data-key="F" data-freq="349.23">
+                <span class="note">Fa</span><span class="hint">F</span>
+            </div>
+
+            <div class="black-key" data-key="T" data-freq="369.99">
+                <span class="note">Fa#</span><span class="hint">T</span>
+            </div>
+
+            <div class="white-key" data-key="G" data-freq="392.00">
+                <span class="note">Sol</span><span class="hint">G</span>
+            </div>
+
+            <div class="black-key" data-key="Y" data-freq="415.30">
+                <span class="note">Sol#</span><span class="hint">Y</span>
+            </div>
+
+            <div class="white-key" data-key="H" data-freq="440.00">
+                <span class="note">Lya</span><span class="hint">H</span>
+            </div>
+
+            <div class="black-key" data-key="U" data-freq="466.16">
+                <span class="note">Lya#</span><span class="hint">U</span>
+            </div>
+
+            <div class="white-key" data-key="J" data-freq="493.88">
+                <span class="note">Si</span><span class="hint">J</span>
+            </div>
+
+            <div class="white-key" data-key="K" data-freq="523.25">
+                <span class="note">Do²</span><span class="hint">K</span>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        Premium Real Acoustic Engine &copy; Zenoxcha
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            let audioCtx = null;
+
+            function initAudio() {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+
+            function playPianoSound(frequency) {
+                initAudio();
+                if (!audioCtx) return;
+
+                let now = audioCtx.currentTime;
+                
+                let osc1 = audioCtx.createOscillator();
+                let osc2 = audioCtx.createOscillator();
+                let gainNode = audioCtx.createGain();
+
+                osc1.type = 'triangle'; 
+                osc1.frequency.setValueAtTime(frequency, now);
+
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(frequency * 2, now);
+
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(0.6, now + 0.015); 
+                gainNode.gain.exponentialRampToValueAtTime(0.12, now + 0.25); 
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 1.4); 
+
+                osc1.connect(gainNode);
+                osc2.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                osc1.start(now);
+                osc2.start(now);
+                
+                osc1.stop(now + 1.4);
+                osc2.stop(now + 1.4);
+            }
+
+            $('.white-key, .black-key').on('mousedown', function () {
+                $(this).addClass('active');
+                playPianoSound(parseFloat($(this).data('freq')));
+            });
+
+            $('.white-key, .black-key').on('mouseup mouseleave', function () {
+                $(this).removeClass('active');
+            });
+
+            let activeKeys = {};
+
+            $(document).on('keydown', function (e) {
+                let keyChar = String.fromCharCode(e.which).toUpperCase();
+                let targetElement = $(`[data-key="${keyChar}"]`);
+
+                if (targetElement.length && !activeKeys[keyChar]) {
+                    initAudio();
+                    activeKeys[keyChar] = true;
+                    targetElement.addClass('active');
+                    playPianoSound(parseFloat(targetElement.data('freq')));
+                }
+            });
+
+            $(document).on('keyup', function (e) {
+                let keyChar = String.fromCharCode(e.which).toUpperCase();
+                let targetElement = $(`[data-key="${keyChar}"]`);
+
+                if (targetElement.length) {
+                    activeKeys[keyChar] = false;
+                    targetElement.removeClass('active');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

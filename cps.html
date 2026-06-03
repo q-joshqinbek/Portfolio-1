@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPS Test | JQ Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #050b14;
+        }
+        .cyber-font {
+            font-family: 'Orbitron', sans-serif;
+        }
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body class="text-slate-200 min-h-screen flex flex-col justify-between relative select-none">
+
+    <!-- HOVERLI NEON FON CANVASI -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Orqaga qaytish tugmasi -->
+    <div class="max-w-6xl w-full mx-auto px-6 pt-8 relative z-10">
+        <a href="index.html"
+            class="inline-flex items-center gap-3 text-sm font-semibold text-sky-400 bg-slate-900/60 border border-sky-500/30 rounded-xl px-5 py-3 transition-all duration-300 hover:border-sky-400 hover:text-white hover:bg-sky-500/10 hover:shadow-[0_0_20px_rgba(14,165,233,0.3)] group backdrop-blur-sm">
+            <div class="w-6 h-6 rounded-lg bg-sky-500/10 flex items-center justify-center transition-transform group-hover:-translate-x-1 border border-sky-500/20">
+                <i class="fa-solid fa-chevron-left text-xs"></i>
+            </div>
+            <span class="tracking-wide uppercase text-xs font-bold cyber-font">Bosh sahifaga qaytish</span>
+        </a>
+    </div>
+
+    <!-- Asosiy CPS Test qismi -->
+    <main class="max-w-xl w-full mx-auto px-6 py-8 flex-grow flex flex-col justify-center relative z-10">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2 cyber-font tracking-wide text-transparent bg-clip-text bg-gradient-to-r align-middle from-cyan-400 to-pink-500 shadow-sm">
+                CPS CLICK TEST
+            </h1>
+            <p class="text-slate-400 text-sm">Sichqoncha yoki ekranni qanchalik tez bosa olishingizni tekshiring!</p>
+        </div>
+
+        <div class="bg-slate-800/30 border border-slate-700/60 rounded-2xl p-6 backdrop-blur-md shadow-2xl">
+            
+            <!-- Vaqtni tanlash paneli -->
+            <div class="flex justify-between items-center mb-6 bg-slate-900/50 p-2 rounded-xl border border-slate-800">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider pl-2 cyber-font">Vaqt:</span>
+                <div class="flex gap-2" id="timeSelector">
+                    <button data-time="1" class="time-btn px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:border-cyan-500 transition-all cyber-font">1s</button>
+                    <button data-time="3" class="time-btn px-3 py-1.5 text-xs font-bold rounded-lg border border-cyan-500 bg-cyan-500/10 text-cyan-400 transition-all cyber-font active-time">3s</button>
+                    <button data-time="5" class="time-btn px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:border-cyan-500 transition-all cyber-font">5s</button>
+                    <button data-time="10" class="time-btn px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:border-cyan-500 transition-all cyber-font">10s</button>
+                </div>
+            </div>
+
+            <!-- Natijalar paneli -->
+            <div class="grid grid-cols-3 gap-4 mb-6 text-center">
+                <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800">
+                    <p class="text-xs text-slate-400 uppercase cyber-font">Bosishlar</p>
+                    <p id="clickCount" class="text-xl font-bold text-white mt-1 cyber-font">0</p>
+                </div>
+                <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800">
+                    <p class="text-xs text-slate-400 uppercase cyber-font">Vaqt</p>
+                    <p id="timeLeft" class="text-xl font-bold text-cyan-400 mt-1 cyber-font">3.00s</p>
+                </div>
+                <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800">
+                    <p class="text-xs text-slate-400 uppercase cyber-font">CPS</p>
+                    <p id="cpsResult" class="text-xl font-bold text-pink-500 mt-1 cyber-font">0.0</p>
+                </div>
+            </div>
+
+            <!-- BOSISH MAYDONI (CLICK AREA) -->
+            <div id="clickArea" class="w-full h-56 bg-slate-900/60 border-2 border-dashed border-cyan-500/40 rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all duration-150 hover:border-cyan-400 hover:bg-cyan-500/5 active:scale-98 relative overflow-hidden group shadow-[inset_0_0_20px_rgba(0,0,0,0.6)]">
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <i class="fa-solid fa-arrow-pointer text-4xl text-cyan-400 mb-3 animate-bounce"></i>
+                <p id="clickAreaText" class="text-sm font-semibold tracking-wide text-slate-300 uppercase cyber-font group-hover:text-white">Boshlash uchun bosing!</p>
+                <p class="text-xs text-slate-500 mt-1">Taymer birinchi bosishdan boshlanadi</p>
+            </div>
+
+            <!-- Qayta boshlash tugmasi -->
+            <button id="resetBtn" class="w-full mt-6 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm py-3 px-4 rounded-xl transition-all border border-slate-700 flex items-center justify-center gap-2 cyber-font hover:text-white">
+                <i class="fa-solid fa-rotate-right text-xs"></i> Yangilash
+            </button>
+        </div>
+
+        <!-- Modal Oyna (Natija uchun) -->
+        <div id="resultModal" class="fixed inset-0 bg-black/80 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 z-50 px-4">
+            <div class="bg-slate-950 border border-pink-500/40 max-w-sm w-full rounded-2xl p-6 text-center transform scale-90 transition-all duration-300 shadow-[0_0_30px_rgba(255,0,234,0.2)]">
+                <div class="w-16 h-16 bg-pink-500/10 border border-pink-500/30 text-pink-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 animate-pulse">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white cyber-font mb-2">Sizning Natijangiz!</h3>
+                <div class="space-y-2 bg-slate-900/60 p-4 rounded-xl border border-slate-800 my-4 text-left">
+                    <div class="flex justify-between"><span class="text-slate-400 text-sm">Jami Clicks:</span> <span id="modalClicks" class="font-bold text-white cyber-font">0</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400 text-sm">Tanlangan vaqt:</span> <span id="modalTime" class="font-bold text-cyan-400 cyber-font">0s</span></div>
+                    <div class="flex justify-between border-t border-slate-800 pt-2 mt-2"><span class="text-slate-300 font-semibold">CPS Tezligi:</span> <span id="modalCps" class="font-bold text-pink-500 text-lg cyber-font">0.0</span></div>
+                </div>
+                <p class="text-xs uppercase tracking-wider text-slate-400 font-bold cyber-font">Unvon (Rank):</p>
+                <p id="rankText" class="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 cyber-font mb-6 mt-1">Toshbaqa 🐢</p>
+                <button id="closeModalBtn" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-3 rounded-xl transition-all cyber-font shadow-lg shadow-cyan-500/20">
+                    Yana urinib ko'rish
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500 relative z-10">
+        <div class="max-w-6xl mx-auto px-6 cyber-font">
+            &copy; 2026 JQ Portfolio. CPS Cyber Analyzer.
+        </div>
+    </footer>
+
+    <script>
+        // HOVER/MOUSE-MOVE NEON PARTICLE EFFECT (Fon uchun xuddi oldingidek)
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+        const colors = ['#00f2ff', '#ff00ea', '#38bdf8', '#ffffff'];
+        const mouse = { x: null, y: null };
+
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+        window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; for (let i = 0; i < 2; i++) particlesArray.push(new Particle()); });
+        window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor() {
+                this.x = mouse.x || Math.random() * canvas.width;
+                this.y = mouse.y || Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 1.5 - 0.75;
+                this.speedY = Math.random() * 1.5 - 0.75;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            update() { this.x += this.speedX; this.y += this.speedY; if (this.size > 0.1) this.size -= 0.02; }
+            draw() { ctx.fillStyle = this.color; ctx.shadowBlur = 8; ctx.shadowColor = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+        }
+
+        function initParticles() { if (particlesArray.length < 40) { mouse.x = Math.random() * canvas.width; mouse.y = Math.random() * canvas.height; particlesArray.push(new Particle()); mouse.x = null; mouse.y = null; } }
+        function animate() { ctx.fillStyle = "rgba(5, 11, 20, 0.12)"; ctx.fillRect(0, 0, canvas.width, canvas.height); initParticles(); handleParticles(); ctx.shadowBlur = 0; connectParticles(); requestAnimationFrame(animate); }
+        function handleParticles() { for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); particlesArray[i].draw(); if (particlesArray[i].size <= 0.3) { particlesArray.splice(i, 1); i--; } } }
+        function connectParticles() {
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let dx = particlesArray[a].x - particlesArray[b].x; let dy = particlesArray[a].y - particlesArray[b].y; let dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 80) { let op = 1 - (dist / 80); ctx.strokeStyle = `rgba(56, 189, 248, ${op * 0.2})`; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke(); }
+                }
+            }
+        }
+        animate();
+
+        // CPS TEST GAME LOGIC
+        let chosenDuration = 3; 
+        let clicks = 0;
+        let timeLeft = chosenDuration;
+        let timerId = null;
+        let isPlaying = false;
+        let hasEnded = false;
+
+        const clickArea = document.getElementById('clickArea');
+        const clickCountEl = document.getElementById('clickCount');
+        const timeLeftEl = document.getElementById('timeLeft');
+        const cpsResultEl = document.getElementById('cpsResult');
+        const clickAreaText = document.getElementById('clickAreaText');
+        const resetBtn = document.getElementById('resetBtn');
+        const timeButtons = document.querySelectorAll('.time-btn');
+
+        // Modal elementlari
+        const resultModal = document.getElementById('resultModal');
+        const modalClicks = document.getElementById('modalClicks');
+        const modalTime = document.getElementById('modalTime');
+        const modalCps = document.getElementById('modalCps');
+        const rankText = document.getElementById('rankText');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        // Vaqtni tanlash
+        timeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (isPlaying) return; // O'yin paytida vaqtni o'zgartirib bo'lmaydi
+                timeButtons.forEach(b => b.classList.remove('active-time', 'border-cyan-500', 'bg-cyan-500/10', 'text-cyan-400'));
+                timeButtons.forEach(b => b.classList.add('border-slate-700', 'bg-slate-800', 'text-slate-300'));
+                
+                btn.classList.remove('border-slate-700', 'bg-slate-800', 'text-slate-300');
+                btn.classList.add('active-time', 'border-cyan-500', 'bg-cyan-500/10', 'text-cyan-400');
+                
+                chosenDuration = parseInt(btn.getAttribute('data-time'));
+                resetGame();
+            });
+        });
+
+        // Bosish voqeasi (Click Event)
+        clickArea.addEventListener('mousedown', (e) => {
+            if (hasEnded) return;
+            
+            if (!isPlaying) {
+                startCounting();
+            }
+            
+            clicks++;
+            clickCountEl.textContent = clicks;
+            
+            // Neon pulsatsiya effekti
+            clickArea.classList.remove('border-cyan-500/40');
+            clickArea.classList.add('border-pink-500', 'shadow-[0_0_15px_rgba(255,0,234,0.3)]');
+            setTimeout(() => {
+                if(!hasEnded) {
+                    clickArea.classList.remove('border-pink-500', 'shadow-[0_0_15px_rgba(255,0,234,0.3)]');
+                    clickArea.classList.add('border-cyan-400');
+                }
+            }, 80);
+
+            calculateCps();
+        });
+
+        function startCounting() {
+            isPlaying = true;
+            clickAreaText.textContent = "TEZROQ BOSING!!!";
+            clickArea.classList.remove('border-cyan-500/40');
+            clickArea.classList.add('border-cyan-400');
+            
+            let startTime = performance.now();
+            timerId = setInterval(() => {
+                let elapsed = (performance.now() - startTime) / 1000;
+                timeLeft = chosenDuration - elapsed;
+                
+                if (timeLeft <= 0) {
+                    timeLeft = 0;
+                    endGame();
+                }
+                timeLeftEl.textContent = timeLeft.toFixed(2) + "s";
+                calculateCps();
+            }, 10);
+        }
+
+        function calculateCps() {
+            let elapsed = chosenDuration - timeLeft;
+            if (elapsed <= 0) elapsed = 0.1;
+            let currentCps = clicks / elapsed;
+            cpsResultEl.textContent = currentCps.toFixed(1);
+        }
+
+        function endGame() {
+            clearInterval(timerId);
+            isPlaying = false;
+            hasEnded = true;
+            clickAreaText.textContent = "Vaqt tugadi!";
+            clickArea.classList.remove('border-cyan-400');
+            clickArea.classList.add('border-red-500/50', 'bg-red-500/5');
+
+            let finalCps = clicks / chosenDuration;
+            
+            // Natijalarni modalga yozish
+            modalClicks.textContent = clicks;
+            modalTime.textContent = chosenDuration + " soniya";
+            modalCps.textContent = finalCps.toFixed(2);
+            rankText.textContent = getRank(finalCps);
+
+            // Modalni ko'rsatish
+            setTimeout(() => {
+                resultModal.classList.remove('opacity-0', 'pointer-events-none');
+                resultModal.querySelector('div').classList.remove('scale-90');
+            }, 300);
+        }
+
+        function getRank(cps) {
+            if (cps < 4) return "Toshbaqa 🐢 (Sekin)";
+            if (cps < 7) return "Oddiy Odam 👨‍💻 (Yaxshi)";
+            if (cps < 10) return "Gepard 🐆 (Tezkor!)";
+            if (cps < 13) return "Kiber-Mashina 🤖 (Daxshat!)";
+            return "Haker / Makros ⚡ (Afsonaviy!)";
+        }
+
+        function resetGame() {
+            clearInterval(timerId);
+            clicks = 0;
+            timeLeft = chosenDuration;
+            isPlaying = false;
+            hasEnded = false;
+            clickCountEl.textContent = "0";
+            timeLeftEl.textContent = chosenDuration.toFixed(2) + "s";
+            cpsResultEl.textContent = "0.0";
+            clickAreaText.textContent = "Boshlash uchun bosing!";
+            clickArea.className = "w-full h-56 bg-slate-900/60 border-2 border-dashed border-cyan-500/40 rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all duration-150 hover:border-cyan-400 hover:bg-cyan-500/5 active:scale-98 relative overflow-hidden group shadow-[inset_0_0_20px_rgba(0,0,0,0.6)]";
+        }
+
+        resetBtn.addEventListener('click', resetGame);
+        closeModalBtn.addEventListener('click', () => {
+            resultModal.classList.add('opacity-0', 'pointer-events-none');
+            resultModal.querySelector('div').classList.add('scale-90');
+            resetGame();
+        });
+    </script>
+</body>
+
+</html>
