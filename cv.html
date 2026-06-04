@@ -1,564 +1,735 @@
 <!DOCTYPE html>
 <html lang="uz">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV | JQ Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --neon-blue: #00a8cc;
-            --neon-pink: #d92027;
-            --bg-dark: #f8fafc;
-            /* Toza, och fon */
-            --card-bg: #ffffff;
-            /* Oq karta foni */
-            --text-color: #1e293b;
-            /* To'q kulrang matn */
-            --card-p-color: #475569;
-            /* Paragraph matnlari */
-            --border-color: #e2e8f0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV | JQ Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --ink: #0d1117;
+    --paper: #f5f2eb;
+    --accent: #c8401a;
+    --accent2: #1a6bc8;
+    --muted: #6b7280;
+    --border: #d9d4c8;
+    --card: #ffffff;
+    --tag-bg: #f0ede4;
+  }
 
-        body {
-            margin: 0;
-            background: var(--bg-dark);
-            color: var(--text-color);
-            font-family: 'Poppins', sans-serif;
-            min-height: 100vh;
-            padding: 40px 20px;
-            box-sizing: border-box;
-        }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .cv-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            padding: 40px;
-            position: relative;
-            border-radius: 8px;
-        }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    padding: 30px 20px 60px;
+  }
 
-        /* Yuqori boshqaruv paneli */
-        .cv-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
+  /* ── TOP BAR ── */
+  .top-bar {
+    max-width: 900px;
+    margin: 0 auto 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 
-        .btn-group {
-            display: flex;
-            gap: 10px;
-        }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    border: 1.5px solid var(--border);
+    padding: 9px 18px;
+    border-radius: 6px;
+    background: var(--card);
+    transition: .2s;
+  }
+  .back-btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
 
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: #64748b;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-            font-weight: bold;
-            border: 1px solid #cbd5e1;
-            padding: 10px 20px;
-            transition: 0.3s;
-            background: #fff;
-            border-radius: 4px;
-        }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
-        .back-btn:hover {
-            background: #f1f5f9;
-            color: #334155;
-            transform: translateX(-3px);
-        }
+  .dl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    padding: 9px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: .2s;
+  }
+  .dl-btn.uz { background: #1a6bc8; color: #fff; }
+  .dl-btn.ru { background: #c8401a; color: #fff; }
+  .dl-btn.en { background: #1a7a3c; color: #fff; }
+  .dl-btn:hover { opacity: .85; transform: translateY(-1px); }
 
-        /* PDF yuklab olish tugmasi */
-        .download-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #fff;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem;
-            font-weight: bold;
-            border: none;
-            padding: 10px 15px;
-            background: var(--neon-blue);
-            cursor: pointer;
-            transition: 0.3s;
-            border-radius: 4px;
-            box-shadow: 0 4px 12px rgba(0, 168, 204, 0.2);
-        }
+  /* ── MAIN CV CARD ── */
+  #cvCard {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,.07);
+  }
 
-        .download-btn:hover {
-            background: #008cb0;
-            box-shadow: 0 6px 15px rgba(0, 168, 204, 0.3);
-        }
+  /* ── HEADER BAND ── */
+  .cv-header {
+    background: var(--ink);
+    color: #fff;
+    padding: 36px 40px;
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+  }
 
-        /* PDF tayyorlanmoqda xabarnomasi */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #1e293b;
-            color: #fff;
-            padding: 15px 25px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem;
-            border-left: 4px solid var(--neon-blue);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transform: translateY(150%);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 9999;
-            border-radius: 4px;
-        }
+  /* Photo */
+  .photo-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+  .photo-circle {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    overflow: hidden;
+    background: #1e2530;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .photo-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .photo-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: #8896a8;
+    font-size: 0.72rem;
+    text-align: center;
+    padding: 10px;
+  }
+  .photo-placeholder i { font-size: 2rem; color: #4a5568; }
+  .photo-overlay {
+    position: absolute;
+    bottom: 0; right: 0;
+    background: var(--accent);
+    border-radius: 50%;
+    width: 28px; height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid var(--card);
+    transition: .2s;
+  }
+  .photo-overlay:hover { transform: scale(1.15); }
+  .photo-overlay i { color: #fff; font-size: 0.7rem; }
+  #photoInput { display: none; }
 
-        .toast.show {
-            transform: translateY(0);
-        }
+  /* Header text */
+  .header-text { flex: 1; }
+  .header-text h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -.01em;
+    margin-bottom: 4px;
+    color: #fff;
+  }
+  .header-text .role {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: .04em;
+    margin-bottom: 18px;
+  }
 
-        .toast i {
-            color: var(--neon-blue);
-            animation: spin 1s linear infinite;
-        }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 20px;
+  }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.84rem;
+    color: #b0bec5;
+  }
+  .contact-item i { color: var(--accent); width: 14px; }
 
-        @keyframes spin {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
+  /* ── BODY ── */
+  .cv-body {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 0;
+  }
 
-        /* CV Kontenti */
-        .cv-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #f1f5f9;
-            padding-bottom: 30px;
-            margin-bottom: 30px;
-        }
+  .col-left {
+    padding: 36px 36px 36px 40px;
+    border-right: 1.5px solid var(--border);
+  }
+  .col-right {
+    padding: 36px 40px 36px 30px;
+  }
 
-        .header-info h1 {
-            font-family: 'Orbitron', sans-serif;
-            margin: 0 0 5px 0;
-            font-size: 2.2rem;
-            color: #0f172a;
-        }
+  .section { margin-bottom: 34px; }
+  .section:last-child { margin-bottom: 0; }
 
-        .header-info p {
-            color: var(--neon-blue);
-            font-family: 'Orbitron', sans-serif;
-            margin: 0;
-            font-size: 1rem;
-            vertical-align: middle;
-            font-weight: 600;
-        }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1.5px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 18px;
+  }
 
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
+  p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
 
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.9rem;
-            color: var(--card-p-color);
-        }
+  /* Timeline */
+  .timeline-item {
+    margin-bottom: 22px;
+    padding-left: 16px;
+    border-left: 2px solid var(--border);
+    position: relative;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 5px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .tl-date {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: .06em;
+    margin-bottom: 2px;
+  }
+  .tl-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .tl-company {
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: var(--accent2);
+    margin-bottom: 8px;
+  }
 
-        .contact-item i {
-            color: var(--neon-blue);
-            width: 16px;
-        }
+  /* Skills */
+  .skills-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+  .skill-tag {
+    background: var(--tag-bg);
+    border: 1.5px solid var(--border);
+    padding: 6px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink);
+    border-radius: 5px;
+    letter-spacing: .03em;
+  }
 
-        .cv-main {
-            display: grid;
-            grid-template-columns: 1.6fr 1fr;
-            gap: 40px;
-        }
+  /* Languages */
+  .lang-item { margin-bottom: 14px; }
+  .lang-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 5px;
+  }
+  .lang-row span:last-child { color: var(--muted); font-weight: 400; }
+  .progress-bar {
+    height: 6px;
+    background: var(--tag-bg);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+  }
 
-        h2 {
-            font-family: 'Orbitron', sans-serif;
-            color: #0f172a;
-            font-size: 1.25rem;
-            border-left: 4px solid var(--neon-blue);
-            padding-left: 10px;
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
+  /* ── CERTIFICATES ── */
+  .certs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
 
-        p {
-            color: var(--card-p-color);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
+  .cert-card {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--tag-bg);
+    position: relative;
+    cursor: pointer;
+    transition: .2s;
+    min-height: 80px;
+  }
+  .cert-card:hover { border-color: var(--accent); box-shadow: 0 4px 12px rgba(200,64,26,.12); }
 
-        .section {
-            margin-bottom: 35px;
-        }
+  .cert-card img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    display: block;
+  }
+  .cert-card .cert-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    padding: 6px 8px;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+  }
+  .cert-placeholder {
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #aaa;
+  }
+  .cert-placeholder i { font-size: 1.6rem; }
+  .cert-placeholder span { font-size: 0.7rem; }
 
-        .timeline-item {
-            margin-bottom: 20px;
-            position: relative;
-            padding-left: 15px;
-            border-left: 2px solid #e2e8f0;
-        }
+  .add-cert-btn {
+    border: 1.5px dashed var(--border);
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+    transition: .2s;
+    width: 100%;
+    padding: 10px;
+  }
+  .add-cert-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .add-cert-btn i { font-size: 1.4rem; }
 
-        .timeline-date {
-            font-size: 0.8rem;
-            color: var(--neon-pink);
-            font-family: 'Orbitron', sans-serif;
-            margin-bottom: 3px;
-            font-weight: 600;
-        }
+  .cert-remove {
+    position: absolute;
+    top: 4px; right: 4px;
+    background: rgba(0,0,0,.55);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 20px; height: 20px;
+    font-size: 0.65rem;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .cert-card:hover .cert-remove { display: flex; }
 
-        .timeline-title {
-            font-weight: 600;
-            font-size: 1.05rem;
-            margin: 0 0 2px 0;
-            color: #1e293b;
-        }
+  #certInput { display: none; }
 
-        .timeline-company {
-            font-size: 0.9rem;
-            color: var(--neon-blue);
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--ink);
+    color: #fff;
+    padding: 14px 22px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-left: 4px solid var(--accent);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(120%);
+    transition: transform .35s cubic-bezier(.175,.885,.32,1.275);
+    z-index: 9999;
+    box-shadow: 0 8px 30px rgba(0,0,0,.18);
+  }
+  .toast.show { transform: translateY(0); }
+  .toast i { animation: spin 1s linear infinite; color: var(--accent); }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
+  /* ── PRINT ── */
+  @media print {
+    body { background: white !important; padding: 0 !important; }
+    .top-bar, .toast, .photo-overlay, .add-cert-btn, .cert-remove { display: none !important; }
+    #cvCard { border: none !important; box-shadow: none !important; border-radius: 0 !important; max-width: 100% !important; }
+    .progress { background: #c8401a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .skill-tag { background: #f0ede4 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .cv-header { background: #0d1117 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
 
-        .skill-tag {
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
-            padding: 8px 12px;
-            font-size: 0.85rem;
-            text-align: center;
-            font-family: 'Orbitron', sans-serif;
-            color: #334155;
-            border-radius: 4px;
-            font-weight: 500;
-        }
-
-        .lang-item {
-            margin-bottom: 15px;
-        }
-
-        .lang-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            margin-bottom: 6px;
-            font-weight: 500;
-            color: #334155;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress {
-            height: 100%;
-            background: var(--neon-blue);
-            border-radius: 4px;
-        }
-
-        /* --- PRINT STYLES (PDF uchun mukammal sozlamalar) --- */
-        @media print {
-            body {
-                background: white !important;
-                color: black !important;
-                padding: 0 !important;
-            }
-
-            .cv-container {
-                border: none !important;
-                box-shadow: none !important;
-                background: transparent !important;
-                padding: 0 !important;
-            }
-
-            .cv-controls,
-            .toast {
-                display: none !important;
-                /* PDF ichida boshqaruv tugmalari chiqmaydi */
-            }
-
-            h2 {
-                color: #000 !important;
-                border-left-color: #00a8cc !important;
-            }
-
-            .header-info h1 {
-                color: #000 !important;
-            }
-
-            .progress {
-                background: #00a8cc !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            .skill-tag {
-                background: #f1f5f9 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .cv-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 20px;
-            }
-
-            .contact-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .cv-main {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .cv-container {
-                padding: 20px;
-            }
-
-            .cv-controls {
-                flex-direction: column;
-                gap: 15px;
-                align-items: stretch;
-            }
-
-            .btn-group {
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .back-btn,
-            .download-btn {
-                justify-content: center;
-            }
-        }
-    </style>
+  @media (max-width: 700px) {
+    .cv-header { flex-direction: column; padding: 28px 24px; }
+    .cv-body { grid-template-columns: 1fr; }
+    .col-left { border-right: none; border-bottom: 1.5px solid var(--border); padding: 28px 24px; }
+    .col-right { padding: 28px 24px; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .top-bar { flex-direction: column; align-items: stretch; }
+    .btn-row { flex-direction: row; }
+    .certs-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
 </head>
-
 <body>
 
-    <div class="cv-container">
-        <div class="cv-controls">
-            <a href="index.html" class="back-btn" id="lblBack"><i class="fa-solid fa-arrow-left"></i> ORQAGA</a>
-            <div class="btn-group">
-                <button class="download-btn" onclick="generatePDF('uz')"><i class="fa-solid fa-file-pdf"></i> UZ PDF</button>
-                <button class="download-btn" onclick="generatePDF('ru')"><i class="fa-solid fa-file-pdf"></i> RU PDF</button>
-                <button class="download-btn" onclick="generatePDF('en')"><i class="fa-solid fa-file-pdf"></i> EN PDF</button>
-            </div>
+<!-- TOP BAR -->
+<div class="top-bar">
+  <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> ORQAGA</a>
+  <div class="btn-row">
+    <button class="dl-btn uz" onclick="generatePDF('uz')"><i class="fa-solid fa-file-pdf"></i> UZ PDF</button>
+    <button class="dl-btn ru" onclick="generatePDF('ru')"><i class="fa-solid fa-file-pdf"></i> RU PDF</button>
+    <button class="dl-btn en" onclick="generatePDF('en')"><i class="fa-solid fa-file-pdf"></i> EN PDF</button>
+  </div>
+</div>
+
+<!-- CV CARD -->
+<div id="cvCard">
+
+  <!-- HEADER -->
+  <header class="cv-header">
+    <div class="photo-wrap">
+      <div class="photo-circle" onclick="document.getElementById('photoInput').click()">
+        <div class="photo-placeholder" id="photoPlaceholder">
+          <i class="fa-solid fa-user-circle"></i>
+          <span>Rasm qo'yish</span>
         </div>
-
-        <header class="cv-header">
-            <div class="header-info">
-                <h1 id="lblProfileName">Qurbonbayev Jo'shqinbek</h1>
-                <p>Frontend & Backend Web Developer</p>
-
-                <div class="contact-grid">
-                    <div class="contact-item"><i class="fa-solid fa-phone"></i> +998 (91) 092-62-81</div>
-                    <div class="contact-item"><i class="fa-solid fa-envelope"></i> jq_live@gmail.com</div>
-                    <div class="contact-item"><i class="fa-brands fa-telegram"></i> @JQ_live</div>
-                    <div class="contact-item"><i class="fa-solid fa-location-dot"></i> <span id="lblLocation">O'zbekiston</span></div>
-                </div>
-            </div>
-        </header>
-
-        <div class="cv-main">
-            <div class="left-column">
-                <div class="section">
-                    <h2 id="lblAboutTitle">Men Haqimda</h2>
-                    <p id="lblAboutDesc">Men zamonaviy, xavfsiz va yuqori samaradorlikka ega veb-saytlar hamda tizimlar yaratishga qiziquvchi dasturchiman. Har bir loyihaga ijodiy va professional yondashaman.</p>
-                </div>
-
-                <div class="section">
-                    <h2 id="lblExpTitle">Tajriba va Faoliyat</h2>
-                    <div class="timeline-item">
-                        <div class="timeline-date" id="lblExpDate">2025 - Hozirgacha</div>
-                        <div class="timeline-title" id="lblExpJob">Mustaqil Web Developer</div>
-                        <div class="timeline-company" id="lblExpCompany">Portfolio Loyihalari</div>
-                        <p id="lblExpDesc">HTML, CSS, Tailwind CSS hamda backend texnologiyalari yordamida shaxsiy platformalar va veb-saytlar yaratish.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="right-column">
-                <div class="section">
-                    <h2 id="lblSkillsTitle">Ko'nikmalar</h2>
-                    <div class="skills-grid">
-                        <div class="skill-tag">HTML / CSS</div>
-                        <div class="skill-tag">Tailwind</div>
-                        <div class="skill-tag">JavaScript</div>
-                        <div class="skill-tag">Git / GitHub</div>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2 id="lblLangTitle">Til Bilish</h2>
-
-                    <div class="lang-item">
-                        <div class="lang-info"><span id="lblLang1">O'zbek tili</span><span id="lblLang1Lvl">Ona tili (100%)</span></div>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 100%;"></div>
-                        </div>
-                    </div>
-
-                    <div class="lang-item">
-                        <div class="lang-info"><span id="lblLang2">Rus tili</span><span id="lblLang2Lvl">O'rta (70%)</span></div>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 70%;"></div>
-                        </div>
-                    </div>
-
-                    <div class="lang-item">
-                        <div class="lang-info"><span id="lblLang3">Ingliz tili</span><span id="lblLang3Lvl">Texnik (60%)</span></div>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 60%;"></div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
+        <img id="photoImg" src="" alt="Profil rasmi" style="display:none;">
+      </div>
+      <div class="photo-overlay" onclick="document.getElementById('photoInput').click()">
+        <i class="fa-solid fa-camera"></i>
+      </div>
+      <input type="file" id="photoInput" accept="image/*" onchange="loadPhoto(event)">
     </div>
 
-    <div class="toast" id="downloadToast">
-        <i class="fa-solid fa-spinner"></i>
-        <span id="lblToastText">PDF tayyorlanmoqda...</span>
+    <div class="header-text">
+      <h1 id="lblName">Qurbonbayev Jo'shqinbek</h1>
+      <div class="role">Frontend &amp; Backend Web Developer</div>
+      <div class="contact-grid">
+        <div class="contact-item"><i class="fa-solid fa-phone"></i> +998 (91) 092-62-81</div>
+        <div class="contact-item"><i class="fa-solid fa-envelope"></i> jq_live@gmail.com</div>
+        <div class="contact-item"><i class="fa-brands fa-telegram"></i> @JQ_live</div>
+        <div class="contact-item"><i class="fa-solid fa-location-dot"></i> <span id="lblLocation">O'zbekiston</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="cv-body">
+    <!-- LEFT -->
+    <div class="col-left">
+
+      <div class="section">
+        <h2 id="lblAboutTitle">Men Haqimda</h2>
+        <p id="lblAboutDesc">Men zamonaviy, xavfsiz va yuqori samaradorlikka ega veb-saytlar hamda tizimlar yaratishga qiziquvchi dasturchiman. Har bir loyihaga ijodiy va professional yondashaman.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="lblExpTitle">Tajriba va Faoliyat</h2>
+        <div class="timeline-item">
+          <div class="tl-date" id="lblExpDate">2025 – Hozirgacha</div>
+          <div class="tl-title" id="lblExpJob">Mustaqil Web Developer</div>
+          <div class="tl-company" id="lblExpCompany">Portfolio Loyihalari</div>
+          <p id="lblExpDesc">HTML, CSS, Tailwind CSS hamda backend texnologiyalari yordamida shaxsiy platformalar va veb-saytlar yaratish.</p>
+        </div>
+      </div>
+
+      <!-- CERTIFICATES -->
+      <div class="section">
+        <h2 id="lblCertTitle">Sertifikatlar</h2>
+        <div class="certs-grid" id="certsGrid">
+          <!-- Sertifikatlar bu yerga qo'shiladi -->
+          <button class="add-cert-btn" onclick="document.getElementById('certInput').click()">
+            <i class="fa-solid fa-plus-circle"></i>
+            <span id="lblAddCert">Sertifikat qo'shish</span>
+          </button>
+        </div>
+        <input type="file" id="certInput" accept="image/*" multiple onchange="addCerts(event)">
+      </div>
+
     </div>
 
-    <script>
-        const toast = document.getElementById('downloadToast');
-        const toastText = document.getElementById('lblToastText');
+    <!-- RIGHT -->
+    <div class="col-right">
 
-        // 3 ta til uchun matnlar bazasi
-        const translations = {
-            uz: {
-                back: '<i class="fa-solid fa-arrow-left"></i> ORQAGA',
-                name: "Qurbonbayev Jo'shqinbek",
-                location: "O'zbekiston",
-                aboutTitle: "Men Haqimda",
-                aboutDesc: "Men zamonaviy, xavfsiz va yuqori samaradorlikka ega veb-saytlar hamda tizimlar yaratishga qiziquvchi dasturchiman. Har bir loyihaga ijodiy va professional yondashaman.",
-                expTitle: "Tajriba va Faoliyat",
-                expDate: "2025 - Hozirgacha",
-                expJob: "Mustaqil Web Developer",
-                expCompany: "Portfolio Loyihalari",
-                expDesc: "HTML, CSS, Tailwind CSS hamda backend texnologiyalari yordamida shaxsiy platformalar va veb-saytlar yaratish.",
-                skillsTitle: "Ko'nikmalar",
-                langTitle: "Til Bilish",
-                lang1: "O'zbek tili", lang1Lvl: "Ona tili (100%)",
-                lang2: "Rus tili", lang2Lvl: "O'rta (70%)",
-                lang3: "Ingliz tili", lang3Lvl: "Texnik (60%)",
-                toast: "PDF tayyorlanmoqda..."
-            },
-            ru: {
-                back: '<i class="fa-solid fa-arrow-left"></i> НАЗАД',
-                name: "Курбонбаев Жошкинбек",
-                location: "Узбекистан",
-                aboutTitle: "О себе",
-                aboutDesc: "Я веб-разработчик, увлеченный созданием современных, безопасных и высокопроизводительных веб-сайтов и систем. К каждому проекту подхожу творчески и профессионально.",
-                expTitle: "Опыт и деятельность",
-                expDate: "2025 - По наст. время",
-                expJob: "Независимый Web Developer",
-                expCompany: "Портфолио проекты",
-                expDesc: "Создание персональных платформ и веб-сайтов с использованием HTML, CSS, Tailwind CSS и серверных технологий.",
-                skillsTitle: "Навыки",
-                langTitle: "Знание языков",
-                lang1: "Узбекский язык", lang1Lvl: "Родной (100%)",
-                lang2: "Русский язык", lang2Lvl: "Средний (70%)",
-                lang3: "Английский язык", lang3Lvl: "Технический (60%)",
-                toast: "PDF подготовка..."
-            },
-            en: {
-                back: '<i class="fa-solid fa-arrow-left"></i> BACK',
-                name: "Qurbonbayev Joshqinbek",
-                location: "Uzbekistan",
-                aboutTitle: "About Me",
-                aboutDesc: "I am a web developer interested in creating modern, secure, and high-performance websites and systems. I approach each project with creativity and professionalism.",
-                expTitle: "Experience & Activity",
-                expDate: "2025 - Present",
-                expJob: "Independent Web Developer",
-                expCompany: "Portfolio Projects",
-                expDesc: "Creating personal platforms and websites using HTML, CSS, Tailwind CSS, and backend technologies.",
-                skillsTitle: "Skills",
-                langTitle: "Languages",
-                lang1: "Uzbek", lang1Lvl: "Native (100%)",
-                lang2: "Russian", lang2Lvl: "Intermediate (70%)",
-                lang3: "English", lang3Lvl: "Technical (60%)",
-                toast: "Preparing PDF..."
-            }
-        };
+      <div class="section">
+        <h2 id="lblSkillsTitle">Ko'nikmalar</h2>
+        <div class="skills-wrap">
+          <div class="skill-tag">HTML / CSS</div>
+          <div class="skill-tag">Tailwind</div>
+          <div class="skill-tag">JavaScript</div>
+          <div class="skill-tag">Git / GitHub</div>
+        </div>
+      </div>
 
-        function changeLanguage(lang) {
-            const data = translations[lang];
-            
-            document.getElementById('lblBack').innerHTML = data.back;
-            document.getElementById('lblProfileName').innerText = data.name;
-            document.getElementById('lblLocation').innerText = data.location;
-            document.getElementById('lblAboutTitle').innerText = data.aboutTitle;
-            document.getElementById('lblAboutDesc').innerText = data.aboutDesc;
-            document.getElementById('lblExpTitle').innerText = data.expTitle;
-            document.getElementById('lblExpDate').innerText = data.expDate;
-            document.getElementById('lblExpJob').innerText = data.expJob;
-            document.getElementById('lblExpCompany').innerText = data.expCompany;
-            document.getElementById('lblExpDesc').innerText = data.expDesc;
-            document.getElementById('lblSkillsTitle').innerText = data.skillsTitle;
-            document.getElementById('lblLangTitle').innerText = data.langTitle;
-            document.getElementById('lblLang1').innerText = data.lang1;
-            document.getElementById('lblLang1Lvl').innerText = data.lang1Lvl;
-            document.getElementById('lblLang2').innerText = data.lang2;
-            document.getElementById('lblLang2Lvl').innerText = data.lang2Lvl;
-            document.getElementById('lblLang3').innerText = data.lang3;
-            document.getElementById('lblLang3Lvl').innerText = data.lang3Lvl;
-            toastText.innerText = data.toast;
-        }
+      <div class="section">
+        <h2 id="lblLangTitle">Til Bilish</h2>
 
-        function generatePDF(lang) {
-            // 1. Matnlarni tanlangan tilga o'zgartirish
-            changeLanguage(lang);
+        <div class="lang-item">
+          <div class="lang-row">
+            <span id="lblLang1">O'zbek tili</span>
+            <span id="lblLang1Lvl">Ona tili · 100%</span>
+          </div>
+          <div class="progress-bar"><div class="progress" style="width:100%"></div></div>
+        </div>
 
-            // 2. Toast bildirishnomasini chiqarish
-            toast.classList.add('show');
+        <div class="lang-item">
+          <div class="lang-row">
+            <span id="lblLang2">Rus tili</span>
+            <span id="lblLang2Lvl">O'rta · 70%</span>
+          </div>
+          <div class="progress-bar"><div class="progress" style="width:70%"></div></div>
+        </div>
 
-            // 3. Effekt uchun biroz kutib, printerni ochish
-            setTimeout(() => {
-                toast.classList.remove('show');
-                window.print(); // PDF ko'rinishida saqlash oynasini ochadi
-                
-                // 4. Chop etish oynasi yopilgach, CV ni avtomatik ravishda yana o'zbek tiliga qaytarib qo'yadi
-                setTimeout(() => {
-                    changeLanguage('uz');
-                }, 1000);
-            }, 1200);
-        }
-    </script>
+        <div class="lang-item">
+          <div class="lang-row">
+            <span id="lblLang3">Ingliz tili</span>
+            <span id="lblLang3Lvl">Texnik · 60%</span>
+          </div>
+          <div class="progress-bar"><div class="progress" style="width:60%"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /cv-body -->
+</div><!-- /cvCard -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <i class="fa-solid fa-spinner"></i>
+  <span id="lblToast">PDF tayyorlanmoqda...</span>
+</div>
+
+<script>
+/* ─── TRANSLATIONS ─── */
+const T = {
+  uz: {
+    name: "Qurbonbayev Jo'shqinbek",
+    location: "O'zbekiston",
+    aboutTitle: "Men Haqimda",
+    aboutDesc: "Men zamonaviy, xavfsiz va yuqori samaradorlikka ega veb-saytlar hamda tizimlar yaratishga qiziquvchi dasturchiman. Har bir loyihaga ijodiy va professional yondashaman.",
+    expTitle: "Tajriba va Faoliyat",
+    expDate: "2025 – Hozirgacha",
+    expJob: "Mustaqil Web Developer",
+    expCompany: "Portfolio Loyihalari",
+    expDesc: "HTML, CSS, Tailwind CSS hamda backend texnologiyalari yordamida shaxsiy platformalar va veb-saytlar yaratish.",
+    certTitle: "Sertifikatlar",
+    addCert: "Sertifikat qo'shish",
+    skillsTitle: "Ko'nikmalar",
+    langTitle: "Til Bilish",
+    lang1:"O'zbek tili", lang1Lvl:"Ona tili · 100%",
+    lang2:"Rus tili",    lang2Lvl:"O'rta · 70%",
+    lang3:"Ingliz tili", lang3Lvl:"Texnik · 60%",
+    toast: "PDF tayyorlanmoqda..."
+  },
+  ru: {
+    name: "Курбонбаев Жошкинбек",
+    location: "Узбекистан",
+    aboutTitle: "О себе",
+    aboutDesc: "Я веб-разработчик, увлечённый созданием современных, безопасных и высокопроизводительных сайтов и систем. К каждому проекту подхожу творчески и профессионально.",
+    expTitle: "Опыт и деятельность",
+    expDate: "2025 – По наст. время",
+    expJob: "Независимый Web Developer",
+    expCompany: "Портфолио проекты",
+    expDesc: "Создание персональных платформ и веб-сайтов с использованием HTML, CSS, Tailwind CSS и серверных технологий.",
+    certTitle: "Сертификаты",
+    addCert: "Добавить сертификат",
+    skillsTitle: "Навыки",
+    langTitle: "Знание языков",
+    lang1:"Узбекский",   lang1Lvl:"Родной · 100%",
+    lang2:"Русский",     lang2Lvl:"Средний · 70%",
+    lang3:"Английский",  lang3Lvl:"Технический · 60%",
+    toast: "Подготовка PDF..."
+  },
+  en: {
+    name: "Qurbonbayev Joshqinbek",
+    location: "Uzbekistan",
+    aboutTitle: "About Me",
+    aboutDesc: "I am a web developer passionate about building modern, secure, and high-performance websites and systems. I approach every project with creativity and professionalism.",
+    expTitle: "Experience & Activity",
+    expDate: "2025 – Present",
+    expJob: "Independent Web Developer",
+    expCompany: "Portfolio Projects",
+    expDesc: "Building personal platforms and websites using HTML, CSS, Tailwind CSS, and backend technologies.",
+    certTitle: "Certificates",
+    addCert: "Add Certificate",
+    skillsTitle: "Skills",
+    langTitle: "Languages",
+    lang1:"Uzbek",   lang1Lvl:"Native · 100%",
+    lang2:"Russian", lang2Lvl:"Intermediate · 70%",
+    lang3:"English", lang3Lvl:"Technical · 60%",
+    toast: "Preparing PDF..."
+  }
+};
+
+function applyLang(lang) {
+  const d = T[lang];
+  const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+  set('lblName',       d.name);
+  set('lblLocation',   d.location);
+  set('lblAboutTitle', d.aboutTitle);
+  set('lblAboutDesc',  d.aboutDesc);
+  set('lblExpTitle',   d.expTitle);
+  set('lblExpDate',    d.expDate);
+  set('lblExpJob',     d.expJob);
+  set('lblExpCompany', d.expCompany);
+  set('lblExpDesc',    d.expDesc);
+  set('lblCertTitle',  d.certTitle);
+  set('lblAddCert',    d.addCert);
+  set('lblSkillsTitle',d.skillsTitle);
+  set('lblLangTitle',  d.langTitle);
+  set('lblLang1',      d.lang1);     set('lblLang1Lvl', d.lang1Lvl);
+  set('lblLang2',      d.lang2);     set('lblLang2Lvl', d.lang2Lvl);
+  set('lblLang3',      d.lang3);     set('lblLang3Lvl', d.lang3Lvl);
+  set('lblToast',      d.toast);
+}
+
+/* ─── PHOTO ─── */
+function loadPhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = document.getElementById('photoImg');
+    img.src = ev.target.result;
+    img.style.display = 'block';
+    document.getElementById('photoPlaceholder').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ─── CERTIFICATES ─── */
+let certCount = 0;
+function addCerts(e) {
+  const grid = document.getElementById('certsGrid');
+  const addBtn = grid.querySelector('.add-cert-btn');
+  Array.from(e.target.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      certCount++;
+      const id = 'cert_' + certCount;
+      const card = document.createElement('div');
+      card.className = 'cert-card';
+      card.id = id;
+      card.innerHTML = `
+        <img src="${ev.target.result}" alt="Sertifikat ${certCount}">
+        <div class="cert-label">Sertifikat ${certCount}</div>
+        <button class="cert-remove" onclick="removeCert('${id}')"><i class="fa-solid fa-xmark"></i></button>
+      `;
+      // insert before the add button
+      grid.insertBefore(card, addBtn);
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = '';
+}
+
+function removeCert(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+/* ─── PDF DOWNLOAD ─── */
+async function generatePDF(lang) {
+  applyLang(lang);
+
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+
+  // Hide UI-only elements before capture
+  const controls = document.querySelector('.top-bar');
+  controls.style.display = 'none';
+  document.querySelectorAll('.cert-remove').forEach(b => b.style.display = 'none');
+  document.querySelectorAll('.add-cert-btn').forEach(b => b.style.display = 'none');
+
+  await new Promise(r => setTimeout(r, 300));
+
+  try {
+    const card = document.getElementById('cvCard');
+    const canvas = await html2canvas(card, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      logging: false
+    });
+
+    const { jsPDF } = window.jspdf;
+    const imgW = 210; // A4 mm
+    const imgH = (canvas.height * imgW) / canvas.width;
+
+    const pdf = new jsPDF({
+      orientation: imgH > imgW ? 'portrait' : 'landscape',
+      unit: 'mm',
+      format: imgH <= 297 ? 'a4' : [imgW, imgH]
+    });
+
+    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, imgW, imgH);
+    pdf.save(`CV_JQ_${lang.toUpperCase()}.pdf`);
+  } catch(err) {
+    console.error(err);
+    // Fallback to print
+    window.print();
+  }
+
+  // Restore
+  controls.style.display = '';
+  document.querySelectorAll('.cert-remove').forEach(b => b.style.removeProperty('display'));
+  document.querySelectorAll('.add-cert-btn').forEach(b => b.style.removeProperty('display'));
+
+  toast.classList.remove('show');
+
+  // Reset to uz after 1.5s
+  setTimeout(() => applyLang('uz'), 1500);
+}
+</script>
 </body>
-
 </html>
