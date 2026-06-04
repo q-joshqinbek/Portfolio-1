@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaming Turnirlar Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+  :root {
+    --bg: #06060e;
+    --surface: #0d0d1a;
+    --card: #10101e;
+    --border: #1c1c35;
+    --text: #e0e0f5;
+    --muted: #5a5a88;
+    --accent: #00f5ff;
+    --accent2: #ff006e;
+    --accent3: #b800ff;
+    --gold: #ffd700;
+    --silver: #c0c0c0;
+    --bronze: #cd7f32;
+    --live: #00ff88;
+    --ended: #ff4444;
+    --upcoming: #ffaa00;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Rajdhani', sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  /* GRID LINES BG */
+  body::before {
+    content:''; position:fixed; inset:0; z-index:0;
+    background-image:
+      linear-gradient(rgba(0,245,255,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,.03) 1px, transparent 1px);
+    background-size:40px 40px;
+    pointer-events:none;
+  }
+  /* GLOW ORBS */
+  body::after {
+    content:''; position:fixed; width:500px; height:500px;
+    background:radial-gradient(circle, rgba(0,245,255,.06) 0%, transparent 70%);
+    top:-100px; left:-100px; z-index:0; pointer-events:none;
+  }
+
+  /* HEADER */
+  header {
+    position:relative; z-index:10;
+    padding:1.2rem 2rem;
+    background:rgba(13,13,26,.9);
+    backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .logo {
+    font-family:'Orbitron', monospace;
+    font-size:1.1rem; font-weight:900;
+    letter-spacing:.1em;
+    color:var(--accent);
+    text-shadow:0 0 20px rgba(0,245,255,.5);
+  }
+  .logo span { color:var(--accent2); }
+  .header-right { display:flex; gap:1.5rem; align-items:center; }
+  .live-count {
+    display:flex; align-items:center; gap:.5rem;
+    font-size:.75rem; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--live);
+  }
+  .live-dot {
+    width:8px; height:8px; border-radius:50%;
+    background:var(--live);
+    animation:pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.5; transform:scale(1.3)} }
+
+  /* MAIN LAYOUT */
+  .layout { position:relative; z-index:1; display:grid; grid-template-columns:260px 1fr; min-height:calc(100vh - 65px); }
+
+  /* SIDEBAR */
+  .sidebar {
+    background:var(--surface);
+    border-right:1px solid var(--border);
+    padding:1.5rem;
+    display:flex; flex-direction:column; gap:1.5rem;
+  }
+  .sidebar-section { }
+  .sidebar-label {
+    font-family:'Orbitron', monospace;
+    font-size:.62rem; letter-spacing:.15em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:.8rem;
+  }
+  /* SEARCH */
+  .search-wrap { position:relative; }
+  .search-input {
+    width:100%; background:var(--card); border:1px solid var(--border);
+    padding:.65rem 1rem .65rem 2.2rem;
+    color:var(--text); font-family:'Rajdhani',sans-serif; font-size:.9rem;
+    border-radius:3px; outline:none; transition:border-color .3s;
+  }
+  .search-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(0,245,255,.08); }
+  .search-icon { position:absolute; left:.7rem; top:50%; transform:translateY(-50%); color:var(--muted); font-size:.9rem; }
+
+  /* FILTERS */
+  .filter-btns { display:flex; flex-direction:column; gap:.4rem; }
+  .filter-btn {
+    background:transparent; border:1px solid transparent;
+    color:var(--muted); padding:.5rem .8rem; text-align:left;
+    font-family:'Rajdhani',sans-serif; font-size:.9rem; cursor:pointer;
+    border-radius:3px; transition:all .25s; display:flex; align-items:center; gap:.6rem;
+  }
+  .filter-btn:hover { color:var(--text); background:var(--card); }
+  .filter-btn.active { color:var(--accent); border-color:rgba(0,245,255,.3); background:rgba(0,245,255,.05); }
+  .filter-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+  /* RANKINGS */
+  .ranking-list { display:flex; flex-direction:column; gap:.5rem; }
+  .rank-item {
+    display:flex; align-items:center; gap:.8rem;
+    padding:.5rem .8rem; border-radius:3px;
+    background:var(--card); border:1px solid var(--border);
+    cursor:pointer; transition:border-color .25s;
+  }
+  .rank-item:hover { border-color:var(--accent); }
+  .rank-num { font-family:'Orbitron',monospace; font-size:.75rem; font-weight:700; width:20px; text-align:center; }
+  .r1 { color:var(--gold); } .r2 { color:var(--silver); } .r3 { color:var(--bronze); }
+  .rank-name { flex:1; font-weight:600; font-size:.9rem; }
+  .rank-pts { font-size:.8rem; color:var(--accent); }
+  .rank-change { font-size:.75rem; }
+  .up { color:var(--live); } .down { color:var(--ended); } .same { color:var(--muted); }
+
+  /* MAIN CONTENT */
+  .main { padding:2rem; overflow-y:auto; }
+  .page-title {
+    font-family:'Orbitron',monospace;
+    font-size:1.1rem; font-weight:700; letter-spacing:.08em;
+    margin-bottom:.4rem; color:var(--accent);
+    text-shadow:0 0 15px rgba(0,245,255,.3);
+  }
+  .page-sub { font-size:.9rem; color:var(--muted); margin-bottom:1.5rem; }
+
+  /* STATS ROW */
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
+  .stat-card {
+    background:var(--card); border:1px solid var(--border);
+    padding:1rem 1.2rem; border-radius:4px;
+    transition:border-color .3s;
+  }
+  .stat-card:hover { border-color:var(--accent); }
+  .stat-val { font-family:'Orbitron',monospace; font-size:1.5rem; font-weight:700; }
+  .stat-lab { font-size:.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-top:.3rem; }
+
+  /* TOURNAMENTS TABLE */
+  .table-wrap {
+    background:var(--card); border:1px solid var(--border); border-radius:4px; overflow:hidden;
+  }
+  .table-header {
+    padding:1rem 1.5rem;
+    display:flex; justify-content:space-between; align-items:center;
+    border-bottom:1px solid var(--border);
+  }
+  .table-title { font-family:'Orbitron',monospace; font-size:.85rem; font-weight:600; }
+  .results-count { font-size:.8rem; color:var(--muted); }
+  table { width:100%; border-collapse:collapse; }
+  thead th {
+    text-align:left; padding:.8rem 1.2rem;
+    font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--muted); border-bottom:1px solid var(--border);
+    font-family:'Orbitron',monospace; font-weight:400;
+  }
+  tbody tr {
+    border-bottom:1px solid rgba(28,28,53,.5);
+    transition:background .2s;
+    cursor:pointer;
+  }
+  tbody tr:hover { background:rgba(0,245,255,.03); }
+  tbody tr:last-child { border-bottom:none; }
+  td { padding:.9rem 1.2rem; font-size:.92rem; }
+  .game-badge {
+    display:inline-flex; align-items:center; gap:.5rem;
+    font-weight:600;
+  }
+  .game-icon { font-size:1.1rem; }
+  .status-badge {
+    display:inline-flex; align-items:center; gap:.4rem;
+    padding:.25rem .7rem; border-radius:2px;
+    font-size:.72rem; letter-spacing:.08em; font-weight:600;
+    text-transform:uppercase;
+  }
+  .status-live { background:rgba(0,255,136,.12); color:var(--live); border:1px solid rgba(0,255,136,.3); }
+  .status-ended { background:rgba(255,68,68,.1); color:var(--ended); border:1px solid rgba(255,68,68,.25); }
+  .status-upcoming { background:rgba(255,170,0,.1); color:var(--upcoming); border:1px solid rgba(255,170,0,.25); }
+  .prize { color:var(--gold); font-weight:600; }
+  .teams-count { color:var(--muted); }
+  .no-results {
+    text-align:center; padding:3rem;
+    color:var(--muted); font-size:1rem;
+    display:none;
+  }
+  .no-results .no-icon { font-size:2.5rem; margin-bottom:.5rem; }
+
+  /* HIGHLIGHT ROW */
+  .row-highlight td:first-child { border-left:2px solid var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ARENA<span>DASH</span></div>
+  <div class="header-right">
+    <a href="projects.html"
+    style=" background:rgba(255,255,255,.15); backdrop-filter:blur(10px); color:white; padding:8px 16px; border-radius:20px; text-decoration:none; font-size:0.8rem; font-weight:600; border:1px solid rgba(255,255,255,.2); transition:0.3s;">
+    ← Loyihalarga qaytish
+  </a>
+    <div class="live-count"><div class="live-dot"></div><span>3 Jonli Efir</span></div>
+    <div style="color:var(--muted); font-size:.85rem;">Yangilandi: <span id="updateTime"></span></div>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">🔍 Qidirish</div>
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input class="search-input" type="text" id="searchInput" placeholder="Turnir nomi...">
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Status</div>
+      <div class="filter-btns">
+        <button class="filter-btn active" data-filter="all">
+          <span class="filter-dot" style="background:var(--text)"></span> Hammasi
+        </button>
+        <button class="filter-btn" data-filter="live">
+          <span class="filter-dot" style="background:var(--live)"></span> Jonli Efir
+        </button>
+        <button class="filter-btn" data-filter="upcoming">
+          <span class="filter-dot" style="background:var(--upcoming)"></span> Yaqinlashmoqda
+        </button>
+        <button class="filter-btn" data-filter="ended">
+          <span class="filter-dot" style="background:var(--ended)"></span> Tugagan
+        </button>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">O'yin turi</div>
+      <div class="filter-btns">
+        <button class="filter-btn active" data-game="all">🎮 Hammasi</button>
+        <button class="filter-btn" data-game="cs2">🔫 CS2</button>
+        <button class="filter-btn" data-game="dota">⚔️ Dota 2</button>
+        <button class="filter-btn" data-game="valorant">🎯 Valorant</button>
+        <button class="filter-btn" data-game="lol">🏆 LoL</button>
+        <button class="filter-btn" data-game="pubg">🪖 PUBG</button>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">🏆 Top Jamoalar</div>
+      <div class="ranking-list" id="rankingList"></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="page-title">TURNIRLAR JADVALI</div>
+    <div class="page-sub">Hamma kibersport turnirlarini bir joyda kuzating</div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--live)" id="statLive">3</div>
+        <div class="stat-lab">Jonli Efir</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--upcoming)" id="statUpcoming">5</div>
+        <div class="stat-lab">Yaqinlashmoqda</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--ended)" id="statEnded">4</div>
+        <div class="stat-lab">Tugagan</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--gold)">$247K</div>
+        <div class="stat-lab">Jami Mukofot</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-header">
+        <div class="table-title">BARCHA TURNIRLAR</div>
+        <div class="results-count" id="resultsCount"></div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Turnir nomi</th>
+            <th>O'yin</th>
+            <th>Status</th>
+            <th>Jamoalar</th>
+            <th>Mukofot</th>
+            <th>Sana</th>
+          </tr>
+        </thead>
+        <tbody id="tournamentTable"></tbody>
+      </table>
+      <div class="no-results" id="noResults">
+        <div class="no-icon">🔍</div>
+        <div>Hech narsa topilmadi</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const tournaments = [
+  { name:"IEM Katowice 2025", game:"cs2", gameIcon:"🔫", gameLabel:"CS2", status:"live", teams:16, prize:"$1,000,000", date:"Jan 22–Feb 2" },
+  { name:"The International 2025", game:"dota", gameIcon:"⚔️", gameLabel:"Dota 2", status:"upcoming", teams:20, prize:"$40,000,000", date:"Mar 10–20" },
+  { name:"VCT Champions", game:"valorant", gameIcon:"🎯", gameLabel:"Valorant", status:"live", teams:16, prize:"$2,250,000", date:"Jan 28–Feb 5" },
+  { name:"Worlds 2025", game:"lol", gameIcon:"🏆", gameLabel:"LoL", status:"upcoming", teams:24, prize:"$2,500,000", date:"Apr 1–15" },
+  { name:"PUBG Global Series", game:"pubg", gameIcon:"🪖", gameLabel:"PUBG", status:"ended", teams:32, prize:"$400,000", date:"Dec 5–15" },
+  { name:"ESL Pro League S21", game:"cs2", gameIcon:"🔫", gameLabel:"CS2", status:"ended", teams:24, prize:"$850,000", date:"Dec 10–25" },
+  { name:"Dota 2 DreamLeague", game:"dota", gameIcon:"⚔️", gameLabel:"Dota 2", status:"live", teams:12, prize:"$1,000,000", date:"Jan 20–30" },
+  { name:"VCT LOCK//IN", game:"valorant", gameIcon:"🎯", gameLabel:"Valorant", status:"upcoming", teams:30, prize:"$500,000", date:"Feb 10–28" },
+  { name:"LCS Spring 2025", game:"lol", gameIcon:"🏆", gameLabel:"LoL", status:"upcoming", teams:10, prize:"$200,000", date:"Feb 5–Mar 10" },
+  { name:"PMGC Season 2", game:"pubg", gameIcon:"🪖", gameLabel:"PUBG", status:"upcoming", teams:18, prize:"$600,000", date:"Mar 1–15" },
+  { name:"BLAST Premier Fall", game:"cs2", gameIcon:"🔫", gameLabel:"CS2", status:"ended", teams:12, prize:"$425,000", date:"Nov 15–20" },
+  { name:"WePlay AniMajor", game:"dota", gameIcon:"⚔️", gameLabel:"Dota 2", status:"ended", teams:18, prize:"$500,000", date:"Nov 20–30" },
+];
+
+const rankings = [
+  { name:"NaVi", pts:4850, change:"up" },
+  { name:"Team Spirit", pts:4620, change:"up" },
+  { name:"G2 Esports", pts:4380, change:"down" },
+  { name:"Virtus.pro", pts:4100, change:"same" },
+  { name:"FaZe Clan", pts:3980, change:"down" },
+];
+
+let currentFilter = "all";
+let currentGame = "all";
+let currentSearch = "";
+
+// Render rankings
+function renderRankings(){
+  const colors = ["r1","r2","r3","",""];
+  const medals = ["🥇","🥈","🥉","",""];
+  rankings.forEach((r,i) => {
+    const chIcon = r.change==="up"?"↑":r.change==="down"?"↓":"—";
+    const chClass = r.change==="up"?"up":r.change==="down"?"down":"same";
+    $('#rankingList').append(`
+      <div class="rank-item">
+        <span class="rank-num ${colors[i]}">${medals[i]||i+1}</span>
+        <span class="rank-name">${r.name}</span>
+        <span class="rank-pts">${r.pts.toLocaleString()}</span>
+        <span class="rank-change ${chClass}">${chIcon}</span>
+      </div>
+    `);
+  });
+}
+
+function getStatusBadge(s){
+  if(s==="live") return `<span class="status-badge status-live"><span style="width:6px;height:6px;border-radius:50%;background:var(--live);animation:pulse 1.5s infinite;display:inline-block"></span>JONLI</span>`;
+  if(s==="upcoming") return `<span class="status-badge status-upcoming">⏳ YAQIN</span>`;
+  return `<span class="status-badge status-ended">✓ TUGADI</span>`;
+}
+
+function renderTable(){
+  const tbody = $('#tournamentTable');
+  tbody.empty();
+  let count = 0;
+  tournaments.forEach((t,i) => {
+    const matchStatus = currentFilter === "all" || t.status === currentFilter;
+    const matchGame = currentGame === "all" || t.game === currentGame;
+    const matchSearch = t.name.toLowerCase().includes(currentSearch.toLowerCase()) || t.gameLabel.toLowerCase().includes(currentSearch.toLowerCase());
+    if(!matchStatus || !matchGame || !matchSearch) return;
+    count++;
+    const highlight = t.status === "live" ? "row-highlight" : "";
+    tbody.append(`
+      <tr class="${highlight}" style="opacity:0;transform:translateY(8px);transition:opacity .3s ${count*0.04}s, transform .3s ${count*0.04}s">
+        <td><span class="game-badge">${t.name}</span></td>
+        <td><span class="game-badge"><span class="game-icon">${t.gameIcon}</span>${t.gameLabel}</span></td>
+        <td>${getStatusBadge(t.status)}</td>
+        <td class="teams-count">${t.teams} jamoa</td>
+        <td class="prize">${t.prize}</td>
+        <td style="color:var(--muted)">${t.date}</td>
+      </tr>
+    `);
+  });
+  // Animate rows
+  setTimeout(()=>{ tbody.find('tr').css({opacity:1, transform:'translateY(0)'}); }, 10);
+  $('#resultsCount').text(`${count} ta topildi`);
+  $('#noResults').toggle(count === 0);
+  // Update stats
+  const live = tournaments.filter(t=>{
+    const ms = currentFilter==="all"||t.status===currentFilter;
+    const mg = currentGame==="all"||t.game===currentGame;
+    const mq = t.name.toLowerCase().includes(currentSearch.toLowerCase());
+    return ms&&mg&&mq&&t.status==="live";
+  }).length;
+  const up = tournaments.filter(t=> (currentFilter==="all"||t.status===currentFilter)&&(currentGame==="all"||t.game===currentGame)&&t.name.toLowerCase().includes(currentSearch.toLowerCase())&&t.status==="upcoming").length;
+  const en = tournaments.filter(t=> (currentFilter==="all"||t.status===currentFilter)&&(currentGame==="all"||t.game===currentGame)&&t.name.toLowerCase().includes(currentSearch.toLowerCase())&&t.status==="ended").length;
+  $('#statLive').text(live);
+  $('#statUpcoming').text(up);
+  $('#statEnded').text(en);
+}
+
+// Filters
+$('[data-filter]').click(function(){
+  $('[data-filter]').removeClass('active');
+  $(this).addClass('active');
+  currentFilter = $(this).data('filter');
+  renderTable();
+});
+$('[data-game]').click(function(){
+  $('[data-game]').removeClass('active');
+  $(this).addClass('active');
+  currentGame = $(this).data('game');
+  renderTable();
+});
+$('#searchInput').on('input', function(){
+  currentSearch = $(this).val();
+  renderTable();
+});
+
+// Clock
+function updateTime(){
+  const now = new Date();
+  $('#updateTime').text(now.toLocaleTimeString('uz-UZ'));
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+renderRankings();
+renderTable();
+</script>
+</body>
+</html>

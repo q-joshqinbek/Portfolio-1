@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Media Player</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <style>
+    :root {
+      --bg: #0e0e0e;
+      --surface: #161616;
+      --card: #1e1e1e;
+      --border: #2a2a2a;
+      --text: #f0f0f0;
+      --muted: #666;
+      --accent: #e50914;
+      --accent2: #ff6b35;
+      --progress: #e50914;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(229, 9, 20, .07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .player-wrap {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 860px;
+    }
+
+    /* TITLE */
+    .app-title {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -.03em;
+    }
+
+    .app-title span {
+      color: var(--accent);
+    }
+
+    /* MAIN PLAYER */
+    .player {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, .6);
+    }
+
+    /* VIDEO AREA */
+    .video-area {
+      position: relative;
+      background: #000;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, .8) 0%, transparent 40%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity .3s;
+    }
+
+    .big-play-btn {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: rgba(229, 9, 20, .9);
+      border: none;
+      color: #fff;
+      font-size: 1.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .2s, background .2s;
+      box-shadow: 0 0 40px rgba(229, 9, 20, .4);
+    }
+
+    .big-play-btn:hover {
+      transform: scale(1.1);
+      background: var(--accent);
+    }
+
+    .video-title-overlay {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      right: 5rem;
+      color: #fff;
+    }
+
+    .vt-label {
+      font-size: .7rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .5);
+      margin-bottom: .3rem;
+    }
+
+    .vt-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .fullscreen-btn {
+      position: absolute;
+      bottom: .8rem;
+      right: .8rem;
+      background: rgba(255, 255, 255, .15);
+      border: none;
+      color: #fff;
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: .9rem;
+      transition: background .2s;
+    }
+
+    .fullscreen-btn:hover {
+      background: rgba(255, 255, 255, .3);
+    }
+
+    /* CONTROLS */
+    .controls {
+      padding: 1.2rem 1.4rem;
+    }
+
+    /* PROGRESS BAR */
+    .progress-section {
+      margin-bottom: 1rem;
+    }
+
+    .progress-bar-wrap {
+      position: relative;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      cursor: pointer;
+      margin-bottom: .5rem;
+      transition: height .2s;
+    }
+
+    .progress-bar-wrap:hover {
+      height: 6px;
+    }
+
+    .progress-buffered {
+      position: absolute;
+      inset: 0;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, .15);
+      width: 0;
+      transition: width .5s;
+    }
+
+    .progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      width: 0;
+      transition: width .05s;
+      pointer-events: none;
+    }
+
+    .progress-thumb {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #fff;
+      left: 0;
+      opacity: 0;
+      transition: opacity .2s;
+      pointer-events: none;
+    }
+
+    .progress-bar-wrap:hover .progress-thumb {
+      opacity: 1;
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: .75rem;
+      color: var(--muted);
+    }
+
+    .time-current {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* BUTTONS ROW */
+    .buttons-row {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .ctrl-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color .2s, background .2s;
+    }
+
+    .ctrl-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, .07);
+    }
+
+    .ctrl-btn.active {
+      color: var(--accent);
+    }
+
+    .play-pause-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 16px rgba(229, 9, 20, .4);
+    }
+
+    .play-pause-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 24px rgba(229, 9, 20, .55);
+    }
+
+    /* VOLUME */
+    .volume-wrap {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin-left: auto;
+    }
+
+    .volume-slider {
+      -webkit-appearance: none;
+      width: 80px;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+      transition: transform .2s;
+    }
+
+    .volume-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.3);
+    }
+
+    /* SPEED */
+    .speed-select {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .75rem;
+      padding: .3rem .5rem;
+      border-radius: 5px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* PLAYLIST */
+    .playlist {
+      border-top: 1px solid var(--border);
+    }
+
+    .playlist-header {
+      padding: 1rem 1.4rem .6rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .playlist-title {
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .playlist-count {
+      font-size: .75rem;
+      color: var(--muted);
+    }
+
+    .playlist-items {
+      padding: 0 .8rem .8rem;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .playlist-items::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    .playlist-items::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    .playlist-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: .7rem .8rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background .2s;
+      border: 1px solid transparent;
+    }
+
+    .playlist-item:hover {
+      background: var(--card);
+    }
+
+    .playlist-item.active {
+      background: rgba(229, 9, 20, .1);
+      border-color: rgba(229, 9, 20, .25);
+    }
+
+    .pl-num {
+      width: 20px;
+      text-align: center;
+      font-size: .75rem;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .playlist-item.active .pl-num {
+      color: var(--accent);
+    }
+
+    .pl-playing {
+      display: none;
+    }
+
+    .playlist-item.active .pl-num {
+      display: none;
+    }
+
+    .playlist-item.active .pl-playing {
+      display: block;
+      color: var(--accent);
+      font-size: .8rem;
+      animation: bounce .6s infinite alternate;
+    }
+
+    @keyframes bounce {
+      from {
+        transform: scaleY(.6)
+      }
+
+      to {
+        transform: scaleY(1)
+      }
+    }
+
+    .pl-thumb {
+      width: 48px;
+      height: 36px;
+      border-radius: 5px;
+      flex-shrink: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      background: var(--border);
+    }
+
+    .pl-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .pl-name {
+      font-size: .88rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pl-meta {
+      font-size: .72rem;
+      color: var(--muted);
+      margin-top: .1rem;
+    }
+
+    .pl-dur {
+      font-size: .75rem;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    /* EQUALIZER BARS */
+    .eq-bars {
+      display: flex;
+      gap: 2px;
+      align-items: flex-end;
+      height: 16px;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .eq-bars.playing {
+      opacity: 1;
+    }
+
+    .eq-bar {
+      width: 3px;
+      background: var(--accent);
+      border-radius: 1px;
+      animation: eqBar .4s ease-in-out infinite alternate;
+    }
+
+    .eq-bar:nth-child(1) {
+      height: 40%;
+      animation-delay: .0s
+    }
+
+    .eq-bar:nth-child(2) {
+      height: 80%;
+      animation-delay: .1s
+    }
+
+    .eq-bar:nth-child(3) {
+      height: 60%;
+      animation-delay: .15s
+    }
+
+    .eq-bar:nth-child(4) {
+      height: 100%;
+      animation-delay: .05s
+    }
+
+    .eq-bar:nth-child(5) {
+      height: 50%;
+      animation-delay: .2s
+    }
+
+    @keyframes eqBar {
+      to {
+        height: 20%;
+      }
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: .6rem 1.2rem;
+      border-radius: 20px;
+      font-size: .82rem;
+      font-weight: 500;
+      opacity: 0;
+      transition: all .3s;
+      z-index: 100;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+
+  <a href="projects.html"
+    style="position:fixed; top:20px; left:20px; z-index:99; background:rgba(255,255,255,.15); backdrop-filter:blur(10px); color:white; padding:8px 16px; border-radius:20px; text-decoration:none; font-size:0.8rem; font-weight:600; border:1px solid rgba(255,255,255,.2); transition:0.3s;">
+    ← Loyihalarga qaytish
+  </a>
+
+  <div class="player-wrap">
+    <div class="app-title">🎬 <span>Custom</span> Media Player</div>
+
+    <div class="player">
+      <!-- VIDEO -->
+      <div class="video-area" id="videoArea">
+        <video id="mainVideo" preload="metadata">
+          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay" id="videoOverlay">
+          <button class="big-play-btn" id="bigPlayBtn">▶</button>
+        </div>
+        <div class="video-title-overlay">
+          <div class="vt-label">Hozir ijro etilmoqda</div>
+          <div class="vt-name" id="videoTitleOverlay">Big Buck Bunny — Intro</div>
+        </div>
+        <button class="fullscreen-btn" id="fullscreenBtn" title="To'liq ekran">⛶</button>
+      </div>
+
+      <!-- CONTROLS -->
+      <div class="controls">
+        <!-- PROGRESS -->
+        <div class="progress-section">
+          <div class="progress-bar-wrap" id="progressWrap">
+            <div class="progress-buffered" id="progressBuffered"></div>
+            <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-thumb" id="progressThumb"></div>
+          </div>
+          <div class="time-row">
+            <span class="time-current" id="timeCurrent">0:00</span>
+            <span id="timeDuration">0:00</span>
+          </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="buttons-row">
+          <button class="ctrl-btn" id="prevBtn" title="Oldingi">⏮</button>
+          <button class="ctrl-btn" id="skipBackBtn" title="-10 soniya">⏪</button>
+          <button class="play-pause-btn" id="playPauseBtn">▶</button>
+          <button class="ctrl-btn" id="skipFwdBtn" title="+10 soniya">⏩</button>
+          <button class="ctrl-btn" id="nextBtn" title="Keyingi">⏭</button>
+
+          <div class="eq-bars" id="eqBars">
+            <div class="eq-bar"></div>
+            <div class="eq-bar"></div>
+            <div class="eq-bar"></div>
+            <div class="eq-bar"></div>
+            <div class="eq-bar"></div>
+          </div>
+
+          <div class="volume-wrap">
+            <button class="ctrl-btn" id="muteBtn" title="Ovoz">🔊</button>
+            <input class="volume-slider" type="range" id="volumeSlider" min="0" max="1" step="0.02" value="0.8">
+          </div>
+          <select class="speed-select" id="speedSelect">
+            <option value="0.5">0.5×</option>
+            <option value="0.75">0.75×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.25">1.25×</option>
+            <option value="1.5">1.5×</option>
+            <option value="2">2×</option>
+          </select>
+          <button class="ctrl-btn" id="loopBtn" title="Takrorlash">🔁</button>
+          <button class="ctrl-btn" id="shuffleBtn" title="Tasodifiy">🔀</button>
+        </div>
+      </div>
+
+      <!-- PLAYLIST -->
+      <div class="playlist">
+        <div class="playlist-header">
+          <div class="playlist-title">📋 Playlist</div>
+          <div class="playlist-count" id="playlistCount">6 ta video</div>
+        </div>
+        <div class="playlist-items" id="playlistItems"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const playlist = [
+      { title: "Big Buck Bunny — Intro", meta: "Animatsiya · 9:56", emoji: "🐰", src: "https://www.w3schools.com/html/mov_bbb.mp4", dur: "0:09" },
+      { title: "HTML5 Video Demo", meta: "Tutorial · 2:30", emoji: "💻", src: "https://www.w3schools.com/html/movie.mp4", dur: "0:14" },
+      { title: "Ocean Waves", meta: "Tabiat · 5:00", emoji: "🌊", src: "https://www.w3schools.com/html/mov_bbb.mp4", dur: "0:09" },
+      { title: "Mountain Trail", meta: "Sarguzasht · 3:45", emoji: "⛰️", src: "https://www.w3schools.com/html/movie.mp4", dur: "0:14" },
+      { title: "City Lights", meta: "Shahar · 4:20", emoji: "🌃", src: "https://www.w3schools.com/html/mov_bbb.mp4", dur: "0:09" },
+      { title: "Space Journey", meta: "Fantastika · 6:15", emoji: "🚀", src: "https://www.w3schools.com/html/movie.mp4", dur: "0:14" },
+    ];
+
+    let currentIdx = 0;
+    let isPlaying = false;
+    let isMuted = false;
+    let isLooping = false;
+    let isShuffling = false;
+    const video = document.getElementById('mainVideo');
+
+    function formatTime(s) {
+      if (isNaN(s)) return '0:00';
+      const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+      return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+    }
+
+    function showToast(msg) {
+      const t = $('#toast'); t.text(msg).addClass('show');
+      setTimeout(() => t.removeClass('show'), 2000);
+    }
+
+    function loadTrack(idx) {
+      currentIdx = idx;
+      const track = playlist[idx];
+      video.src = track.src;
+      video.load();
+      $('#videoTitleOverlay').text(track.title);
+      $('#progressFill').css('width', '0%');
+      $('#progressThumb').css('left', '0%');
+      $('#timeCurrent').text('0:00');
+      renderPlaylist();
+      if (isPlaying) video.play();
+      showToast(`▶ ${track.title}`);
+    }
+
+    function renderPlaylist() {
+      const container = $('#playlistItems');
+      container.empty();
+      playlist.forEach((t, i) => {
+        container.append(`
+      <div class="playlist-item ${i === currentIdx ? 'active' : ''}" data-idx="${i}">
+        <span class="pl-num">${i + 1}</span>
+        <span class="pl-playing">♫</span>
+        <div class="pl-thumb">${t.emoji}</div>
+        <div class="pl-info">
+          <div class="pl-name">${t.title}</div>
+          <div class="pl-meta">${t.meta}</div>
+        </div>
+        <span class="pl-dur">${t.dur}</span>
+      </div>
+    `);
+      });
+    }
+
+    function setPlaying(state) {
+      isPlaying = state;
+      const icon = state ? '⏸' : '▶';
+      $('#playPauseBtn').text(icon);
+      $('#bigPlayBtn').text(icon);
+      $('#videoOverlay').css('opacity', state ? 0 : 1);
+      if (state) { $('#eqBars').addClass('playing'); video.play(); }
+      else { $('#eqBars').removeClass('playing'); video.pause(); }
+    }
+
+    // Play/Pause
+    $('#playPauseBtn, #bigPlayBtn').click(function () {
+      setPlaying(!isPlaying);
+    });
+    $('#videoArea').click(function (e) {
+      if ($(e.target).is('#bigPlayBtn, #fullscreenBtn')) return;
+      setPlaying(!isPlaying);
+    });
+
+    // Prev / Next
+    $('#prevBtn').click(function () {
+      const idx = isShuffling ? Math.floor(Math.random() * playlist.length) : (currentIdx - 1 + playlist.length) % playlist.length;
+      loadTrack(idx);
+    });
+    $('#nextBtn').click(function () {
+      const idx = isShuffling ? Math.floor(Math.random() * playlist.length) : (currentIdx + 1) % playlist.length;
+      loadTrack(idx);
+    });
+
+    // Skip
+    $('#skipBackBtn').click(() => { video.currentTime = Math.max(0, video.currentTime - 10); showToast('-10 soniya'); });
+    $('#skipFwdBtn').click(() => { video.currentTime = Math.min(video.duration || 0, video.currentTime + 10); showToast('+10 soniya'); });
+
+    // Mute
+    $('#muteBtn').click(function () {
+      isMuted = !isMuted;
+      video.muted = isMuted;
+      $(this).text(isMuted ? '🔇' : '🔊');
+      showToast(isMuted ? '🔇 Ovoz o\'chirildi' : '🔊 Ovoz yoqildi');
+    });
+
+    // Volume
+    $('#volumeSlider').on('input', function () {
+      video.volume = parseFloat($(this).val());
+      if (video.volume === 0) { video.muted = true; $('#muteBtn').text('🔇'); }
+      else { video.muted = false; isMuted = false; $('#muteBtn').text('🔊'); }
+    });
+
+    // Speed
+    $('#speedSelect').change(function () {
+      video.playbackRate = parseFloat($(this).val());
+      showToast(`⏱ Tezlik: ${$(this).val()}×`);
+    });
+
+    // Loop
+    $('#loopBtn').click(function () {
+      isLooping = !isLooping;
+      video.loop = isLooping;
+      $(this).toggleClass('active');
+      showToast(isLooping ? '🔁 Takrorlash yoqildi' : '🔁 Takrorlash o\'chirildi');
+    });
+
+    // Shuffle
+    $('#shuffleBtn').click(function () {
+      isShuffling = !isShuffling;
+      $(this).toggleClass('active');
+      showToast(isShuffling ? '🔀 Tasodifiy yoqildi' : '🔀 Tasodifiy o\'chirildi');
+    });
+
+    // Fullscreen
+    $('#fullscreenBtn').click(function () {
+      const area = document.getElementById('videoArea');
+      if (document.fullscreenElement) { document.exitFullscreen(); }
+      else { area.requestFullscreen && area.requestFullscreen(); }
+    });
+
+    // Progress bar click
+    $('#progressWrap').click(function (e) {
+      if (!video.duration) return;
+      const rect = this.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      video.currentTime = pct * video.duration;
+    });
+
+    // Video events
+    $(video).on('timeupdate', function () {
+      if (!video.duration) return;
+      const pct = (video.currentTime / video.duration) * 100;
+      $('#progressFill').css('width', pct + '%');
+      $('#progressThumb').css('left', pct + '%');
+      $('#timeCurrent').text(formatTime(video.currentTime));
+    });
+    $(video).on('durationchange', function () {
+      $('#timeDuration').text(formatTime(video.duration));
+    });
+    $(video).on('progress', function () {
+      if (video.buffered.length > 0 && video.duration) {
+        const pct = (video.buffered.end(video.buffered.length - 1) / video.duration) * 100;
+        $('#progressBuffered').css('width', pct + '%');
+      }
+    });
+    $(video).on('ended', function () {
+      if (!isLooping) {
+        const nextIdx = isShuffling ? Math.floor(Math.random() * playlist.length) : (currentIdx + 1) % playlist.length;
+        loadTrack(nextIdx);
+      }
+    });
+    $(video).on('play', () => setPlaying(true));
+    $(video).on('pause', () => { if (!video.ended) { isPlaying = false; $('#playPauseBtn').text('▶'); $('#bigPlayBtn').text('▶'); $('#videoOverlay').css('opacity', 1); $('#eqBars').removeClass('playing'); } });
+
+    // Playlist click
+    $(document).on('click', '.playlist-item', function () {
+      loadTrack(parseInt($(this).data('idx')));
+      setPlaying(true);
+    });
+
+    // Keyboard shortcuts
+    $(document).keydown(function (e) {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+      if (e.key === ' ') { e.preventDefault(); setPlaying(!isPlaying); }
+      if (e.key === 'ArrowRight') { video.currentTime += 5; showToast('+5 soniya'); }
+      if (e.key === 'ArrowLeft') { video.currentTime -= 5; showToast('-5 soniya'); }
+      if (e.key === 'ArrowUp') { video.volume = Math.min(1, video.volume + .1); $('#volumeSlider').val(video.volume); showToast(`🔊 ${Math.round(video.volume * 100)}%`); }
+      if (e.key === 'ArrowDown') { video.volume = Math.max(0, video.volume - 0.1); $('#volumeSlider').val(video.volume); showToast(`🔊 ${Math.round(video.volume * 100)}%`); }
+    });
+
+    // Init
+    video.volume = 0.8;
+    renderPlaylist();
+    $('#playlistCount').text(`${playlist.length} ta video`);
+  </script>
+</body>
+
+</html>

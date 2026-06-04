@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio CV — Shaxsiy Rezyume</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: #1e1e2e;
+    --text: #e8e8f0;
+    --muted: #666680;
+    --accent: #7c6af7;
+    --accent2: #f7c56a;
+    --accent3: #6af7c5;
+    --card: #15151f;
+  }
+  [data-theme="light"] {
+    --bg: #f5f4ef;
+    --surface: #ffffff;
+    --border: #ddddd5;
+    --text: #1a1a2e;
+    --muted: #888890;
+    --accent: #5c4ae0;
+    --accent2: #d4a017;
+    --accent3: #1aa88a;
+    --card: #fefefe;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    background:var(--bg);
+    color:var(--text);
+    font-family:'DM Mono', monospace;
+    overflow-x:hidden;
+    transition: background .4s, color .4s;
+  }
+  /* NOISE TEXTURE */
+  body::before {
+    content:''; position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:0; opacity:.5;
+  }
+  /* NAV */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:1.2rem 3rem;
+    background:rgba(10,10,15,.85);
+    backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);
+    transition:background .4s;
+  }
+  [data-theme="light"] nav { background:rgba(245,244,239,.85); }
+  .nav-logo {
+    font-family:'Syne', sans-serif;
+    font-weight:800; font-size:1.1rem;
+    letter-spacing:-.02em;
+    color:var(--accent);
+  }
+  .nav-logo span { color:var(--text); }
+  .nav-links { display:flex; gap:2rem; list-style:none; }
+  .nav-links a {
+    color:var(--muted); text-decoration:none;
+    font-size:.78rem; letter-spacing:.08em; text-transform:uppercase;
+    transition:color .3s;
+  }
+  .nav-links a:hover { color:var(--accent); }
+  .theme-btn {
+    background:var(--border); border:none; cursor:pointer;
+    width:42px; height:24px; border-radius:12px;
+    position:relative; transition:background .4s;
+  }
+  .theme-btn::after {
+    content:''; position:absolute;
+    width:18px; height:18px; border-radius:50%;
+    background:var(--accent); top:3px; left:3px;
+    transition:transform .4s, background .4s;
+  }
+  [data-theme="light"] .theme-btn::after { transform:translateX(18px); background:var(--accent2); }
+
+  /* SECTIONS */
+  section { position:relative; z-index:1; }
+
+  /* HERO */
+  #hero {
+    min-height:100vh; display:flex; align-items:center;
+    padding:0 3rem; padding-top:80px;
+    overflow:hidden;
+  }
+  .hero-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; max-width:1200px; margin:0 auto; width:100%; }
+  .hero-tag {
+    display:inline-block;
+    font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent3); border:1px solid var(--accent3);
+    padding:.3rem .8rem; border-radius:2px; margin-bottom:1.5rem;
+  }
+  .hero-name {
+    font-family:'Syne', sans-serif;
+    font-size:clamp(2.5rem, 5vw, 4.5rem);
+    font-weight:800; line-height:1.0;
+    letter-spacing:-.03em;
+    margin-bottom:1rem;
+  }
+  .hero-name .line2 { color:var(--accent); }
+  .hero-desc {
+    color:var(--muted); font-size:.88rem; line-height:1.8;
+    max-width:420px; margin-bottom:2.5rem;
+  }
+  .hero-btns { display:flex; gap:1rem; flex-wrap:wrap; }
+  .btn-primary {
+    background:var(--accent); color:#fff;
+    border:none; padding:.8rem 2rem; cursor:pointer;
+    font-family:'DM Mono', monospace; font-size:.82rem;
+    letter-spacing:.06em; text-transform:uppercase;
+    border-radius:3px; transition:transform .2s, box-shadow .2s;
+    text-decoration:none; display:inline-block;
+  }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(124,106,247,.35); }
+  .btn-outline {
+    background:transparent; color:var(--text);
+    border:1px solid var(--border); padding:.8rem 2rem; cursor:pointer;
+    font-family:'DM Mono', monospace; font-size:.82rem;
+    letter-spacing:.06em; text-transform:uppercase;
+    border-radius:3px; transition:border-color .2s, color .2s;
+    text-decoration:none; display:inline-block;
+  }
+  .btn-outline:hover { border-color:var(--accent); color:var(--accent); }
+  .hero-visual {
+    position:relative; display:flex; justify-content:center; align-items:center;
+  }
+  .hero-avatar-wrap {
+    width:280px; height:280px; position:relative;
+  }
+  .hero-avatar {
+    width:100%; height:100%; border-radius:50%;
+    background:linear-gradient(135deg, var(--accent) 0%, var(--accent3) 100%);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Syne', sans-serif; font-size:4rem; font-weight:800; color:#fff;
+  }
+  .orbit {
+    position:absolute; inset:-20px; border-radius:50%;
+    border:1px dashed var(--border);
+    animation:spin 20s linear infinite;
+  }
+  .orbit-dot {
+    position:absolute; width:10px; height:10px;
+    background:var(--accent2); border-radius:50%; top:0; left:50%; transform:translateX(-50%);
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .stats-row {
+    display:flex; gap:2rem; margin-top:3rem;
+  }
+  .stat { }
+  .stat-num { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--accent); }
+  .stat-label { font-size:.7rem; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; }
+
+  /* ABOUT */
+  #about { padding:6rem 3rem; }
+  .section-inner { max-width:1200px; margin:0 auto; }
+  .section-label {
+    font-size:.7rem; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--accent); margin-bottom:1rem;
+  }
+  .section-title {
+    font-family:'Syne', sans-serif; font-size:clamp(1.8rem,3vw,2.8rem);
+    font-weight:800; letter-spacing:-.02em; margin-bottom:2rem;
+  }
+  .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start; }
+  .about-text { color:var(--muted); font-size:.88rem; line-height:1.9; }
+  .skills-grid { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
+  .skill-bar {
+    background:var(--card); border:1px solid var(--border);
+    padding:.9rem 1rem; border-radius:4px; transition:border-color .3s;
+  }
+  .skill-bar:hover { border-color:var(--accent); }
+  .skill-name { font-size:.78rem; margin-bottom:.5rem; letter-spacing:.04em; }
+  .skill-track { background:var(--border); height:3px; border-radius:2px; overflow:hidden; }
+  .skill-fill {
+    height:100%; border-radius:2px; width:0;
+    background:linear-gradient(90deg, var(--accent), var(--accent3));
+    transition:width 1.2s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* PROJECTS */
+  #projects { padding:6rem 3rem; background:var(--surface); }
+  .projects-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2.5rem; }
+  .project-card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:6px; overflow:hidden; cursor:pointer;
+    transition:transform .3s, box-shadow .3s, border-color .3s;
+  }
+  .project-card:hover {
+    transform:translateY(-6px);
+    box-shadow:0 20px 40px rgba(0,0,0,.3);
+    border-color:var(--accent);
+  }
+  .project-thumb {
+    height:160px; display:flex; align-items:center; justify-content:center;
+    font-size:2.5rem;
+  }
+  .project-body { padding:1.2rem; }
+  .project-tag {
+    font-size:.68rem; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--accent3); margin-bottom:.5rem;
+  }
+  .project-title { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; margin-bottom:.5rem; }
+  .project-desc { color:var(--muted); font-size:.78rem; line-height:1.7; }
+  .project-footer {
+    padding:.8rem 1.2rem;
+    border-top:1px solid var(--border);
+    display:flex; gap:.5rem;
+  }
+  .tech-chip {
+    font-size:.65rem; padding:.2rem .6rem;
+    background:var(--border); border-radius:2px; color:var(--muted);
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position:fixed; inset:0; z-index:999;
+    background:rgba(0,0,0,.8); backdrop-filter:blur(10px);
+    display:none; align-items:center; justify-content:center; padding:2rem;
+  }
+  .modal-overlay.active { display:flex; }
+  .modal {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:8px; max-width:640px; width:100%;
+    max-height:80vh; overflow-y:auto;
+    animation:modalIn .35s cubic-bezier(.4,0,.2,1);
+  }
+  @keyframes modalIn { from { opacity:0; transform:translateY(30px) scale(.96); } }
+  .modal-header {
+    padding:1.8rem 2rem;
+    border-bottom:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:start;
+  }
+  .modal-title { font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:700; }
+  .modal-close {
+    background:none; border:none; color:var(--muted); cursor:pointer;
+    font-size:1.4rem; line-height:1; padding:.2rem;
+    transition:color .2s;
+  }
+  .modal-close:hover { color:var(--text); }
+  .modal-body { padding:2rem; }
+  .modal-preview {
+    height:200px; border-radius:6px; margin-bottom:1.5rem;
+    display:flex; align-items:center; justify-content:center;
+    font-size:3rem; border:1px solid var(--border);
+  }
+  .modal-desc { color:var(--muted); font-size:.85rem; line-height:1.8; margin-bottom:1.5rem; }
+  .modal-tech { display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1.5rem; }
+  .modal-actions { display:flex; gap:1rem; }
+
+  /* CONTACT */
+  #contact { padding:6rem 3rem; }
+  .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
+  .contact-big { font-family:'Syne',sans-serif; font-size:clamp(2rem,4vw,3.5rem); font-weight:800; line-height:1.1; }
+  .contact-big span { color:var(--accent); }
+  .contact-form { display:flex; flex-direction:column; gap:1rem; }
+  .form-field {
+    background:var(--card); border:1px solid var(--border);
+    padding:.9rem 1rem; border-radius:4px; color:var(--text);
+    font-family:'DM Mono', monospace; font-size:.84rem;
+    outline:none; transition:border-color .3s;
+  }
+  .form-field:focus { border-color:var(--accent); }
+  textarea.form-field { resize:vertical; min-height:100px; }
+
+  /* FOOTER */
+  footer {
+    padding:2rem 3rem; border-top:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:.75rem; color:var(--muted);
+  }
+  .footer-links { display:flex; gap:1.5rem; }
+  .footer-links a { color:var(--muted); text-decoration:none; transition:color .3s; }
+  .footer-links a:hover { color:var(--accent); }
+
+  /* ANIMATIONS */
+  .fade-up { opacity:0; transform:translateY(40px); transition:opacity .7s, transform .7s; }
+  .fade-up.visible { opacity:1; transform:translateY(0); }
+
+  @media(max-width:768px) {
+    nav { padding:1rem 1.5rem; }
+    .nav-links { display:none; }
+    #hero { padding:0 1.5rem; padding-top:80px; }
+    .hero-grid { grid-template-columns:1fr; }
+    .hero-visual { display:none; }
+    .about-grid, .contact-grid { grid-template-columns:1fr; }
+    .projects-grid { grid-template-columns:1fr; }
+    #about, #projects, #contact { padding:4rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+  
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>dev.</span>portfolio</div>
+  <ul class="nav-links">
+    <li><a href="projects.html">loyihalarga qaytish</a></li>
+    <li><a href="#about">Haqimda</a></li>
+    <li><a href="#projects">Loyihalar</a></li>
+    <li><a href="#contact">Aloqa</a></li>
+  </ul>
+  <button class="theme-btn" id="themeToggle" title="Mavzuni o'zgartirish"></button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-tag">// Front-end Developer</div>
+      <h1 class="hero-name">
+        Salom, men<br>
+        <span class="line2">Jasur Nazarov</span>
+      </h1>
+      <p class="hero-desc">
+        Interaktiv va chiroyli veb-ilovalat yaratuvchi front-end dasturchi.
+        HTML, CSS, jQuery va zamonaviy texnologiyalar bilan ishlashni yaxshi ko'raman.
+      </p>
+      <div class="hero-btns">
+        <a href="#projects" class="btn-primary">Loyihalarni Ko'rish</a>
+        <a href="#contact" class="btn-outline">Bog'lanish</a>
+      </div>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-num">12+</div><div class="stat-label">Loyihalar</div></div>
+        <div class="stat"><div class="stat-num">2+</div><div class="stat-label">Yil tajriba</div></div>
+        <div class="stat"><div class="stat-num">8+</div><div class="stat-label">Texnologiyalar</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-avatar-wrap">
+        <div class="orbit"><div class="orbit-dot"></div></div>
+        <div class="hero-avatar">JN</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="section-label">// 01. Haqimda</div>
+    <h2 class="section-title fade-up">Ko'nikmalar va Tajriba</h2>
+    <div class="about-grid">
+      <div class="about-text fade-up">
+        <p>Men Toshkentda yashovchi front-end dasturchi bo'lib, foydalanuvchilar uchun qulay va chiroyli interfeyslar yaratishga ixtisoslashganman.</p>
+        <br>
+        <p>Loyihalarimda UI/UX dizayn prinsiplari, animatsiyalar va zamonaviy CSS texnikalaridan faol foydalanaman. Har bir loyiha — bu foydalanuvchi uchun yaxshi tajriba yaratish imkoniyati.</p>
+        <br>
+        <p>Hozirda React va Node.js ni o'rganib, full-stack dasturchi bo'lish yo'lida davom etmoqdaman.</p>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-bar"><div class="skill-name">HTML5 / CSS3</div><div class="skill-track"><div class="skill-fill" data-width="92"></div></div></div>
+        <div class="skill-bar"><div class="skill-name">JavaScript</div><div class="skill-track"><div class="skill-fill" data-width="78"></div></div></div>
+        <div class="skill-bar"><div class="skill-name">jQuery</div><div class="skill-track"><div class="skill-fill" data-width="85"></div></div></div>
+        <div class="skill-bar"><div class="skill-name">React.js</div><div class="skill-track"><div class="skill-fill" data-width="60"></div></div></div>
+        <div class="skill-bar"><div class="skill-name">UI/UX Design</div><div class="skill-track"><div class="skill-fill" data-width="70"></div></div></div>
+        <div class="skill-bar"><div class="skill-name">Git / GitHub</div><div class="skill-track"><div class="skill-fill" data-width="75"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-inner">
+    <div class="section-label">// 02. Loyihalar</div>
+    <h2 class="section-title fade-up">Tanlangan Ishlar</h2>
+    <div class="projects-grid">
+      <div class="project-card fade-up" data-project="0">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#7c6af722,#6af7c522)">🎮</div>
+        <div class="project-body">
+          <div class="project-tag">Dashboard</div>
+          <div class="project-title">Gaming Turnirlar</div>
+          <div class="project-desc">Kibersport turnirlarini kuzatib boradigan dinamik dashboard.</div>
+        </div>
+        <div class="project-footer">
+          <span class="tech-chip">HTML</span><span class="tech-chip">CSS</span><span class="tech-chip">jQuery</span>
+        </div>
+      </div>
+      <div class="project-card fade-up" data-project="1">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#f7c56a22,#f7906a22)">📋</div>
+        <div class="project-body">
+          <div class="project-tag">App</div>
+          <div class="project-title">To-Do Manager</div>
+          <div class="project-desc">Drag-and-drop va LocalStorage bilan vazifalar menejeri.</div>
+        </div>
+        <div class="project-footer">
+          <span class="tech-chip">jQuery</span><span class="tech-chip">LocalStorage</span>
+        </div>
+      </div>
+      <div class="project-card fade-up" data-project="2">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#6af7c522,#6ab4f722)">🌤️</div>
+        <div class="project-body">
+          <div class="project-tag">API</div>
+          <div class="project-title">Ob-Havo Dasturi</div>
+          <div class="project-desc">Real vaqtda ob-havo ma'lumotlarini ko'rsatuvchi AJAX ilovasi.</div>
+        </div>
+        <div class="project-footer">
+          <span class="tech-chip">AJAX</span><span class="tech-chip">API</span><span class="tech-chip">jQuery</span>
+        </div>
+      </div>
+      <div class="project-card fade-up" data-project="3">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#f76a6a22,#f7c56a22)">🎵</div>
+        <div class="project-body">
+          <div class="project-tag">Multimedia</div>
+          <div class="project-title">Custom Media Player</div>
+          <div class="project-desc">HTML5 asosidagi kreativ audio/video pleyer.</div>
+        </div>
+        <div class="project-footer">
+          <span class="tech-chip">HTML5</span><span class="tech-chip">JS</span><span class="tech-chip">CSS</span>
+        </div>
+      </div>
+      <div class="project-card fade-up" data-project="4">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#6a6af722,#c56af722)">📅</div>
+        <div class="project-body">
+          <div class="project-tag">Calendar</div>
+          <div class="project-title">Kontent Planer</div>
+          <div class="project-desc">YouTube kontentchi uchun taqvim va reja tuzish ilovasi.</div>
+        </div>
+        <div class="project-footer">
+          <span class="tech-chip">FullCalendar</span><span class="tech-chip">jQuery</span>
+        </div>
+      </div>
+      <div class="project-card fade-up" data-project="5">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#6af7a022,#6af7f722)">👤</div>
+        <div class="project-body">
+          <div class="project-tag">Portfolio</div>
+          <div class="project-title">Bu Sahifa!</div>
+          <div class="project-desc">Dark/Light mode, smooth scroll va modal oynali portfolio CV.</div>
+        </div>
+        <div class="project-footer">
+          <span class="tech-chip">HTML5</span><span class="tech-chip">CSS3</span><span class="tech-chip">jQuery</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="contact-grid">
+      <div class="fade-up">
+        <div class="section-label">// 03. Aloqa</div>
+        <div class="contact-big">Birgalikda<br><span>Ishlaylik!</span></div>
+        <br>
+        <p style="color:var(--muted); font-size:.85rem; line-height:1.8;">
+          Yangi loyiha yoki hamkorlik uchun murojaat qiling.<br>
+          📧 jasur@example.uz<br>
+          📱 +998 90 123 45 67
+        </p>
+      </div>
+      <div class="fade-up">
+        <div class="contact-form">
+          <input class="form-field" type="text" placeholder="Ismingiz">
+          <input class="form-field" type="email" placeholder="Email manzilingiz">
+          <textarea class="form-field" placeholder="Xabaringiz..."></textarea>
+          <button class="btn-primary" id="sendBtn">Yuborish →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>© 2025 Jasur Nazarov. Barcha huquqlar himoyalangan.</div>
+  <div class="footer-links">
+    <a href="#">GitHub</a>
+    <a href="#">LinkedIn</a>
+    <a href="#">Telegram</a>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Loyiha nomi</div>
+      <button class="modal-close" id="modalClose">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-preview" id="modalEmoji"></div>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-tech" id="modalTech"></div>
+      <div class="modal-actions">
+        <a href="#" class="btn-primary">Demo Ko'rish</a>
+        <a href="#" class="btn-outline">GitHub →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const projects = [
+  { title:"Gaming Turnirlar Dashboard", emoji:"🎮", desc:"Kibersport va gaming turnirlarini real vaqtda kuzatib boradigan dinamik dashboard. Filterlash, qidiruv, jamoalar reytingi va jonli/tugagan status ko'rsatgichi mavjud.", techs:["HTML","CSS Grid","jQuery","AJAX"] },
+  { title:"To-Do Manager", emoji:"📋", desc:"Vazifalarni qo'shish, o'chirish, bajarilgan deb belgilash va drag-and-drop orqali tartib o'zgartirish imkoniyatiga ega. LocalStorage bilan sahifa yangilanganda ham ma'lumotlar saqlanadi.", techs:["jQuery","LocalStorage","Drag-n-Drop","CSS3"] },
+  { title:"Ob-Havo Dasturi", emoji:"🌤️", desc:"OpenWeatherMap API'dan AJAX orqali real vaqtda ob-havo ma'lumotlarini oladi. Ob-havoga qarab sahifa foni dinamik ravishda o'zgaradi.", techs:["AJAX","REST API","jQuery","CSS Animation"] },
+  { title:"Custom Media Player", emoji:"🎵", desc:"HTML5 Audio/Video teglariga asoslangan, to'liq o'ziga xos dizayndagi pleyer. Play/Pause, ovoz boshqaruvi, progress bar — hammasini jQuery boshqaradi.", techs:["HTML5 Audio","jQuery Events","CSS3","Custom UI"] },
+  { title:"YouTube Kontent Planer", emoji:"📅", desc:"FullCalendar plagini asosida qurilgan maxsus taqvim. Taqvim kataklariga g'oya qo'shish, video statusini ('G'oya','Montajda','Yuklandi') ranglar bilan ajratish mumkin.", techs:["FullCalendar.js","jQuery","CSS Variables","LocalStorage"] },
+  { title:"Portfolio CV (Bu Sahifa)", emoji:"👤", desc:"Dark/Light mode, smooth scroll, modal oynalar va animatsiyalar bilan jihozlangan shaxsiy portfolio. Barcha ko'nikmalarni bitta sahifada namoyish etadi.", techs:["HTML5","CSS3","jQuery","CSS Animations"] }
+];
+
+// THEME
+$('#themeToggle').click(function(){
+  const cur = $('html').attr('data-theme');
+  $('html').attr('data-theme', cur==='dark'?'light':'dark');
+});
+
+// SKILLS ANIMATION
+function animateSkills(){
+  $('.skill-fill').each(function(){
+    const w = $(this).data('width');
+    $(this).css('width', w+'%');
+  });
+}
+
+// SCROLL ANIMATIONS
+function checkVisible(){
+  $('.fade-up').each(function(){
+    const top = $(this).offset().top;
+    const winH = $(window).height();
+    const scroll = $(window).scrollTop();
+    if(top < scroll + winH - 60){
+      $(this).addClass('visible');
+      if($(this).closest('#about').length) animateSkills();
+    }
+  });
+}
+$(window).on('scroll', checkVisible);
+checkVisible();
+
+// MODAL
+$('.project-card').click(function(){
+  const idx = $(this).data('project');
+  const p = projects[idx];
+  $('#modalTitle').text(p.title);
+  $('#modalEmoji').text(p.emoji).css('background','var(--card)');
+  $('#modalDesc').text(p.desc);
+  $('#modalTech').empty();
+  p.techs.forEach(t => $('#modalTech').append(`<span class="tech-chip">${t}</span>`));
+  $('#modalOverlay').addClass('active');
+});
+$('#modalClose, #modalOverlay').click(function(e){
+  if(e.target === this) $('#modalOverlay').removeClass('active');
+});
+$(document).keydown(function(e){ if(e.key==='Escape') $('#modalOverlay').removeClass('active'); });
+
+// SEND BTN
+$('#sendBtn').click(function(){
+  $(this).text('✓ Yuborildi!').css('background','var(--accent3)').css('color','#000');
+  setTimeout(()=> $(this).text('Yuborish →').css('background','').css('color',''), 2500);
+});
+
+// NAV SMOOTH SCROLL
+$('a[href^="#"]').click(function(e){
+  e.preventDefault();
+  const target = $($(this).attr('href'));
+  if(target.length) $('html,body').animate({scrollTop: target.offset().top - 70}, 700);
+});
+</script>
+</body>
+</html>

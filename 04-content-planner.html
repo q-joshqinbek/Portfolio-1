@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Kontent Planer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --card: #222222;
+    --border: #2e2e2e;
+    --text: #f1f1f1;
+    --muted: #717171;
+    --red: #ff0000;
+    --idea: #3ea6ff;
+    --editing: #f9ca24;
+    --uploaded: #4caf50;
+    --planned: #9b59b6;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; }
+
+  /* HEADER */
+  header {
+    background:var(--surface); border-bottom:1px solid var(--border);
+    padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center;
+  }
+  .logo { display:flex; align-items:center; gap:.6rem; }
+  .yt-icon {
+    width:32px; height:22px; background:var(--red); border-radius:5px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .yt-icon::after { content:'▶'; color:#fff; font-size:.7rem; }
+  .logo-text { font-size:1.1rem; font-weight:700; }
+  .logo-text span { color:var(--red); }
+  .header-actions { display:flex; gap:.8rem; align-items:center; }
+  .channel-info { font-size:.8rem; color:var(--muted); }
+  .new-btn {
+    background:var(--red); color:#fff; border:none; cursor:pointer;
+    padding:.55rem 1.2rem; border-radius:6px; font-family:'Inter',sans-serif;
+    font-size:.85rem; font-weight:600; display:flex; align-items:center; gap:.4rem;
+    transition:opacity .2s;
+  }
+  .new-btn:hover { opacity:.85; }
+
+  /* LAYOUT */
+  .layout { display:grid; grid-template-columns:260px 1fr; height:calc(100vh - 65px); }
+
+  /* SIDEBAR */
+  .sidebar {
+    background:var(--surface); border-right:1px solid var(--border);
+    padding:1.5rem; overflow-y:auto; display:flex; flex-direction:column; gap:1.5rem;
+  }
+  .sidebar-section-title {
+    font-size:.7rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:.8rem;
+  }
+
+  /* LEGEND */
+  .legend { display:flex; flex-direction:column; gap:.5rem; }
+  .legend-item {
+    display:flex; align-items:center; gap:.7rem; padding:.5rem .7rem;
+    border-radius:6px; cursor:pointer; transition:background .2s;
+    font-size:.85rem;
+  }
+  .legend-item:hover { background:var(--card); }
+  .legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .leg-count { margin-left:auto; font-size:.75rem; color:var(--muted); }
+
+  /* IDEAS LIST */
+  .ideas-list { display:flex; flex-direction:column; gap:.5rem; }
+  .idea-chip {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:6px; padding:.6rem .8rem;
+    font-size:.82rem; cursor:pointer; transition:border-color .2s;
+    display:flex; align-items:center; gap:.5rem;
+  }
+  .idea-chip:hover { border-color:var(--idea); }
+  .idea-chip .dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .idea-title { flex:1; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .idea-status { font-size:.7rem; color:var(--muted); }
+
+  /* STATS */
+  .stats-mini { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
+  .stat-mini { background:var(--card); border-radius:6px; padding:.7rem; text-align:center; }
+  .stat-mini-num { font-size:1.2rem; font-weight:700; }
+  .stat-mini-label { font-size:.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+
+  /* CALENDAR AREA */
+  .cal-area { padding:1.5rem; overflow-y:auto; }
+
+  /* FullCalendar overrides */
+  .fc-toolbar { margin-bottom:1.2rem !important; }
+  .fc-toolbar .fc-button {
+    background:var(--card) !important; border:1px solid var(--border) !important;
+    color:var(--text) !important; padding:.4rem .9rem !important;
+    font-family:'Inter',sans-serif !important; font-size:.82rem !important;
+    border-radius:5px !important; text-shadow:none !important; box-shadow:none !important;
+    transition:border-color .2s !important;
+  }
+  .fc-toolbar .fc-button:hover { border-color:var(--red) !important; }
+  .fc-toolbar .fc-button-active,
+  .fc-toolbar .fc-button.fc-state-active { background:var(--red) !important; border-color:var(--red) !important; }
+  .fc-toolbar h2 { font-size:1rem !important; font-weight:700 !important; color:var(--text) !important; }
+  .fc-widget-header { background:var(--surface) !important; border-color:var(--border) !important; }
+  .fc th { color:var(--muted) !important; font-size:.75rem !important; font-weight:500 !important; text-transform:uppercase !important; padding:.5rem !important; }
+  .fc-bg td { background:var(--surface) !important; border-color:var(--border) !important; }
+  .fc-day-grid-event { border-radius:4px !important; padding:2px 5px !important; font-size:.75rem !important; border:none !important; }
+  .fc-day-number { color:var(--muted) !important; font-size:.82rem !important; padding:.3rem .5rem !important; }
+  .fc-today .fc-day-number { color:var(--red) !important; font-weight:700 !important; }
+  .fc-today { background:rgba(255,0,0,.04) !important; }
+  .fc-other-month { opacity:.3; }
+  td.fc-day { border-color:var(--border) !important; }
+  .fc-event-title { font-weight:500 !important; }
+  .fc-more { color:var(--muted) !important; font-size:.72rem !important; }
+
+  /* MODAL */
+  .modal-overlay {
+    position:fixed; inset:0; z-index:999;
+    background:rgba(0,0,0,.75); backdrop-filter:blur(8px);
+    display:none; align-items:center; justify-content:center; padding:1.5rem;
+  }
+  .modal-overlay.active { display:flex; }
+  .modal {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; width:100%; max-width:480px;
+    animation:popIn .3s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes popIn { from { opacity:0; transform:scale(.92); } }
+  .modal-head {
+    padding:1.3rem 1.5rem; border-bottom:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .modal-head-title { font-weight:700; font-size:1rem; }
+  .modal-date-badge {
+    background:var(--red); color:#fff; font-size:.72rem; font-weight:600;
+    padding:.2rem .6rem; border-radius:4px;
+  }
+  .modal-close { background:none; border:none; color:var(--muted); cursor:pointer; font-size:1.2rem; }
+  .modal-body { padding:1.5rem; display:flex; flex-direction:column; gap:1rem; }
+  .form-group { display:flex; flex-direction:column; gap:.4rem; }
+  .form-label { font-size:.75rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+  .form-control {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:6px; padding:.65rem .9rem;
+    color:var(--text); font-family:'Inter',sans-serif; font-size:.9rem;
+    outline:none; transition:border-color .25s;
+  }
+  .form-control:focus { border-color:var(--red); }
+  .status-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:.5rem; }
+  .status-option {
+    border:2px solid var(--border); border-radius:6px; padding:.6rem;
+    cursor:pointer; text-align:center; transition:all .2s;
+    display:flex; flex-direction:column; align-items:center; gap:.3rem;
+  }
+  .status-option:hover { border-color:var(--muted); }
+  .status-option.selected { border-color:var(--current-color); background:rgba(var(--current-rgb),.1); }
+  .status-option .so-icon { font-size:1.1rem; }
+  .status-option .so-label { font-size:.75rem; font-weight:600; }
+  .modal-footer { padding:1rem 1.5rem; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:.7rem; }
+  .btn-cancel { background:transparent; border:1px solid var(--border); color:var(--muted); padding:.55rem 1.2rem; border-radius:6px; cursor:pointer; font-family:'Inter',sans-serif; font-size:.85rem; }
+  .btn-save { background:var(--red); color:#fff; border:none; padding:.55rem 1.4rem; border-radius:6px; cursor:pointer; font-family:'Inter',sans-serif; font-size:.85rem; font-weight:600; }
+  .btn-save:hover { opacity:.85; }
+  .btn-delete { background:transparent; border:1px solid #ff4444; color:#ff4444; padding:.55rem 1rem; border-radius:6px; cursor:pointer; font-family:'Inter',sans-serif; font-size:.85rem; margin-right:auto; }
+
+  /* TOAST */
+  .toast { position:fixed; bottom:1.5rem; right:1.5rem; background:var(--card); border:1px solid var(--border); color:var(--text); padding:.7rem 1.2rem; border-radius:8px; font-size:.84rem; z-index:2000; opacity:0; transform:translateY(10px); transition:all .3s; pointer-events:none; }
+  .toast.show { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="yt-icon"></div>
+    <div class="logo-text"><span>Kontent</span>Planer</div>
+  </div>
+  <div class="header-actions">
+    <a href="projects.html"
+    style="background:rgba(255,255,255,.15); backdrop-filter:blur(10px); color:white; padding:8px 16px; border-radius:20px; text-decoration:none; font-size:0.8rem; font-weight:600; border:1px solid rgba(255,255,255,.2); transition:0.3s;">
+    ← Loyihalarga qaytish
+  </a>
+    <div class="channel-info">📺 Mening Kanalim</div>
+    <button class="new-btn" id="newIdeaBtn">+ Yangi G'oya</button>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div>
+      <div class="sidebar-section-title">📊 Statistika</div>
+      <div class="stats-mini" id="statsGrid"></div>
+    </div>
+    <div>
+      <div class="sidebar-section-title">🎨 Rang Legendasi</div>
+      <div class="legend">
+        <div class="legend-item" data-status="idea"><div class="legend-dot" style="background:var(--idea)"></div>G'oya <span class="leg-count" id="cnt-idea">0</span></div>
+        <div class="legend-item" data-status="editing"><div class="legend-dot" style="background:var(--editing)"></div>Montajda <span class="leg-count" id="cnt-editing">0</span></div>
+        <div class="legend-item" data-status="uploaded"><div class="legend-dot" style="background:var(--uploaded)"></div>Yuklandi <span class="leg-count" id="cnt-uploaded">0</span></div>
+        <div class="legend-item" data-status="planned"><div class="legend-dot" style="background:var(--planned)"></div>Rejalashtirilgan <span class="leg-count" id="cnt-planned">0</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="sidebar-section-title">📝 So'nggi G'oyalar</div>
+      <div class="ideas-list" id="ideasList"></div>
+    </div>
+  </aside>
+
+  <!-- CALENDAR -->
+  <div class="cal-area">
+    <div id="calendar"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-head-title" id="modalHeadTitle">Yangi Video G'oyasi</div>
+      <div class="modal-date-badge" id="modalDateBadge"></div>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Video sarlavhasi</label>
+        <input class="form-control" id="videoTitle" placeholder="Masalan: Top 10 jQuery Hacks...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tavsif / Izoh</label>
+        <textarea class="form-control" id="videoDesc" rows="2" placeholder="Video haqida qisqacha..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <div class="status-grid">
+          <div class="status-option selected" data-status="idea" style="--current-color:#3ea6ff;--current-rgb:62,166,255">
+            <span class="so-icon">💡</span><span class="so-label" style="color:#3ea6ff">G'oya</span>
+          </div>
+          <div class="status-option" data-status="editing" style="--current-color:#f9ca24;--current-rgb:249,202,36">
+            <span class="so-icon">✂️</span><span class="so-label" style="color:#f9ca24">Montajda</span>
+          </div>
+          <div class="status-option" data-status="uploaded" style="--current-color:#4caf50;--current-rgb:76,175,80">
+            <span class="so-icon">✅</span><span class="so-label" style="color:#4caf50">Yuklandi</span>
+          </div>
+          <div class="status-option" data-status="planned" style="--current-color:#9b59b6;--current-rgb:155,89,182">
+            <span class="so-icon">📅</span><span class="so-label" style="color:#9b59b6">Rejalashtirilgan</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-delete" id="deleteBtn" style="display:none">🗑 O'chirish</button>
+      <button class="btn-cancel" id="cancelBtn">Bekor</button>
+      <button class="btn-save" id="saveBtn">Saqlash</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const statusColors = { idea:'#3ea6ff', editing:'#f9ca24', uploaded:'#4caf50', planned:'#9b59b6' };
+const statusLabels = { idea:"💡 G'oya", editing:"✂️ Montajda", uploaded:"✅ Yuklandi", planned:"📅 Rejalashtirilgan" };
+let events = JSON.parse(localStorage.getItem('yt_planer') || '[]');
+let editingId = null;
+let selectedDate = null;
+let selectedStatus = 'idea';
+
+function saveEvents(){ localStorage.setItem('yt_planer', JSON.stringify(events)); }
+
+function showToast(msg){ const t=$('#toast'); t.text(msg).addClass('show'); setTimeout(()=>t.removeClass('show'),2200); }
+
+function updateSidebar(){
+  const counts = {idea:0, editing:0, uploaded:0, planned:0};
+  events.forEach(e => counts[e.status]++);
+  Object.keys(counts).forEach(s => $(`#cnt-${s}`).text(counts[s]));
+  $('#statsGrid').html(`
+    <div class="stat-mini"><div class="stat-mini-num" style="color:var(--text)">${events.length}</div><div class="stat-mini-label">Jami</div></div>
+    <div class="stat-mini"><div class="stat-mini-num" style="color:var(--uploaded)">${counts.uploaded}</div><div class="stat-mini-label">Yuklandi</div></div>
+    <div class="stat-mini"><div class="stat-mini-num" style="color:var(--editing)">${counts.editing}</div><div class="stat-mini-label">Montaj</div></div>
+    <div class="stat-mini"><div class="stat-mini-num" style="color:var(--idea)">${counts.idea}</div><div class="stat-mini-label">G'oyalar</div></div>
+  `);
+  const recent = [...events].reverse().slice(0,6);
+  $('#ideasList').empty();
+  recent.forEach(e => {
+    $('#ideasList').append(`
+      <div class="idea-chip" data-id="${e.id}">
+        <span class="dot" style="background:${statusColors[e.status]}"></span>
+        <span class="idea-title">${e.title}</span>
+      </div>
+    `);
+  });
+}
+
+function openModal(date, event=null){
+  editingId = event ? event.id : null;
+  selectedDate = date;
+  selectedStatus = event ? event.status : 'idea';
+  $('#videoTitle').val(event ? event.title : '');
+  $('#videoDesc').val(event ? (event.desc||'') : '');
+  $('#modalDateBadge').text(moment(date).format('D MMM, YYYY'));
+  $('#modalHeadTitle').text(event ? 'Videoni Tahrirlash' : 'Yangi Video G\'oyasi');
+  $('#deleteBtn').toggle(!!event);
+  $('.status-option').removeClass('selected');
+  $(`.status-option[data-status="${selectedStatus}"]`).addClass('selected');
+  $('#modalOverlay').addClass('active');
+  setTimeout(()=>$('#videoTitle').focus(), 200);
+}
+
+function closeModal(){ $('#modalOverlay').removeClass('active'); editingId=null; }
+
+function saveEvent(){
+  const title = $('#videoTitle').val().trim();
+  if(!title){ showToast('❗ Sarlavha kiriting!'); return; }
+  if(editingId){
+    const ev = events.find(e=>e.id===editingId);
+    if(ev){ ev.title=title; ev.desc=$('#videoDesc').val(); ev.status=selectedStatus; ev.color=statusColors[selectedStatus]; }
+  } else {
+    events.push({ id:Date.now(), title, desc:$('#videoDesc').val(), date:moment(selectedDate).format('YYYY-MM-DD'), status:selectedStatus, color:statusColors[selectedStatus] });
+  }
+  saveEvents();
+  refreshCalendar();
+  updateSidebar();
+  closeModal();
+  showToast(editingId ? '✏️ Yangilandi!' : '✅ Qo\'shildi!');
+}
+
+function deleteEvent(){
+  events = events.filter(e=>e.id!==editingId);
+  saveEvents();
+  refreshCalendar();
+  updateSidebar();
+  closeModal();
+  showToast('🗑️ O\'chirildi');
+}
+
+function refreshCalendar(){
+  const cal = $('#calendar');
+  cal.fullCalendar('removeEvents');
+  events.forEach(e => {
+    cal.fullCalendar('renderEvent', {
+      id: e.id, title: e.title,
+      start: e.date, color: e.color,
+      textColor: e.status==='editing' ? '#000' : '#fff'
+    }, true);
+  });
+}
+
+// Init FullCalendar
+$('#calendar').fullCalendar({
+  header: { left:'prev,next today', center:'title', right:'month,agendaWeek' },
+  locale: 'en',
+  height: 'auto',
+  editable: false,
+  dayClick: function(date){ openModal(date); },
+  eventClick: function(calEvent){
+    const ev = events.find(e=>e.id==calEvent.id);
+    if(ev) openModal(ev.date, ev);
+  },
+  dayRender: function(date, cell){
+    cell.css('cursor','pointer');
+  }
+});
+
+// Sample data
+if(events.length === 0){
+  const today = moment();
+  events = [
+    { id:1, title:"React Hooks Tutorial", desc:"useState, useEffect videosi", date:today.clone().subtract(5,'days').format('YYYY-MM-DD'), status:'uploaded', color:'#4caf50' },
+    { id:2, title:"CSS Grid Masterclass", desc:"", date:today.clone().subtract(2,'days').format('YYYY-MM-DD'), status:'editing', color:'#f9ca24' },
+    { id:3, title:"jQuery AJAX Guide", desc:"", date:today.format('YYYY-MM-DD'), status:'idea', color:'#3ea6ff' },
+    { id:4, title:"JavaScript ES2025", desc:"", date:today.clone().add(3,'days').format('YYYY-MM-DD'), status:'planned', color:'#9b59b6' },
+    { id:5, title:"Portfolio Review", desc:"", date:today.clone().add(7,'days').format('YYYY-MM-DD'), status:'planned', color:'#9b59b6' },
+  ];
+  saveEvents();
+}
+refreshCalendar();
+updateSidebar();
+
+// Status select
+$(document).on('click', '.status-option', function(){
+  $('.status-option').removeClass('selected');
+  $(this).addClass('selected');
+  selectedStatus = $(this).data('status');
+});
+
+// Modal events
+$('#saveBtn').click(saveEvent);
+$('#deleteBtn').click(deleteEvent);
+$('#cancelBtn, #modalClose').click(closeModal);
+$('#modalOverlay').click(function(e){ if(e.target===this) closeModal(); });
+$('#newIdeaBtn').click(()=> openModal(moment()));
+$(document).on('click','.idea-chip',function(){
+  const id = $(this).data('id');
+  const ev = events.find(e=>e.id==id);
+  if(ev) openModal(ev.date, ev);
+});
+$(document).keydown(e=>{ if(e.key==='Escape') closeModal(); });
+</script>
+</body>
+</html>
