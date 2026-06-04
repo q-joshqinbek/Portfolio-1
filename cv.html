@@ -1,735 +1,759 @@
 <!DOCTYPE html>
 <html lang="uz">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CV | JQ Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-  :root {
-    --ink: #0d1117;
-    --paper: #f5f2eb;
-    --accent: #c8401a;
-    --accent2: #1a6bc8;
-    --muted: #6b7280;
-    --border: #d9d4c8;
-    --card: #ffffff;
-    --tag-bg: #f0ede4;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV | JQ Portfolio</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght=300;400;500;600;700&family=Syne:wght=700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --ink: #0d1117;
+      --paper: #f5f2eb;
+      --accent: #c8401a;
+      --accent2: #1a6bc8;
+      --muted: #6b7280;
+      --border: #d9d4c8;
+      --card: #ffffff;
+      --tag-bg: #f0ede4;
+    }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Space Grotesk', sans-serif;
-    min-height: 100vh;
-    padding: 30px 20px 60px;
-  }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      padding: 30px 20px 60px;
+    }
 
-  /* ── TOP BAR ── */
-  .top-bar {
-    max-width: 900px;
-    margin: 0 auto 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
+    .top-bar {
+      max-width: 900px;
+      margin: 0 auto 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
 
-  .back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    color: var(--muted);
-    font-size: 0.82rem;
-    font-weight: 600;
-    letter-spacing: .05em;
-    border: 1.5px solid var(--border);
-    padding: 9px 18px;
-    border-radius: 6px;
-    background: var(--card);
-    transition: .2s;
-  }
-  .back-btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+      border: 1.5px solid var(--border);
+      padding: 9px 18px;
+      border-radius: 6px;
+      background: var(--card);
+      transition: .2s;
+    }
 
-  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .back-btn:hover {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
+    }
 
-  .dl-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: .06em;
-    padding: 9px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: .2s;
-  }
-  .dl-btn.uz { background: #1a6bc8; color: #fff; }
-  .dl-btn.ru { background: #c8401a; color: #fff; }
-  .dl-btn.en { background: #1a7a3c; color: #fff; }
-  .dl-btn:hover { opacity: .85; transform: translateY(-1px); }
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
-  /* ── MAIN CV CARD ── */
-  #cvCard {
-    max-width: 900px;
-    margin: 0 auto;
-    background: var(--card);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 8px 40px rgba(0,0,0,.07);
-  }
+    .dl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      padding: 9px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: .2s;
+    }
 
-  /* ── HEADER BAND ── */
-  .cv-header {
-    background: var(--ink);
-    color: #fff;
-    padding: 36px 40px;
-    display: flex;
-    gap: 32px;
-    align-items: flex-start;
-  }
+    .dl-btn.uz {
+      background: #1a6bc8;
+      color: #fff;
+    }
 
-  /* Photo */
-  .photo-wrap {
-    position: relative;
-    flex-shrink: 0;
-  }
-  .photo-circle {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    border: 3px solid var(--accent);
-    overflow: hidden;
-    background: #1e2530;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  .photo-circle img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .photo-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    color: #8896a8;
-    font-size: 0.72rem;
-    text-align: center;
-    padding: 10px;
-  }
-  .photo-placeholder i { font-size: 2rem; color: #4a5568; }
-  .photo-overlay {
-    position: absolute;
-    bottom: 0; right: 0;
-    background: var(--accent);
-    border-radius: 50%;
-    width: 28px; height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 2px solid var(--card);
-    transition: .2s;
-  }
-  .photo-overlay:hover { transform: scale(1.15); }
-  .photo-overlay i { color: #fff; font-size: 0.7rem; }
-  #photoInput { display: none; }
+    .dl-btn.ru {
+      background: #c8401a;
+      color: #fff;
+    }
 
-  /* Header text */
-  .header-text { flex: 1; }
-  .header-text h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: -.01em;
-    margin-bottom: 4px;
-    color: #fff;
-  }
-  .header-text .role {
-    color: var(--accent);
-    font-weight: 600;
-    font-size: 0.95rem;
-    letter-spacing: .04em;
-    margin-bottom: 18px;
-  }
+    .dl-btn.en {
+      background: #1a7a3c;
+      color: #fff;
+    }
 
-  .contact-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px 20px;
-  }
-  .contact-item {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    font-size: 0.84rem;
-    color: #b0bec5;
-  }
-  .contact-item i { color: var(--accent); width: 14px; }
+    .dl-btn:hover {
+      opacity: .85;
+      transform: translateY(-1px);
+    }
 
-  /* ── BODY ── */
-  .cv-body {
-    display: grid;
-    grid-template-columns: 1.7fr 1fr;
-    gap: 0;
-  }
+    #cvCard {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, .07);
+    }
 
-  .col-left {
-    padding: 36px 36px 36px 40px;
-    border-right: 1.5px solid var(--border);
-  }
-  .col-right {
-    padding: 36px 40px 36px 30px;
-  }
+    .cv-header {
+      background: var(--ink);
+      color: #fff;
+      padding: 36px 40px;
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+    }
 
-  .section { margin-bottom: 34px; }
-  .section:last-child { margin-bottom: 0; }
+    .photo-circle {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid var(--accent);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
 
-  h2 {
-    font-family: 'Syne', sans-serif;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: .15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    border-bottom: 1.5px solid var(--border);
-    padding-bottom: 8px;
-    margin-bottom: 18px;
-  }
+    .photo-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
-  p {
-    color: var(--muted);
-    font-size: 0.9rem;
-    line-height: 1.65;
-  }
+    .header-text {
+      flex: 1;
+    }
 
-  /* Timeline */
-  .timeline-item {
-    margin-bottom: 22px;
-    padding-left: 16px;
-    border-left: 2px solid var(--border);
-    position: relative;
-  }
-  .timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -5px;
-    top: 5px;
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-  .tl-date {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: .06em;
-    margin-bottom: 2px;
-  }
-  .tl-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 2px;
-  }
-  .tl-company {
-    font-size: 0.83rem;
-    font-weight: 600;
-    color: var(--accent2);
-    margin-bottom: 8px;
-  }
+    .header-text h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      margin-bottom: 4px;
+      color: #fff;
+    }
 
-  /* Skills */
-  .skills-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
-  .skill-tag {
-    background: var(--tag-bg);
-    border: 1.5px solid var(--border);
-    padding: 6px 12px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--ink);
-    border-radius: 5px;
-    letter-spacing: .03em;
-  }
+    .header-text .role {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: .04em;
+      margin-bottom: 18px;
+    }
 
-  /* Languages */
-  .lang-item { margin-bottom: 14px; }
-  .lang-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.83rem;
-    font-weight: 600;
-    color: var(--ink);
-    margin-bottom: 5px;
-  }
-  .lang-row span:last-child { color: var(--muted); font-weight: 400; }
-  .progress-bar {
-    height: 6px;
-    background: var(--tag-bg);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .progress {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 3px;
-  }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px 20px;
+    }
 
-  /* ── CERTIFICATES ── */
-  .certs-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.84rem;
+      color: #b0bec5;
+    }
 
-  .cert-card {
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    background: var(--tag-bg);
-    position: relative;
-    cursor: pointer;
-    transition: .2s;
-    min-height: 80px;
-  }
-  .cert-card:hover { border-color: var(--accent); box-shadow: 0 4px 12px rgba(200,64,26,.12); }
+    .contact-item i {
+      color: var(--accent);
+      width: 14px;
+    }
 
-  .cert-card img {
-    width: 100%;
-    height: 80px;
-    object-fit: cover;
-    display: block;
-  }
-  .cert-card .cert-label {
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--muted);
-    padding: 6px 8px;
-    background: var(--card);
-    border-top: 1px solid var(--border);
-  }
-  .cert-placeholder {
-    height: 80px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    color: #aaa;
-  }
-  .cert-placeholder i { font-size: 1.6rem; }
-  .cert-placeholder span { font-size: 0.7rem; }
+    .cv-body {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+    }
 
-  .add-cert-btn {
-    border: 1.5px dashed var(--border);
-    border-radius: 8px;
-    background: transparent;
-    cursor: pointer;
-    min-height: 80px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    color: var(--muted);
-    font-size: 0.75rem;
-    font-weight: 600;
-    font-family: 'Space Grotesk', sans-serif;
-    transition: .2s;
-    width: 100%;
-    padding: 10px;
-  }
-  .add-cert-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .add-cert-btn i { font-size: 1.4rem; }
+    .col-left {
+      padding: 36px 36px 36px 40px;
+      border-right: 1.5px solid var(--border);
+    }
 
-  .cert-remove {
-    position: absolute;
-    top: 4px; right: 4px;
-    background: rgba(0,0,0,.55);
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 20px; height: 20px;
-    font-size: 0.65rem;
-    cursor: pointer;
-    display: none;
-    align-items: center;
-    justify-content: center;
-  }
-  .cert-card:hover .cert-remove { display: flex; }
+    .col-right {
+      padding: 36px 40px 36px 30px;
+    }
 
-  #certInput { display: none; }
+    .section {
+      margin-bottom: 34px;
+    }
 
-  /* ── TOAST ── */
-  .toast {
-    position: fixed;
-    bottom: 28px; right: 28px;
-    background: var(--ink);
-    color: #fff;
-    padding: 14px 22px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    border-left: 4px solid var(--accent);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transform: translateY(120%);
-    transition: transform .35s cubic-bezier(.175,.885,.32,1.275);
-    z-index: 9999;
-    box-shadow: 0 8px 30px rgba(0,0,0,.18);
-  }
-  .toast.show { transform: translateY(0); }
-  .toast i { animation: spin 1s linear infinite; color: var(--accent); }
-  @keyframes spin { 100% { transform: rotate(360deg); } }
+    .section:last-child {
+      margin-bottom: 0;
+    }
 
-  /* ── PRINT ── */
-  @media print {
-    body { background: white !important; padding: 0 !important; }
-    .top-bar, .toast, .photo-overlay, .add-cert-btn, .cert-remove { display: none !important; }
-    #cvCard { border: none !important; box-shadow: none !important; border-radius: 0 !important; max-width: 100% !important; }
-    .progress { background: #c8401a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .skill-tag { background: #f0ede4 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .cv-header { background: #0d1117 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  }
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border-bottom: 1.5px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+    }
 
-  @media (max-width: 700px) {
-    .cv-header { flex-direction: column; padding: 28px 24px; }
-    .cv-body { grid-template-columns: 1fr; }
-    .col-left { border-right: none; border-bottom: 1.5px solid var(--border); padding: 28px 24px; }
-    .col-right { padding: 28px 24px; }
-    .contact-grid { grid-template-columns: 1fr; }
-    .top-bar { flex-direction: column; align-items: stretch; }
-    .btn-row { flex-direction: row; }
-    .certs-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-</style>
+    p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    .timeline-item {
+      margin-bottom: 22px;
+      padding-left: 16px;
+      border-left: 2px solid var(--border);
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 5px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .tl-date {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: .06em;
+      margin-bottom: 2px;
+    }
+
+    .tl-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+
+    .tl-company {
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--accent2);
+      margin-bottom: 8px;
+    }
+
+    .skills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .skill-tag {
+      background: var(--tag-bg);
+      border: 1.5px solid var(--border);
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--ink);
+      border-radius: 5px;
+      letter-spacing: .03em;
+    }
+
+    .lang-item {
+      margin-bottom: 14px;
+    }
+
+    .lang-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }
+
+    .lang-row span:last-child {
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--tag-bg);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+    }
+
+    .certs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .cert-card {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--tag-bg);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .cert-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .cert-card img {
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cert-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 5px 8px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+    }
+
+    /* MODAL OYNA USLUBLARI */
+    .cert-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(5px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .cert-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      max-width: 85%;
+      max-height: 85vh;
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .cert-modal.open .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-content img {
+      display: block;
+      max-width: 100%;
+      max-height: 85vh;
+      object-fit: contain;
+      background: #fff;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      color: #fff;
+      font-size: 1.8rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+      color: var(--accent);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--ink);
+      color: #fff;
+      padding: 14px 22px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(120%);
+      transition: transform .35s cubic-bezier(.175, .885, .32, 1.275);
+      z-index: 9999;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, .18);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+    }
+
+    .spin {
+      animation: spin 1s linear infinite;
+      color: var(--accent);
+    }
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        padding: 0 !important;
+      }
+
+      .top-bar,
+      .toast,
+      .cert-modal {
+        display: none !important;
+      }
+
+      #cvCard {
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        max-width: 100% !important;
+      }
+
+      .progress {
+        background: #c8401a !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .skill-tag {
+        background: #f0ede4 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .cv-header {
+        background: #0d1117 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .cv-header {
+        flex-direction: column;
+        padding: 28px 24px;
+      }
+
+      .cv-body {
+        grid-template-columns: 1fr;
+      }
+
+      .col-left {
+        border-right: none;
+        border-bottom: 1.5px solid var(--border);
+        padding: 28px 24px;
+      }
+
+      .col-right {
+        padding: 28px 24px;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .modal-content {
+        max-width: 95%;
+      }
+
+      .modal-close {
+        top: 10px;
+        right: 15px;
+        background: rgba(0, 0, 0, 0.5);
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- TOP BAR -->
-<div class="top-bar">
-  <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> ORQAGA</a>
-  <div class="btn-row">
-    <button class="dl-btn uz" onclick="generatePDF('uz')"><i class="fa-solid fa-file-pdf"></i> UZ PDF</button>
-    <button class="dl-btn ru" onclick="generatePDF('ru')"><i class="fa-solid fa-file-pdf"></i> RU PDF</button>
-    <button class="dl-btn en" onclick="generatePDF('en')"><i class="fa-solid fa-file-pdf"></i> EN PDF</button>
+  <div class="top-bar" id="topBar">
+    <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> ORQAGA</a>
+    <div class="btn-row">
+      <button class="dl-btn uz" onclick="generatePDF('uz')"><i class="fa-solid fa-file-pdf"></i> UZ PDF</button>
+      <button class="dl-btn ru" onclick="generatePDF('ru')"><i class="fa-solid fa-file-pdf"></i> RU PDF</button>
+      <button class="dl-btn en" onclick="generatePDF('en')"><i class="fa-solid fa-file-pdf"></i> EN PDF</button>
+    </div>
   </div>
-</div>
 
-<!-- CV CARD -->
-<div id="cvCard">
-
-  <!-- HEADER -->
-  <header class="cv-header">
-    <div class="photo-wrap">
-      <div class="photo-circle" onclick="document.getElementById('photoInput').click()">
-        <div class="photo-placeholder" id="photoPlaceholder">
-          <i class="fa-solid fa-user-circle"></i>
-          <span>Rasm qo'yish</span>
-        </div>
-        <img id="photoImg" src="" alt="Profil rasmi" style="display:none;">
-      </div>
-      <div class="photo-overlay" onclick="document.getElementById('photoInput').click()">
-        <i class="fa-solid fa-camera"></i>
-      </div>
-      <input type="file" id="photoInput" accept="image/*" onchange="loadPhoto(event)">
-    </div>
-
-    <div class="header-text">
-      <h1 id="lblName">Qurbonbayev Jo'shqinbek</h1>
-      <div class="role">Frontend &amp; Backend Web Developer</div>
-      <div class="contact-grid">
-        <div class="contact-item"><i class="fa-solid fa-phone"></i> +998 (91) 092-62-81</div>
-        <div class="contact-item"><i class="fa-solid fa-envelope"></i> jq_live@gmail.com</div>
-        <div class="contact-item"><i class="fa-brands fa-telegram"></i> @JQ_live</div>
-        <div class="contact-item"><i class="fa-solid fa-location-dot"></i> <span id="lblLocation">O'zbekiston</span></div>
-      </div>
-    </div>
-  </header>
-
-  <!-- BODY -->
-  <div class="cv-body">
-    <!-- LEFT -->
-    <div class="col-left">
-
-      <div class="section">
-        <h2 id="lblAboutTitle">Men Haqimda</h2>
-        <p id="lblAboutDesc">Men zamonaviy, xavfsiz va yuqori samaradorlikka ega veb-saytlar hamda tizimlar yaratishga qiziquvchi dasturchiman. Har bir loyihaga ijodiy va professional yondashaman.</p>
+  <div id="cvCard">
+    <header class="cv-header">
+      <div class="photo-circle">
+        <img src="image.png" alt="Profil rasmi">
       </div>
 
-      <div class="section">
-        <h2 id="lblExpTitle">Tajriba va Faoliyat</h2>
-        <div class="timeline-item">
-          <div class="tl-date" id="lblExpDate">2025 – Hozirgacha</div>
-          <div class="tl-title" id="lblExpJob">Mustaqil Web Developer</div>
-          <div class="tl-company" id="lblExpCompany">Portfolio Loyihalari</div>
-          <p id="lblExpDesc">HTML, CSS, Tailwind CSS hamda backend texnologiyalari yordamida shaxsiy platformalar va veb-saytlar yaratish.</p>
-        </div>
-      </div>
-
-      <!-- CERTIFICATES -->
-      <div class="section">
-        <h2 id="lblCertTitle">Sertifikatlar</h2>
-        <div class="certs-grid" id="certsGrid">
-          <!-- Sertifikatlar bu yerga qo'shiladi -->
-          <button class="add-cert-btn" onclick="document.getElementById('certInput').click()">
-            <i class="fa-solid fa-plus-circle"></i>
-            <span id="lblAddCert">Sertifikat qo'shish</span>
-          </button>
-        </div>
-        <input type="file" id="certInput" accept="image/*" multiple onchange="addCerts(event)">
-      </div>
-
-    </div>
-
-    <!-- RIGHT -->
-    <div class="col-right">
-
-      <div class="section">
-        <h2 id="lblSkillsTitle">Ko'nikmalar</h2>
-        <div class="skills-wrap">
-          <div class="skill-tag">HTML / CSS</div>
-          <div class="skill-tag">Tailwind</div>
-          <div class="skill-tag">JavaScript</div>
-          <div class="skill-tag">Git / GitHub</div>
-        </div>
-      </div>
-
-      <div class="section">
-        <h2 id="lblLangTitle">Til Bilish</h2>
-
-        <div class="lang-item">
-          <div class="lang-row">
-            <span id="lblLang1">O'zbek tili</span>
-            <span id="lblLang1Lvl">Ona tili · 100%</span>
+      <div class="header-text">
+        <h1 id="lblName">Qurbonbayev Jo'shqinbek</h1>
+        <div class="role">Frontend &amp; Backend Web Developer</div>
+        <div class="contact-grid">
+          <div class="contact-item"><i class="fa-solid fa-phone"></i> +998 (91) 092-62-81</div>
+          <div class="contact-item"><i class="fa-solid fa-envelope"></i> jq_live@gmail.com</div>
+          <div class="contact-item"><i class="fa-brands fa-telegram"></i> @JQ_live</div>
+          <div class="contact-item"><i class="fa-solid fa-location-dot"></i> <span id="lblLocation">O'zbekiston</span>
           </div>
-          <div class="progress-bar"><div class="progress" style="width:100%"></div></div>
-        </div>
-
-        <div class="lang-item">
-          <div class="lang-row">
-            <span id="lblLang2">Rus tili</span>
-            <span id="lblLang2Lvl">O'rta · 70%</span>
-          </div>
-          <div class="progress-bar"><div class="progress" style="width:70%"></div></div>
-        </div>
-
-        <div class="lang-item">
-          <div class="lang-row">
-            <span id="lblLang3">Ingliz tili</span>
-            <span id="lblLang3Lvl">Texnik · 60%</span>
-          </div>
-          <div class="progress-bar"><div class="progress" style="width:60%"></div></div>
         </div>
       </div>
+    </header>
 
+    <div class="cv-body">
+      <div class="col-left">
+
+        <div class="section">
+          <h2 id="lblAboutTitle">Men Haqimda</h2>
+          <p id="lblAboutDesc">Men zamonaviy, xavfsiz va yuqori samaradorlikka ega veb-saytlar hamda tizimlar yaratishga
+            qiziquvchi dasturchiman. Har bir loyihaga ijodiy va professional yondashaman.</p>
+        </div>
+
+        <div class="section">
+          <h2 id="lblExpTitle">Tajriba va Faoliyat</h2>
+          <div class="timeline-item">
+            <div class="tl-date" id="lblExpDate">2025 – Hozirgacha</div>
+            <div class="tl-title" id="lblExpJob">Mustaqil Web Developer</div>
+            <div class="tl-company" id="lblExpCompany">Portfolio Loyihalari</div>
+            <p id="lblExpDesc">HTML, CSS, Tailwind CSS hamda backend texnologiyalari yordamida shaxsiy platformalar va
+              veb-saytlar yaratish.</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2 id="lblCertTitle">Sertifikatlar</h2>
+          <div class="certs-grid">
+
+            <div class="cert-card" onclick="openModal(this)">
+              <img src="rasmlar/Снимок экрана 2026-05-25 173157.png" alt="Sertifikat 1">
+              <div class="cert-label">Sertifikat 1</div>
+            </div>
+
+            <div class="cert-card" onclick="openModal(this)">
+              <img src="rasmlar/Снимок экрана 2026-05-25 173231.png" alt="Sertifikat 2">
+              <div class="cert-label">Sertifikat 2</div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-right">
+
+        <div class="section">
+          <h2 id="lblSkillsTitle">Ko'nikmalar</h2>
+          <div class="skills-wrap">
+            <div class="skill-tag">HTML / CSS</div>
+            <div class="skill-tag">Tailwind</div>
+            <div class="skill-tag">JavaScript</div>
+            <div class="skill-tag">Git / GitHub</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2 id="lblLangTitle">Til Bilish</h2>
+          <div class="lang-item">
+            <div class="lang-row"><span id="lblLang1">O'zbek tili</span><span id="lblLang1Lvl">Ona tili · 100%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress" style="width:100%"></div>
+            </div>
+          </div>
+          <div class="lang-item">
+            <div class="lang-row"><span id="lblLang2">Rus tili</span><span id="lblLang2Lvl">O'rta · 70%</span></div>
+            <div class="progress-bar">
+              <div class="progress" style="width:70%"></div>
+            </div>
+          </div>
+          <div class="lang-item">
+            <div class="lang-row"><span id="lblLang3">Ingliz tili</span><span id="lblLang3Lvl">Texnik · 80%</span></div>
+            <div class="progress-bar">
+              <div class="progress" style="width:80%"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
-  </div><!-- /cv-body -->
-</div><!-- /cvCard -->
+  </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast">
-  <i class="fa-solid fa-spinner"></i>
-  <span id="lblToast">PDF tayyorlanmoqda...</span>
-</div>
+  <div id="certModal" class="cert-modal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+      <img id="modalImg" src="" alt="Kattalashtirilgan sertifikat">
+    </div>
+  </div>
 
-<script>
-/* ─── TRANSLATIONS ─── */
-const T = {
-  uz: {
-    name: "Qurbonbayev Jo'shqinbek",
-    location: "O'zbekiston",
-    aboutTitle: "Men Haqimda",
-    aboutDesc: "Men zamonaviy, xavfsiz va yuqori samaradorlikka ega veb-saytlar hamda tizimlar yaratishga qiziquvchi dasturchiman. Har bir loyihaga ijodiy va professional yondashaman.",
-    expTitle: "Tajriba va Faoliyat",
-    expDate: "2025 – Hozirgacha",
-    expJob: "Mustaqil Web Developer",
-    expCompany: "Portfolio Loyihalari",
-    expDesc: "HTML, CSS, Tailwind CSS hamda backend texnologiyalari yordamida shaxsiy platformalar va veb-saytlar yaratish.",
-    certTitle: "Sertifikatlar",
-    addCert: "Sertifikat qo'shish",
-    skillsTitle: "Ko'nikmalar",
-    langTitle: "Til Bilish",
-    lang1:"O'zbek tili", lang1Lvl:"Ona tili · 100%",
-    lang2:"Rus tili",    lang2Lvl:"O'rta · 70%",
-    lang3:"Ingliz tili", lang3Lvl:"Texnik · 60%",
-    toast: "PDF tayyorlanmoqda..."
-  },
-  ru: {
-    name: "Курбонбаев Жошкинбек",
-    location: "Узбекистан",
-    aboutTitle: "О себе",
-    aboutDesc: "Я веб-разработчик, увлечённый созданием современных, безопасных и высокопроизводительных сайтов и систем. К каждому проекту подхожу творчески и профессионально.",
-    expTitle: "Опыт и деятельность",
-    expDate: "2025 – По наст. время",
-    expJob: "Независимый Web Developer",
-    expCompany: "Портфолио проекты",
-    expDesc: "Создание персональных платформ и веб-сайтов с использованием HTML, CSS, Tailwind CSS и серверных технологий.",
-    certTitle: "Сертификаты",
-    addCert: "Добавить сертификат",
-    skillsTitle: "Навыки",
-    langTitle: "Знание языков",
-    lang1:"Узбекский",   lang1Lvl:"Родной · 100%",
-    lang2:"Русский",     lang2Lvl:"Средний · 70%",
-    lang3:"Английский",  lang3Lvl:"Технический · 60%",
-    toast: "Подготовка PDF..."
-  },
-  en: {
-    name: "Qurbonbayev Joshqinbek",
-    location: "Uzbekistan",
-    aboutTitle: "About Me",
-    aboutDesc: "I am a web developer passionate about building modern, secure, and high-performance websites and systems. I approach every project with creativity and professionalism.",
-    expTitle: "Experience & Activity",
-    expDate: "2025 – Present",
-    expJob: "Independent Web Developer",
-    expCompany: "Portfolio Projects",
-    expDesc: "Building personal platforms and websites using HTML, CSS, Tailwind CSS, and backend technologies.",
-    certTitle: "Certificates",
-    addCert: "Add Certificate",
-    skillsTitle: "Skills",
-    langTitle: "Languages",
-    lang1:"Uzbek",   lang1Lvl:"Native · 100%",
-    lang2:"Russian", lang2Lvl:"Intermediate · 70%",
-    lang3:"English", lang3Lvl:"Technical · 60%",
-    toast: "Preparing PDF..."
-  }
-};
+  <div class="toast" id="toast">
+    <i class="fa-solid fa-spinner spin"></i>
+    <span id="lblToast">PDF tayyorlanmoqda...</span>
+  </div>
 
-function applyLang(lang) {
-  const d = T[lang];
-  const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
-  set('lblName',       d.name);
-  set('lblLocation',   d.location);
-  set('lblAboutTitle', d.aboutTitle);
-  set('lblAboutDesc',  d.aboutDesc);
-  set('lblExpTitle',   d.expTitle);
-  set('lblExpDate',    d.expDate);
-  set('lblExpJob',     d.expJob);
-  set('lblExpCompany', d.expCompany);
-  set('lblExpDesc',    d.expDesc);
-  set('lblCertTitle',  d.certTitle);
-  set('lblAddCert',    d.addCert);
-  set('lblSkillsTitle',d.skillsTitle);
-  set('lblLangTitle',  d.langTitle);
-  set('lblLang1',      d.lang1);     set('lblLang1Lvl', d.lang1Lvl);
-  set('lblLang2',      d.lang2);     set('lblLang2Lvl', d.lang2Lvl);
-  set('lblLang3',      d.lang3);     set('lblLang3Lvl', d.lang3Lvl);
-  set('lblToast',      d.toast);
-}
-
-/* ─── PHOTO ─── */
-function loadPhoto(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const img = document.getElementById('photoImg');
-    img.src = ev.target.result;
-    img.style.display = 'block';
-    document.getElementById('photoPlaceholder').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
-}
-
-/* ─── CERTIFICATES ─── */
-let certCount = 0;
-function addCerts(e) {
-  const grid = document.getElementById('certsGrid');
-  const addBtn = grid.querySelector('.add-cert-btn');
-  Array.from(e.target.files).forEach(file => {
-    const reader = new FileReader();
-    reader.onload = ev => {
-      certCount++;
-      const id = 'cert_' + certCount;
-      const card = document.createElement('div');
-      card.className = 'cert-card';
-      card.id = id;
-      card.innerHTML = `
-        <img src="${ev.target.result}" alt="Sertifikat ${certCount}">
-        <div class="cert-label">Sertifikat ${certCount}</div>
-        <button class="cert-remove" onclick="removeCert('${id}')"><i class="fa-solid fa-xmark"></i></button>
-      `;
-      // insert before the add button
-      grid.insertBefore(card, addBtn);
+  <script>
+    const T = {
+      uz: {
+        name: "Qurbonbayev Jo'shqinbek", location: "O'zbekiston",
+        aboutTitle: "Men Haqimda",
+        aboutDesc: "Men zamonaviy, xavfsiz va yuqori samaradorlikka ega veb-saytlar hamda tizimlar yaratishga qiziquvchi dasturchiman. Har bir loyihaga ijodiy va professional yondashaman.",
+        expTitle: "Tajriba va Faoliyat", expDate: "2025 – Hozirgacha",
+        expJob: "Mustaqil Web Developer", expCompany: "Portfolio Loyihalari",
+        expDesc: "HTML, CSS, Tailwind CSS hamda backend texnologiyalari yordamida shaxsiy platformalar va veb-saytlar yaratish.",
+        certTitle: "Sertifikatlar", skillsTitle: "Ko'nikmalar", langTitle: "Til Bilish",
+        lang1: "O'zbek tili", lang1Lvl: "Ona tili · 100%",
+        lang2: "Rus tili", lang2Lvl: "O'rta · 70%",
+        lang3: "Ingliz tili", lang3Lvl: "Texnik · 60%",
+        toast: "PDF tayyorlanmoqda..."
+      },
+      ru: {
+        name: "Курбонбаев Жошкинбек", location: "Узбекистан",
+        aboutTitle: "О себе",
+        aboutDesc: "Я веб-разработчик, увлечённый созданием современных, безопасных и высокопроизводительных сайтов и систем. К каждому проекту подхожу творчески и профессионально.",
+        expTitle: "Опыт и деятельность", expDate: "2025 – По наст. время",
+        expJob: "Независимый Web Developer", expCompany: "Портфолио проекты",
+        expDesc: "Создание персональных платформ и веб-сайтов с использованием HTML, CSS, Tailwind CSS и серверных технологий.",
+        certTitle: "Сертификаты", skillsTitle: "Навыки", langTitle: "Знание языков",
+        lang1: "Узбекский", lang1Lvl: "Родной · 100%",
+        lang2: "Русский", lang2Lvl: "Средний · 70%",
+        lang3: "Английский", lang3Lvl: "Технический · 80%",
+        toast: "Подготовка PDF..."
+      },
+      en: {
+        name: "Qurbonbayev Joshqinbek", location: "Uzbekistan",
+        aboutTitle: "About Me",
+        aboutDesc: "I am a web developer passionate about building modern, secure, and high-performance websites and systems. I approach every project with creativity and professionalism.",
+        expTitle: "Experience & Activity", expDate: "2025 – Present",
+        expJob: "Independent Web Developer", expCompany: "Portfolio Projects",
+        expDesc: "Building personal platforms and websites using HTML, CSS, Tailwind CSS, and backend technologies.",
+        certTitle: "Certificates", skillsTitle: "Skills", langTitle: "Languages",
+        lang1: "Uzbek", lang1Lvl: "Native · 100%",
+        lang2: "Russian", lang2Lvl: "Intermediate · 70%",
+        lang3: "English", lang3Lvl: "Technical · 60%",
+        toast: "Preparing PDF..."
+      }
     };
-    reader.readAsDataURL(file);
-  });
-  e.target.value = '';
-}
 
-function removeCert(id) {
-  const el = document.getElementById(id);
-  if (el) el.remove();
-}
+    function applyLang(lang) {
+      const d = T[lang];
+      const s = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+      s('lblName', d.name); s('lblLocation', d.location);
+      s('lblAboutTitle', d.aboutTitle); s('lblAboutDesc', d.aboutDesc);
+      s('lblExpTitle', d.expTitle); s('lblExpDate', d.expDate);
+      s('lblExpJob', d.expJob); s('lblExpCompany', d.expCompany);
+      s('lblExpDesc', d.expDesc); s('lblCertTitle', d.certTitle);
+      s('lblSkillsTitle', d.skillsTitle); s('lblLangTitle', d.langTitle);
+      s('lblLang1', d.lang1); s('lblLang1Lvl', d.lang1Lvl);
+      s('lblLang2', d.lang2); s('lblLang2Lvl', d.lang2Lvl);
+      s('lblLang3', d.lang3); s('lblLang3Lvl', d.lang3Lvl);
+      s('lblToast', d.toast);
+    }
 
-/* ─── PDF DOWNLOAD ─── */
-async function generatePDF(lang) {
-  applyLang(lang);
+    async function generatePDF(lang) {
+      applyLang(lang);
+      const toast = document.getElementById('toast');
+      const topBar = document.getElementById('topBar');
+      toast.classList.add('show');
+      topBar.style.display = 'none';
+      await new Promise(r => setTimeout(r, 400));
+      try {
+        const canvas = await html2canvas(document.getElementById('cvCard'), {
+          scale: 2, useCORS: true, allowTaint: true,
+          backgroundColor: '#ffffff', logging: false
+        });
+        const { jsPDF } = window.jspdf;
+        const imgW = 210;
+        const imgH = (canvas.height * imgW) / canvas.width;
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: imgH <= 297 ? 'a4' : [imgW, imgH] });
+        pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, imgW, imgH);
+        pdf.save('CV_JQ_' + lang.toUpperCase() + '.pdf');
+      } catch (err) { window.print(); }
+      topBar.style.display = '';
+      toast.classList.remove('show');
+      setTimeout(() => applyLang('uz'), 1500);
+    }
 
-  const toast = document.getElementById('toast');
-  toast.classList.add('show');
+    /* MODAL FUNKSIYALARI */
+    function openModal(element) {
+      const modal = document.getElementById('certModal');
+      const modalImg = document.getElementById('modalImg');
+      const imgSrc = element.querySelector('img').src;
 
-  // Hide UI-only elements before capture
-  const controls = document.querySelector('.top-bar');
-  controls.style.display = 'none';
-  document.querySelectorAll('.cert-remove').forEach(b => b.style.display = 'none');
-  document.querySelectorAll('.add-cert-btn').forEach(b => b.style.display = 'none');
+      modalImg.src = imgSrc;
+      modal.classList.add('open');
+    }
 
-  await new Promise(r => setTimeout(r, 300));
+    function closeModal() {
+      const modal = document.getElementById('certModal');
+      modal.classList.remove('open');
+    }
 
-  try {
-    const card = document.getElementById('cvCard');
-    const canvas = await html2canvas(card, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: '#ffffff',
-      logging: false
+    // Esc bosilganda ham modal yopiladi
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
     });
-
-    const { jsPDF } = window.jspdf;
-    const imgW = 210; // A4 mm
-    const imgH = (canvas.height * imgW) / canvas.width;
-
-    const pdf = new jsPDF({
-      orientation: imgH > imgW ? 'portrait' : 'landscape',
-      unit: 'mm',
-      format: imgH <= 297 ? 'a4' : [imgW, imgH]
-    });
-
-    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, imgW, imgH);
-    pdf.save(`CV_JQ_${lang.toUpperCase()}.pdf`);
-  } catch(err) {
-    console.error(err);
-    // Fallback to print
-    window.print();
-  }
-
-  // Restore
-  controls.style.display = '';
-  document.querySelectorAll('.cert-remove').forEach(b => b.style.removeProperty('display'));
-  document.querySelectorAll('.add-cert-btn').forEach(b => b.style.removeProperty('display'));
-
-  toast.classList.remove('show');
-
-  // Reset to uz after 1.5s
-  setTimeout(() => applyLang('uz'), 1500);
-}
-</script>
+  </script>
 </body>
+
 </html>
